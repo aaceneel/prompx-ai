@@ -589,9 +589,9 @@ export const PromptEngineer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-bg">
+    <div className="min-h-screen bg-gradient-bg safe-top safe-bottom">
       {/* Hero Section */}
-      <section className="relative py-20 sm:py-24 lg:py-32 px-0 text-center bg-gradient-hero overflow-hidden w-full">
+      <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 text-center bg-gradient-hero overflow-hidden w-full touch-pan-y">
         {/* Animated Background Layers */}
         <div className="absolute inset-0">
           {/* Dynamic gradient overlay with movement */}
@@ -637,90 +637,89 @@ export const PromptEngineer = () => {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_60%,rgba(0,0,0,0.6)_100%)]" />
         </div>
         
-        <div className="max-w-7xl mx-auto relative z-10 animate-fade-in px-4">
+        <div className="container-responsive relative z-10 animate-fade-in">
           {/* Premium Badge */}
-          <div className="inline-flex items-center gap-3 bg-black/30 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 mb-8 shadow-2xl hover:bg-black/40 transition-all duration-300 group">
-            <div className="flex items-center gap-3">
+          <div className="inline-flex items-center gap-2 sm:gap-3 bg-black/40 backdrop-blur-xl border border-white/20 rounded-full px-3 sm:px-6 py-2 sm:py-3 mb-6 sm:mb-8 shadow-2xl hover:bg-black/50 transition-all duration-300 group touch-none">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="relative">
-                <Stars className="w-5 h-5 text-white/90 animate-pulse" style={{ animationDuration: '2s' }} />
+                <Stars className="w-4 h-4 sm:w-5 sm:h-5 text-white/90 animate-pulse" style={{ animationDuration: '2s' }} />
                 <div className="absolute inset-0 animate-ping">
-                  <Stars className="w-5 h-5 text-white/30" />
+                  <Stars className="w-4 h-4 sm:w-5 sm:h-5 text-white/30" />
                 </div>
               </div>
-              <span className="text-sm font-bold text-white/90 tracking-widest uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+              <span className="text-xs sm:text-sm font-bold text-white/90 tracking-wider uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
                 Professional AI Engineering
               </span>
-              <div className="w-2 h-2 bg-gradient-to-r from-white to-white/60 rounded-full animate-pulse group-hover:animate-bounce" />
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gradient-to-r from-white to-white/60 rounded-full animate-pulse group-hover:animate-bounce-gentle" />
             </div>
           </div>
           
           {/* Main Headline with Enhanced Typography */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight tracking-tight">
-            <span className="inline-block text-white mb-2 animate-slide-up">Craft Perfect</span><br />
-            <span className="inline-block bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent animate-slide-up filter drop-shadow-lg" style={{ animationDelay: '0.2s' }}>
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 md:mb-8 leading-tight tracking-tight">
+            <span className="inline-block text-white mb-1 sm:mb-2 animate-slide-up">Craft Perfect</span><br />
+            <span className="inline-block bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent animate-slide-up filter drop-shadow-lg" style={{ animationDelay: '0.2s' }}>
               AI Prompts
             </span>
             {/* Decorative line */}
-            <div className="mx-auto mt-4 w-24 h-1 bg-gradient-to-r from-transparent via-white/60 to-transparent rounded-full animate-fade-in" style={{ animationDelay: '0.8s' }} />
+            <div className="mx-auto mt-2 sm:mt-4 w-16 sm:w-24 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-white/60 to-transparent rounded-full animate-fade-in" style={{ animationDelay: '0.8s' }} />
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl lg:text-xl text-white/80 max-w-2xl lg:max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light px-4 sm:px-0">
-            Transform your ideas into precision-engineered prompts that unlock the full potential of any AI model.
+          <p className="text-sm xs:text-base sm:text-lg md:text-xl text-white/80 max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto mb-6 sm:mb-8 md:mb-10 leading-relaxed font-light px-2 sm:px-4">
+            Transform your ideas into precision-engineered prompts that unlock the full potential of any AI model. Works in 50+ languages with smart voice input.
           </p>
           
           {/* Enhanced CTA Section */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-2">
             <Button 
-              variant="premium" 
+              variant="default"
               size="lg" 
-              className="relative bg-white text-black hover:bg-zinc-100 hover:shadow-2xl group text-lg px-12 py-4 h-16 rounded-2xl font-bold overflow-hidden border-2 border-white/20 transition-all duration-300 hover:scale-105"
+              className="relative w-full sm:w-auto bg-gradient-primary text-white hover:shadow-glow group text-sm sm:text-base md:text-lg px-6 sm:px-8 md:px-12 py-3 sm:py-4 h-12 sm:h-14 md:h-16 rounded-xl sm:rounded-2xl font-bold overflow-hidden border-2 border-primary/20 transition-all duration-300 hover:scale-105 touch-manipulation"
               onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}
             >
               {/* Button glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer" />
               
-              <div className="relative flex items-center gap-3">
-                <div className="p-1 rounded-lg bg-black/10 group-hover:bg-black/20 transition-colors">
-                  <Palette className="w-5 h-5 group-hover:animate-spin transition-transform duration-700" />
+              <div className="relative flex items-center justify-center gap-2 sm:gap-3">
+                <div className="p-1 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
+                  <Brain className="w-4 h-4 sm:w-5 sm:h-5 group-hover:animate-pulse transition-transform duration-700" />
                 </div>
-                <span>Start Crafting</span>
-                <ArrowRight className="w-5 h-5 transition-all duration-300 group-hover:translate-x-2 group-hover:scale-110" />
+                <span className="whitespace-nowrap">Start Crafting</span>
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300 group-hover:translate-x-1 group-hover:scale-110" />
               </div>
             </Button>
-            
           </div>
         </div>
       </section>
 
       {/* Workflow Steps */}
-      <section className="py-20 sm:py-24 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 animate-fade-in px-4 sm:px-0">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
+        <div className="container-responsive">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4 animate-fade-in">
               Engineering Process
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground animate-fade-in px-4 sm:px-0 max-w-2xl mx-auto" style={{ animationDelay: '0.1s' }}>
+            <p className="text-sm xs:text-base sm:text-lg text-muted-foreground animate-fade-in max-w-xl sm:max-w-2xl mx-auto px-2" style={{ animationDelay: '0.1s' }}>
               Five steps to transform your vision into AI-ready instructions
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-4 xl:gap-6">
             {WORKFLOW_STEPS.map((step, index) => (
               <div 
                 key={step.number} 
                 className="relative group animate-slide-up"
-                style={{ animationDelay: `${index * 150}ms` }}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Card className="h-full bg-gradient-card shadow-md hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 border-0 overflow-hidden group-hover:scale-105">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-md group-hover:animate-float">
-                        <span className="text-lg font-bold text-white">{step.number}</span>
+                <Card className="h-full bg-gradient-card shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 border border-border/30 overflow-hidden group-hover:scale-[1.02] sm:group-hover:scale-105 touch-manipulation">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex flex-col xs:flex-row lg:flex-col items-start xs:items-center lg:items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-primary flex items-center justify-center shadow-md group-hover:animate-bounce-gentle flex-shrink-0">
+                        <span className="text-base sm:text-lg font-bold text-white">{step.number}</span>
                       </div>
                       {index < WORKFLOW_STEPS.length - 1 && (
-                        <div className="hidden lg:block flex-1 h-px bg-gradient-to-r from-border via-border/60 to-transparent" />
+                        <div className="hidden lg:block flex-1 h-px bg-gradient-to-r from-primary/30 via-primary/60 to-transparent" />
                       )}
                     </div>
-                    <h3 className="font-bold text-base sm:text-lg mb-2 sm:mb-3 text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
+                    <h3 className="font-bold text-sm sm:text-base lg:text-lg mb-2 text-foreground group-hover:text-primary transition-colors leading-tight">{step.title}</h3>
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                   </CardContent>
                 </Card>
@@ -731,50 +730,50 @@ export const PromptEngineer = () => {
       </section>
 
       {/* Main Tool */}
-      <section id="tool-selector" className="py-20 sm:py-24 px-4">
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-card shadow-elegant border-0 animate-scale-in overflow-hidden">
-            <div className="p-8 sm:p-12">
-              <div className="text-center mb-10">
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 px-4 sm:px-0">
+      <section id="tool-selector" className="py-12 sm:py-16 md:py-20 lg:py-24">
+        <div className="container-responsive">
+          <Card className="bg-gradient-card shadow-xl border border-border/30 animate-scale-in overflow-hidden max-w-5xl mx-auto">
+            <div className="p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12">
+              <div className="text-center mb-6 sm:mb-8 md:mb-10">
+                <h3 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
                   Select Your AI Platform
                 </h3>
-                <p className="text-base sm:text-lg text-muted-foreground px-4 sm:px-0 max-w-2xl mx-auto">
+                <p className="text-sm xs:text-base sm:text-lg text-muted-foreground max-w-xl sm:max-w-2xl mx-auto px-2">
                   Choose the AI tool you want to create optimized prompts for
                 </p>
               </div>
 
               {/* Tool Selection */}
-              <div className="mb-10">
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+              <div className="mb-6 sm:mb-8 md:mb-10">
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
                   {AI_TOOLS.map((tool) => {
                     const Icon = tool.icon;
                     return (
                       <button
                         key={tool.id}
-                        className={`group relative flex flex-col items-center gap-3 p-6 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                        className={`group relative flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 hover:shadow-lg min-h-[80px] sm:min-h-[120px] touch-manipulation ${
                           selectedTool === tool.id 
-                            ? 'bg-gradient-primary text-white border-primary shadow-glow scale-105' 
-                            : 'bg-background border-border/30 hover:border-primary/30 hover:shadow-md'
+                            ? 'bg-gradient-primary text-white border-primary shadow-glow scale-[1.02] sm:scale-105' 
+                            : 'bg-background border-border/50 hover:border-primary/40 hover:shadow-md hover:bg-primary/5'
                         }`}
                         onClick={() => setSelectedTool(tool.id)}
                       >
-                        <div className={`p-3 rounded-xl transition-all duration-300 ${
+                        <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all duration-300 ${
                           selectedTool === tool.id 
-                            ? 'bg-white/20 group-hover:animate-pulse' 
-                            : 'bg-primary/5 group-hover:bg-primary/10'
+                            ? 'bg-white/20 group-hover:animate-bounce-gentle' 
+                            : 'bg-primary/10 group-hover:bg-primary/20'
                         }`}>
-                          <Icon className={`w-6 h-6 transition-colors ${
+                          <Icon className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-colors ${
                             selectedTool === tool.id ? 'text-white' : 'text-primary'
                           }`} />
                         </div>
-                        <div className="text-center">
-                          <span className={`text-xs sm:text-sm font-bold block ${
+                        <div className="text-center flex-1">
+                          <span className={`text-xs sm:text-sm font-bold block leading-tight ${
                             selectedTool === tool.id ? 'text-white' : 'text-foreground'
                           }`}>
                             {tool.name}
                           </span>
-                          <span className={`text-xs mt-1 hidden md:block ${
+                          <span className={`text-xs mt-1 hidden sm:block leading-tight ${
                             selectedTool === tool.id ? 'text-white/80' : 'text-muted-foreground'
                           }`}>
                             {tool.description}
@@ -782,7 +781,7 @@ export const PromptEngineer = () => {
                         </div>
                         {selectedTool === tool.id && (
                           <div className="absolute -top-1 -right-1">
-                            <div className="w-3 h-3 bg-white rounded-full animate-pulse-subtle shadow-md" />
+                            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full animate-pulse-subtle shadow-md" />
                           </div>
                         )}
                       </button>
@@ -792,14 +791,17 @@ export const PromptEngineer = () => {
               </div>
 
               {/* Input Area with Voice Support */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4 px-4 sm:px-0">
-                  <h3 className="text-lg sm:text-xl font-bold text-foreground">
+              <div className="mb-6 sm:mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                  <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground">
                     Describe Your Vision
                   </h3>
-                  <div className="flex items-center gap-2">
-                    <Languages className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground">50+ Languages</span>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Languages className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                    <span className="text-xs sm:text-sm text-muted-foreground font-medium">50+ Languages</span>
+                    <div className="w-1 h-1 bg-primary rounded-full animate-pulse" />
+                    <Mic className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                    <span className="text-xs sm:text-sm text-muted-foreground font-medium">Voice Input</span>
                   </div>
                 </div>
                 
@@ -808,40 +810,41 @@ export const PromptEngineer = () => {
                     placeholder="What would you like the AI to accomplish? Speak or type in any language - I'll auto-detect and enhance your prompt..."
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
-                    className="min-h-[140px] bg-background/50 backdrop-blur border-2 border-border/30 focus:border-primary/50 resize-none text-base rounded-2xl shadow-inner focus:shadow-md transition-all duration-300 p-6 pr-20"
-                    rows={6}
+                    className="min-h-[120px] sm:min-h-[140px] bg-background/70 backdrop-blur border-2 border-border/40 focus:border-primary/60 resize-none text-sm sm:text-base rounded-xl sm:rounded-2xl shadow-inner focus:shadow-lg transition-all duration-300 p-4 sm:p-6 pr-12 sm:pr-20 touch-manipulation"
+                    rows={5}
                   />
                   
                   {/* Voice Input Button */}
-                  <div className="absolute top-4 right-4 flex flex-col gap-2">
+                  <div className="absolute top-3 sm:top-4 right-3 sm:right-4 flex flex-col gap-2">
                     <Button
                       variant={isRecording ? "destructive" : "secondary"}
                       size="sm"
                       onClick={isRecording ? stopVoiceInput : startVoiceInput}
-                      className="h-10 w-10 p-0 rounded-full shadow-md hover:scale-105 transition-all duration-300"
+                      className="h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-full shadow-md hover:scale-110 transition-all duration-300 touch-manipulation"
                       disabled={isProcessingVoice}
                     >
                       {isProcessingVoice ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
                       ) : isRecording ? (
-                        <MicOff className="w-4 h-4 animate-pulse text-white" />
+                        <MicOff className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse text-white" />
                       ) : (
-                        <Mic className="w-4 h-4" />
+                        <Mic className="w-3 h-3 sm:w-4 sm:h-4" />
                       )}
                     </Button>
                   </div>
                   
                   {/* Character count and language indicator */}
-                  <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                  <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 flex flex-wrap items-center gap-1 sm:gap-2">
                     {detectedLanguage && (
                       <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
-                        <Globe className="w-3 h-3 mr-1" />
-                        {detectedLanguage}
+                        <Globe className="w-2 h-2 sm:w-3 sm:h-3 mr-1" />
+                        <span className="hidden xs:inline">{detectedLanguage}</span>
+                        <span className="xs:hidden">{detectedLanguage.substring(0, 3)}</span>
                       </Badge>
                     )}
                     {userInput.length > 0 && (
-                      <Badge className="bg-primary/90 text-primary-foreground shadow-md">
-                        {userInput.length} chars
+                      <Badge className="bg-primary/90 text-primary-foreground shadow-md text-xs">
+                        {userInput.length}
                       </Badge>
                     )}
                   </div>
@@ -849,16 +852,16 @@ export const PromptEngineer = () => {
 
                 {/* Voice Recording Status */}
                 {isRecording && (
-                  <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl animate-pulse">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-                      <span className="text-red-600 dark:text-red-400 font-medium">
+                  <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg sm:rounded-xl animate-pulse">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
+                      <span className="text-red-600 dark:text-red-400 font-medium text-sm sm:text-base">
                         🎤 Listening... Speak in any language
                       </span>
-                      <Volume2 className="w-4 h-4 text-red-500 animate-bounce" />
+                      <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 animate-bounce-gentle flex-shrink-0" />
                     </div>
                     {voiceTranscript && (
-                      <p className="text-red-700 dark:text-red-300 mt-2 text-sm italic">
+                      <p className="text-red-700 dark:text-red-300 mt-2 text-xs sm:text-sm italic break-words">
                         "{voiceTranscript}"
                       </p>
                     )}
@@ -867,10 +870,10 @@ export const PromptEngineer = () => {
 
                 {/* Voice Processing Status */}
                 {isProcessingVoice && (
-                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-                      <span className="text-blue-600 dark:text-blue-400 font-medium">
+                  <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg sm:rounded-xl">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin text-blue-500 flex-shrink-0" />
+                      <span className="text-blue-600 dark:text-blue-400 font-medium text-sm sm:text-base">
                         🧠 Processing your voice input with AI intelligence...
                       </span>
                     </div>
