@@ -9,44 +9,45 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 280 15% 15%;
+    --foreground: 0 0% 9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 280 15% 15%;
+    --card-foreground: 0 0% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 280 15% 15%;
+    --popover-foreground: 0 0% 9%;
 
-    --primary: 280 100% 70%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 320 100% 80%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 0 0% 20%;
 
-    --secondary: 280 20% 95%;
-    --secondary-foreground: 280 15% 25%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 280 10% 96%;
-    --muted-foreground: 280 8% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 300 100% 75%;
-    --accent-foreground: 0 0% 100%;
-    --accent-glow: 320 100% 85%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+    --accent-glow: 0 0% 25%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 280 15% 90%;
-    --input: 280 10% 94%;
-    --ring: 280 100% 70%;
+    --border: 0 0% 90%;
+    --input: 0 0% 94%;
+    --ring: 0 0% 9%;
 
-    /* Purple gradient matching the reference */
-    --gradient-primary: linear-gradient(135deg, hsl(280 100% 70%), hsl(320 100% 80%));
-    --gradient-accent: linear-gradient(135deg, hsl(300 100% 75%), hsl(320 100% 85%));
-    --gradient-bg: linear-gradient(135deg, hsl(280 100% 70%), hsl(320 100% 80%));
-    --gradient-hero: linear-gradient(135deg, hsl(280 100% 65%) 0%, hsl(300 100% 70%) 50%, hsl(320 100% 75%) 100%);
+    /* Luxury gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(0 0% 9%), hsl(0 0% 20%));
+    --gradient-accent: linear-gradient(135deg, hsl(0 0% 15%), hsl(0 0% 25%));
+    --gradient-bg: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 9%) 0%, hsl(0 0% 15%) 50%, hsl(0 0% 9%) 100%);
     
-    /* Glowing shadows */
-    --shadow-glow: 0 0 60px hsl(var(--primary-glow) / 0.4);
-    --shadow-accent: 0 0 40px hsl(var(--accent-glow) / 0.3);
+    /* Luxury shadows */
+    --shadow-glow: 0 0 60px hsl(0 0% 0% / 0.3);
+    --shadow-accent: 0 0 40px hsl(0 0% 0% / 0.2);
+    --shadow-luxury: 0 25px 50px -12px hsl(0 0% 0% / 0.25);
 
     --radius: 0.5rem;
 
@@ -68,45 +69,46 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 340 30% 8%;
-    --foreground: 340 50% 95%;
+    --background: 0 0% 9%;
+    --foreground: 0 0% 98%;
 
-    --card: 340 25% 12%;
-    --card-foreground: 340 50% 95%;
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 340 30% 8%;
-    --popover-foreground: 340 50% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 330 81% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
 
-    --secondary: 340 20% 18%;
-    --secondary-foreground: 340 50% 95%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 340 20% 18%;
-    --muted-foreground: 340 30% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 320 65% 70%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 25%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 340 20% 18%;
-    --input: 340 20% 18%;
-    --ring: 330 81% 60%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 98%;
 
-    /* Update gradients for dark mode */
-    --gradient-bg: linear-gradient(135deg, hsl(340 30% 8%), hsl(340 25% 12%));
+    /* Dark luxury gradients */
+    --gradient-bg: linear-gradient(135deg, hsl(0 0% 9%), hsl(0 0% 12%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 9%) 0%, hsl(0 0% 15%) 50%, hsl(0 0% 9%) 100%);
 
-    --sidebar-background: 340 30% 8%;
-    --sidebar-foreground: 340 50% 95%;
-    --sidebar-primary: 330 81% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 340 20% 18%;
-    --sidebar-accent-foreground: 340 50% 95%;
-    --sidebar-border: 340 20% 18%;
-    --sidebar-ring: 330 81% 60%;
+    --sidebar-background: 0 0% 9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 9%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 98%;
   }
 }
 
