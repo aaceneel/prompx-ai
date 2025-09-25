@@ -85,43 +85,88 @@ export const PromptEngineer = () => {
     <div className="min-h-screen bg-gradient-bg">
       {/* Hero Section */}
       <section className="relative py-20 sm:py-24 lg:py-32 px-4 text-center bg-gradient-hero overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),rgba(255,255,255,0))]" />
-          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_35%,rgba(255,255,255,0.05)_50%,transparent_65%)]" />
+        {/* Animated Background Layers */}
+        <div className="absolute inset-0">
+          {/* Primary gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-zinc-900 to-black" />
+          
+          {/* Animated geometric patterns */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-l from-white/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
+          </div>
+          
+          {/* Moving grid pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.1)_50%,transparent_100%)] animate-pulse" style={{ animationDuration: '8s' }} />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_0%,rgba(255,255,255,0.05)_50%,transparent_100%)] animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
+          </div>
+          
+          {/* Subtle noise texture */}
+          <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-[radial-gradient(circle_at_30%_70%,rgba(255,255,255,0.1),rgba(255,255,255,0.02),rgba(255,255,255,0))]" />
+          
+          {/* Edge vignette */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_70%,rgba(0,0,0,0.4)_100%)]" />
         </div>
         
         <div className="max-w-5xl mx-auto relative z-10 animate-fade-in">
-          <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 mb-8 shadow-lg">
-            <div className="flex items-center gap-2">
-              <Stars className="w-4 h-4 text-white/90 animate-pulse-subtle" />
-              <span className="text-sm font-semibold text-white/90 tracking-wider">PROFESSIONAL AI ENGINEERING</span>
+          {/* Premium Badge */}
+          <div className="inline-flex items-center gap-3 bg-black/30 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 mb-8 shadow-2xl hover:bg-black/40 transition-all duration-300 group">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Stars className="w-5 h-5 text-white/90 animate-pulse" style={{ animationDuration: '2s' }} />
+                <div className="absolute inset-0 animate-ping">
+                  <Stars className="w-5 h-5 text-white/30" />
+                </div>
+              </div>
+              <span className="text-sm font-bold text-white/90 tracking-widest uppercase bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+                Professional AI Engineering
+              </span>
+              <div className="w-2 h-2 bg-gradient-to-r from-white to-white/60 rounded-full animate-pulse group-hover:animate-bounce" />
             </div>
           </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 sm:mb-8 leading-tight tracking-tight">
-            Craft Perfect<br />
-            <span className="bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">AI Prompts</span>
+          {/* Main Headline with Enhanced Typography */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight tracking-tight">
+            <span className="inline-block text-white mb-2 animate-slide-up">Craft Perfect</span><br />
+            <span className="inline-block bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent animate-slide-up filter drop-shadow-lg" style={{ animationDelay: '0.2s' }}>
+              AI Prompts
+            </span>
+            {/* Decorative line */}
+            <div className="mx-auto mt-4 w-24 h-1 bg-gradient-to-r from-transparent via-white/60 to-transparent rounded-full animate-fade-in" style={{ animationDelay: '0.8s' }} />
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl lg:text-xl text-white/80 max-w-2xl lg:max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light px-4 sm:px-0">
             Transform your ideas into precision-engineered prompts that unlock the full potential of any AI model.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          {/* Enhanced CTA Section */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Button 
               variant="premium" 
               size="lg" 
-              className="bg-white/95 text-primary hover:bg-white hover:shadow-elegant group text-lg px-10 py-4 h-14"
+              className="relative bg-white text-black hover:bg-zinc-100 hover:shadow-2xl group text-lg px-12 py-4 h-16 rounded-2xl font-bold overflow-hidden border-2 border-white/20 transition-all duration-300 hover:scale-105"
               onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <Palette className="w-5 h-5 mr-2 group-hover:animate-pulse" />
-              <span className="font-bold">Start Crafting</span>
-              <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+              {/* Button glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+              
+              <div className="relative flex items-center gap-3">
+                <div className="p-1 rounded-lg bg-black/10 group-hover:bg-black/20 transition-colors">
+                  <Palette className="w-5 h-5 group-hover:animate-spin transition-transform duration-700" />
+                </div>
+                <span>Start Crafting</span>
+                <ArrowRight className="w-5 h-5 transition-all duration-300 group-hover:translate-x-2 group-hover:scale-110" />
+              </div>
             </Button>
-            <div className="flex items-center gap-2 text-white/70 text-sm font-medium">
-              <Brain className="w-4 h-4" />
-              <span>Powered by Advanced AI Engineering</span>
+            
+            {/* Enhanced Info Badge */}
+            <div className="flex items-center gap-3 bg-black/20 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 text-white/80 text-sm font-medium hover:bg-black/30 transition-all duration-300 group">
+              <Brain className="w-4 h-4 group-hover:animate-pulse" />
+              <span className="bg-gradient-to-r from-white/80 to-white/60 bg-clip-text text-transparent">
+                Powered by Advanced AI Engineering
+              </span>
+              <div className="w-2 h-2 bg-white/40 rounded-full animate-pulse" />
             </div>
           </div>
         </div>
