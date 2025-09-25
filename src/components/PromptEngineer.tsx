@@ -1,11 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen, ArrowRight, Stars, Palette, Brain } from "lucide-react";
+import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen, ArrowRight, Stars, Palette, Brain, Mic, MicOff, Volume2, Globe, Languages, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PromptGenerator, type PromptTemplate } from "@/lib/promptGenerator";
+
+// Language detection and translation
+const detectLanguage = async (text: string): Promise<string> => {
+  try {
+    const { franc } = await import('franc');
+    const detectedLang = franc(text);
+    
+    // Map franc language codes to common names
+    const langMap: { [key: string]: string } = {
+      'eng': 'English', 'spa': 'Spanish', 'fra': 'French', 'deu': 'German', 'ita': 'Italian',
+      'por': 'Portuguese', 'rus': 'Russian', 'jpn': 'Japanese', 'kor': 'Korean', 'cmn': 'Chinese',
+      'ara': 'Arabic', 'hin': 'Hindi', 'ben': 'Bengali', 'urd': 'Urdu', 'tur': 'Turkish',
+      'vie': 'Vietnamese', 'tha': 'Thai', 'nld': 'Dutch', 'pol': 'Polish', 'ukr': 'Ukrainian',
+      'ces': 'Czech', 'hun': 'Hungarian', 'ron': 'Romanian', 'bul': 'Bulgarian', 'hrv': 'Croatian',
+      'srp': 'Serbian', 'slk': 'Slovak', 'slv': 'Slovenian', 'lit': 'Lithuanian', 'lav': 'Latvian',
+      'est': 'Estonian', 'fin': 'Finnish', 'swe': 'Swedish', 'nor': 'Norwegian', 'dan': 'Danish',
+      'isl': 'Icelandic', 'ell': 'Greek', 'heb': 'Hebrew', 'fas': 'Persian', 'cat': 'Catalan',
+      'eus': 'Basque', 'glg': 'Galician', 'gle': 'Irish', 'cym': 'Welsh', 'sco': 'Scots',
+      'afr': 'Afrikaans', 'amh': 'Amharic', 'hau': 'Hausa', 'ibo': 'Igbo', 'yor': 'Yoruba',
+      'swa': 'Swahili', 'som': 'Somali', 'orm': 'Oromo', 'tir': 'Tigrinya', 'zul': 'Zulu'
+    };
+    
+    return langMap[detectedLang] || 'Unknown';
+  } catch (error) {
+    return 'English';
+  }
+};
 
 const AI_TOOLS = [
   { id: 'text', name: 'Text AI', icon: MessageSquare, description: 'ChatGPT, Claude, Gemini' },
@@ -33,7 +60,99 @@ export const PromptEngineer = () => {
   const [enhancedInput, setEnhancedInput] = useState('');
   const [inputEnhancements, setInputEnhancements] = useState<string[]>([]);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  
+  // Voice and language features
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessingVoice, setIsProcessingVoice] = useState(false);
+  const [detectedLanguage, setDetectedLanguage] = useState<string>('');
+  const [voiceTranscript, setVoiceTranscript] = useState('');
+  const [supportedLanguages, setSupportedLanguages] = useState<string[]>([]);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const { toast } = useToast();
+
+  // Initialize voice recognition on component mount
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      
+      // Configure for maximum language detection
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.maxAlternatives = 5;
+      
+      // Get supported languages
+      const languages = [
+        'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 'pt-BR', 'ru-RU', 'ja-JP', 'ko-KR', 'zh-CN',
+        'ar-SA', 'hi-IN', 'bn-BD', 'ur-PK', 'tr-TR', 'vi-VN', 'th-TH', 'nl-NL', 'pl-PL', 'uk-UA',
+        'cs-CZ', 'hu-HU', 'ro-RO', 'bg-BG', 'hr-HR', 'sr-RS', 'sk-SK', 'sl-SI', 'lt-LT', 'lv-LV',
+        'et-EE', 'fi-FI', 'sv-SE', 'no-NO', 'da-DK', 'is-IS', 'el-GR', 'he-IL', 'fa-IR', 'ca-ES',
+        'eu-ES', 'gl-ES', 'ga-IE', 'cy-GB', 'af-ZA', 'am-ET', 'ha-NG', 'ig-NG', 'yo-NG',
+        'sw-KE', 'so-SO', 'om-ET', 'ti-ET', 'zu-ZA'
+      ];
+      setSupportedLanguages(languages);
+      
+      recognitionRef.current.onstart = () => {
+        setIsListening(true);
+        setIsRecording(true);
+      };
+      
+      recognitionRef.current.onresult = async (event: any) => {
+        let transcript = '';
+        let isFinal = false;
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i];
+          transcript += result[0].transcript;
+          if (result.isFinal) {
+            isFinal = true;
+          }
+        }
+        
+        setVoiceTranscript(transcript);
+        
+        if (isFinal && transcript.trim()) {
+          setIsProcessingVoice(true);
+          
+          // Detect language
+          const language = await detectLanguage(transcript);
+          setDetectedLanguage(language);
+          
+          // Auto-enhance the voice input
+          const { enhanced, improvements } = await enhanceUserInput(transcript);
+          setUserInput(enhanced);
+          
+          if (improvements.length > 0) {
+            toast({
+              title: `Voice Input Processed! (${language})`,
+              description: `Applied ${improvements.length} enhancement${improvements.length > 1 ? 's' : ''} to your voice input`,
+            });
+          }
+          
+          setIsProcessingVoice(false);
+        }
+      };
+      
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsRecording(false);
+        setIsListening(false);
+        setIsProcessingVoice(false);
+        
+        toast({
+          title: "Voice Input Error",
+          description: "Please try again or check microphone permissions",
+          variant: "destructive",
+        });
+      };
+      
+      recognitionRef.current.onend = () => {
+        setIsRecording(false);
+        setIsListening(false);
+      };
+    }
+  }, []);
 
   const handleCopy = async (text: string, index: number) => {
     try {
@@ -53,7 +172,48 @@ export const PromptEngineer = () => {
     }
   };
 
-  const detectUserIntent = (input: string): { 
+  const startVoiceInput = async () => {
+    if (!recognitionRef.current) {
+      toast({
+        title: "Voice Input Not Supported",
+        description: "Your browser doesn't support voice input",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      // Request microphone permission
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // Auto-detect language or use browser language
+      const browserLang = navigator.language || 'en-US';
+      recognitionRef.current.lang = browserLang;
+      
+      setVoiceTranscript('');
+      setDetectedLanguage('');
+      recognitionRef.current.start();
+      
+      toast({
+        title: "🎤 Voice Input Started",
+        description: "Speak your prompt in any language...",
+      });
+    } catch (error) {
+      toast({
+        title: "Microphone Access Denied",
+        description: "Please allow microphone access to use voice input",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopVoiceInput = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  };
+
+  const detectUserIntent = (input: string): {
     intent: string; 
     domain: string; 
     style: string; 
@@ -123,6 +283,15 @@ export const PromptEngineer = () => {
     let enhanced = input.trim();
 
     if (!enhanced) return { enhanced, improvements };
+
+    // Detect language first
+    const language = await detectLanguage(enhanced);
+    if (language !== 'English' && language !== 'Unknown') {
+      improvements.push(`Detected ${language} input`);
+    }
+
+    // Advanced multilingual processing
+    enhanced = await processMultilingualInput(enhanced, language, improvements);
 
     // Detect user intent and context
     const analysis = detectUserIntent(enhanced);
@@ -281,6 +450,96 @@ export const PromptEngineer = () => {
     }
 
     return { enhanced, improvements };
+  };
+
+  const processMultilingualInput = async (input: string, language: string, improvements: string[]): Promise<string> => {
+    let processed = input;
+
+    // Handle different languages with specific optimizations
+    if (language !== 'English' && language !== 'Unknown') {
+      // Translate common non-English phrases to English for better AI processing
+      const commonTranslations: { [key: string]: { [key: string]: string } } = {
+        'Spanish': {
+          'crear': 'create', 'hacer': 'make', 'generar': 'generate', 'escribir': 'write',
+          'diseñar': 'design', 'ayudar': 'help', 'explicar': 'explain', 'mejorar': 'improve'
+        },
+        'French': {
+          'créer': 'create', 'faire': 'make', 'générer': 'generate', 'écrire': 'write',
+          'concevoir': 'design', 'aider': 'help', 'expliquer': 'explain', 'améliorer': 'improve'
+        },
+        'German': {
+          'erstellen': 'create', 'machen': 'make', 'generieren': 'generate', 'schreiben': 'write',
+          'entwerfen': 'design', 'helfen': 'help', 'erklären': 'explain', 'verbessern': 'improve'
+        },
+        'Italian': {
+          'creare': 'create', 'fare': 'make', 'generare': 'generate', 'scrivere': 'write',
+          'progettare': 'design', 'aiutare': 'help', 'spiegare': 'explain', 'migliorare': 'improve'
+        },
+        'Portuguese': {
+          'criar': 'create', 'fazer': 'make', 'gerar': 'generate', 'escrever': 'write',
+          'projetar': 'design', 'ajudar': 'help', 'explicar': 'explain', 'melhorar': 'improve'
+        },
+        'Russian': {
+          'создать': 'create', 'сделать': 'make', 'генерировать': 'generate', 'писать': 'write',
+          'проектировать': 'design', 'помочь': 'help', 'объяснить': 'explain', 'улучшить': 'improve'
+        },
+        'Japanese': {
+          '作成': 'create', '作る': 'make', '生成': 'generate', '書く': 'write',
+          '設計': 'design', '手伝う': 'help', '説明': 'explain', '改善': 'improve'
+        },
+        'Chinese': {
+          '创建': 'create', '制作': 'make', '生成': 'generate', '写': 'write',
+          '设计': 'design', '帮助': 'help', '解释': 'explain', '改进': 'improve'
+        },
+        'Korean': {
+          '만들다': 'create', '하다': 'make', '생성': 'generate', '쓰다': 'write',
+          '디자인': 'design', '돕다': 'help', '설명': 'explain', '개선': 'improve'
+        },
+        'Arabic': {
+          'إنشاء': 'create', 'صنع': 'make', 'توليد': 'generate', 'كتابة': 'write',
+          'تصميم': 'design', 'مساعدة': 'help', 'شرح': 'explain', 'تحسين': 'improve'
+        },
+        'Hindi': {
+          'बनाना': 'create', 'करना': 'make', 'उत्पन्न': 'generate', 'लिखना': 'write',
+          'डिज़ाइन': 'design', 'मदद': 'help', 'समझाना': 'explain', 'सुधार': 'improve'
+        }
+      };
+
+      const translations = commonTranslations[language];
+      if (translations) {
+        Object.entries(translations).forEach(([original, translation]) => {
+          const regex = new RegExp(`\\b${original}\\b`, 'gi');
+          if (regex.test(processed)) {
+            processed = processed.replace(regex, translation);
+            improvements.push(`Translated "${original}" to "${translation}"`);
+          }
+        });
+      }
+
+      // Add multilingual context
+      processed = `${processed} Please provide response optimized for ${language} context and cultural nuances.`;
+      improvements.push(`Added ${language} cultural context`);
+    }
+
+    // Enhanced smart content detection across languages
+    const universalPatterns = [
+      { pattern: /\b(website|site|web|página|site web|веб-сайт|ウェブサイト|网站)\b/i, context: 'web development' },
+      { pattern: /\b(app|application|aplicación|приложение|アプリ|应用)\b/i, context: 'mobile application' },
+      { pattern: /\b(business|negocio|entreprise|geschäft|бизнес|ビジネス|商业)\b/i, context: 'business strategy' },
+      { pattern: /\b(marketing|mercadotecnia|маркетинг|マーケティング|营销)\b/i, context: 'marketing campaign' },
+      { pattern: /\b(design|diseño|conception|дизайн|デザイン|设计)\b/i, context: 'creative design' },
+      { pattern: /\b(code|código|code|код|コード|代码)\b/i, context: 'programming' },
+      { pattern: /\b(AI|IA|人工知能|人工智能|искусственный интеллект)\b/i, context: 'artificial intelligence' }
+    ];
+
+    universalPatterns.forEach(({ pattern, context }) => {
+      if (pattern.test(processed) && !processed.toLowerCase().includes(context)) {
+        processed = `${processed} Focus on ${context} best practices.`;
+        improvements.push(`Added ${context} context`);
+      }
+    });
+
+    return processed;
   };
 
   const generatePrompts = async () => {
@@ -532,27 +791,91 @@ export const PromptEngineer = () => {
                 </div>
               </div>
 
-              {/* Input Area */}
+              {/* Input Area with Voice Support */}
               <div className="mb-8">
-                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-4 px-4 sm:px-0">
-                  Describe Your Vision
-                </h3>
+                <div className="flex items-center justify-between mb-4 px-4 sm:px-0">
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">
+                    Describe Your Vision
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <Languages className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">50+ Languages</span>
+                  </div>
+                </div>
+                
                 <div className="relative">
                   <Textarea
-                    placeholder="What would you like the AI to accomplish? Describe your goal, the context, and any specific requirements..."
+                    placeholder="What would you like the AI to accomplish? Speak or type in any language - I'll auto-detect and enhance your prompt..."
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
-                    className="min-h-[140px] bg-background/50 backdrop-blur border-2 border-border/30 focus:border-primary/50 resize-none text-base rounded-2xl shadow-inner focus:shadow-md transition-all duration-300 p-6"
+                    className="min-h-[140px] bg-background/50 backdrop-blur border-2 border-border/30 focus:border-primary/50 resize-none text-base rounded-2xl shadow-inner focus:shadow-md transition-all duration-300 p-6 pr-20"
                     rows={6}
                   />
-                  {userInput.length > 0 && (
-                    <div className="absolute bottom-4 right-4">
+                  
+                  {/* Voice Input Button */}
+                  <div className="absolute top-4 right-4 flex flex-col gap-2">
+                    <Button
+                      variant={isRecording ? "destructive" : "secondary"}
+                      size="sm"
+                      onClick={isRecording ? stopVoiceInput : startVoiceInput}
+                      className="h-10 w-10 p-0 rounded-full shadow-md hover:scale-105 transition-all duration-300"
+                      disabled={isProcessingVoice}
+                    >
+                      {isProcessingVoice ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : isRecording ? (
+                        <MicOff className="w-4 h-4 animate-pulse text-white" />
+                      ) : (
+                        <Mic className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                  
+                  {/* Character count and language indicator */}
+                  <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                    {detectedLanguage && (
+                      <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
+                        <Globe className="w-3 h-3 mr-1" />
+                        {detectedLanguage}
+                      </Badge>
+                    )}
+                    {userInput.length > 0 && (
                       <Badge className="bg-primary/90 text-primary-foreground shadow-md">
                         {userInput.length} chars
                       </Badge>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
+
+                {/* Voice Recording Status */}
+                {isRecording && (
+                  <div className="mt-4 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl animate-pulse">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                      <span className="text-red-600 dark:text-red-400 font-medium">
+                        🎤 Listening... Speak in any language
+                      </span>
+                      <Volume2 className="w-4 h-4 text-red-500 animate-bounce" />
+                    </div>
+                    {voiceTranscript && (
+                      <p className="text-red-700 dark:text-red-300 mt-2 text-sm italic">
+                        "{voiceTranscript}"
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Voice Processing Status */}
+                {isProcessingVoice && (
+                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                      <span className="text-blue-600 dark:text-blue-400 font-medium">
+                        🧠 Processing your voice input with AI intelligence...
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Enhanced Input Preview */}
@@ -607,8 +930,9 @@ export const PromptEngineer = () => {
                   </div>
                 ) : (
                   <div className="flex items-center gap-3">
-                    <Sparkles className="w-6 h-6 group-hover:animate-pulse" />
+                    <Brain className="w-6 h-6 group-hover:animate-pulse" />
                     <span>Generate Perfect AI Prompts</span>
+                    <span className="text-xs opacity-75">(Any Language)</span>
                     <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
                   </div>
                 )}
