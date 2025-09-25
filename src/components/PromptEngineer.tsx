@@ -335,26 +335,47 @@ export const PromptEngineer = () => {
       <section className="relative py-20 sm:py-24 lg:py-32 px-0 text-center bg-gradient-hero overflow-hidden w-full">
         {/* Animated Background Layers */}
         <div className="absolute inset-0">
-          {/* Primary gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-zinc-900 to-black" />
+          {/* Dynamic gradient overlay with movement */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-zinc-900 to-black animate-pulse" style={{ animationDuration: '3s' }} />
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-zinc-800/50 to-transparent animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
           
-          {/* Animated geometric patterns */}
+          {/* Enhanced floating orbs */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl animate-float" style={{ animationDuration: '6s' }} />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-l from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-float" style={{ animationDuration: '8s', animationDelay: '2s' }} />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-cyan-500/15 to-blue-500/15 rounded-full blur-2xl animate-float" style={{ animationDuration: '7s', animationDelay: '3s' }} />
+          </div>
+          
+          {/* Animated particles */}
           <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-white/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-l from-white/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDuration: `${2 + Math.random() * 3}s`,
+                  animationDelay: `${Math.random() * 2}s`
+                }}
+              />
+            ))}
           </div>
           
-          {/* Moving grid pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.1)_50%,transparent_100%)] animate-pulse" style={{ animationDuration: '8s' }} />
-            <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_0%,rgba(255,255,255,0.05)_50%,transparent_100%)] animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
+          {/* Dynamic grid pattern with shimmer */}
+          <div className="absolute inset-0 opacity-15">
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.2)_50%,transparent_100%)] animate-shimmer" style={{ animationDuration: '3s' }} />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_0%,rgba(255,255,255,0.1)_50%,transparent_100%)] animate-shimmer" style={{ animationDuration: '4s', animationDelay: '1.5s' }} />
           </div>
           
-          {/* Subtle noise texture */}
-          <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-[radial-gradient(circle_at_30%_70%,rgba(255,255,255,0.1),rgba(255,255,255,0.02),rgba(255,255,255,0))]" />
+          {/* Breathing light effect */}
+          <div className="absolute inset-0 opacity-40 mix-blend-overlay">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(99,102,241,0.1),rgba(168,85,247,0.05),rgba(255,255,255,0))] animate-pulse" style={{ animationDuration: '4s' }} />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(236,72,153,0.1),rgba(59,130,246,0.05),rgba(255,255,255,0))] animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+          </div>
           
-          {/* Edge vignette */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_70%,rgba(0,0,0,0.4)_100%)]" />
+          {/* Enhanced edge vignette */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_60%,rgba(0,0,0,0.6)_100%)]" />
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10 animate-fade-in px-4">
