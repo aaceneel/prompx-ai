@@ -160,14 +160,6 @@ export const PromptEngineer = () => {
               </div>
             </Button>
             
-            {/* Enhanced Info Badge */}
-            <div className="flex items-center gap-3 bg-black/20 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 text-white/80 text-sm font-medium hover:bg-black/30 transition-all duration-300 group">
-              <Brain className="w-4 h-4 group-hover:animate-pulse" />
-              <span className="bg-gradient-to-r from-white/80 to-white/60 bg-clip-text text-transparent">
-                Powered by Advanced AI Engineering
-              </span>
-              <div className="w-2 h-2 bg-white/40 rounded-full animate-pulse" />
-            </div>
           </div>
         </div>
       </section>
