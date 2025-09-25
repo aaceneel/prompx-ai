@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare } from "lucide-react";
+import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { PromptGenerator, type PromptTemplate } from "@/lib/promptGenerator";
 
 const AI_TOOLS = [
   { id: 'text', name: 'Text AI', icon: MessageSquare, description: 'ChatGPT, Claude, Gemini' },
@@ -25,9 +26,10 @@ const WORKFLOW_STEPS = [
 export const PromptEngineer = () => {
   const [selectedTool, setSelectedTool] = useState<string>('');
   const [userInput, setUserInput] = useState('');
-  const [optimizedPrompts, setOptimizedPrompts] = useState<string[]>([]);
+  const [optimizedPrompts, setOptimizedPrompts] = useState<PromptTemplate[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
 
   const handleCopy = async (text: string, index: number) => {
@@ -51,7 +53,7 @@ export const PromptEngineer = () => {
   const generatePrompts = async () => {
     if (!selectedTool || !userInput.trim()) {
       toast({
-        title: "Missing information",
+        title: "Missing information", 
         description: "Please select an AI tool and enter your request",
         variant: "destructive",
       });
@@ -59,99 +61,80 @@ export const PromptEngineer = () => {
     }
 
     setIsGenerating(true);
+    setShowResults(false);
     
-    // Simulate AI processing (replace with actual AI service)
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Simulate processing time for better UX
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    const mockPrompts = generateMockPrompts(selectedTool, userInput);
-    setOptimizedPrompts(mockPrompts);
+    const generatedPrompts = PromptGenerator.generate(selectedTool, userInput);
+    setOptimizedPrompts(generatedPrompts);
     setIsGenerating(false);
-  };
-
-  const generateMockPrompts = (tool: string, input: string): string[] => {
-    const toolInfo = AI_TOOLS.find(t => t.id === tool);
     
-    switch (tool) {
-      case 'text':
-        return [
-          `You are a professional content strategist. ${input}. Please provide a detailed response with clear structure, actionable insights, and specific examples. Format your response with headers and bullet points for easy reading.`,
-          `Act as an expert in your field. Based on this request: "${input}" - create a comprehensive guide that includes background context, step-by-step instructions, and practical tips. Use a professional yet engaging tone.`,
-          `Transform this idea: "${input}" into a detailed strategy document. Include objectives, methodology, expected outcomes, and next steps. Be specific and actionable.`
-        ];
-      case 'image':
-        return [
-          `Create a photorealistic 8K image of ${input}. Style: cinematic, high contrast, dramatic lighting. Camera: professional DSLR, shallow depth of field. Composition: rule of thirds, dynamic angles. --ar 16:9 --v 6`,
-          `Generate a stunning artistic interpretation of ${input}. Art style: modern digital art, vibrant colors, detailed textures. Mood: inspiring and captivating. Quality: ultra-high resolution, masterpiece level detail.`,
-          `Professional commercial photography of ${input}. Studio lighting setup, clean background, sharp focus on subject. Color grading: warm tones, high saturation. Output: magazine quality, print-ready resolution.`
-        ];
-      case 'code':
-        return [
-          `Create a well-documented, production-ready implementation for: ${input}. Include error handling, type safety, and best practices. Add comments explaining the logic and provide usage examples.`,
-          `Build a robust solution for ${input} using modern development practices. Include unit tests, proper error handling, and clear documentation. Follow industry standards and conventions.`,
-          `Develop a scalable, maintainable codebase for ${input}. Use clean code principles, proper naming conventions, and modular architecture. Include setup instructions and examples.`
-        ];
-      case 'audio':
-        return [
-          `Generate high-quality audio for: ${input}. Voice characteristics: professional, clear articulation, appropriate pace. Audio specs: 44.1kHz, uncompressed. Tone: engaging and natural.`,
-          `Create professional narration for ${input}. Voice style: authoritative yet friendly, perfect pronunciation. Background: studio-quality silence. Format: broadcast-ready audio.`,
-          `Produce premium audio content: ${input}. Vocal delivery: confident, well-paced, emotionally appropriate. Technical specs: crisp, noise-free, optimized levels.`
-        ];
-      case 'video':
-        return [
-          `Create a cinematic video sequence: ${input}. Style: professional cinematography, smooth camera movements, color graded. Duration: 30-60 seconds. Resolution: 4K, 24fps. Mood: engaging and dynamic.`,
-          `Generate a high-impact video for ${input}. Visual style: modern, clean aesthetics, professional lighting. Pacing: dynamic cuts, smooth transitions. Quality: broadcast standard.`,
-          `Produce a compelling video showcasing ${input}. Cinematography: varied shot compositions, professional framing. Post-production: color correction, smooth editing, engaging rhythm.`
-        ];
-      default:
-        return [`Optimized prompt for ${input}`];
-    }
+    // Animate results appearing
+    setTimeout(() => {
+      setShowResults(true);
+      // Scroll to results on mobile
+      document.getElementById('results')?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 100);
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 text-center bg-gradient-hero">
-        <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 mb-6">
+      <section className="relative py-12 sm:py-16 lg:py-20 px-4 text-center bg-gradient-hero overflow-hidden">
+        <div className="max-w-4xl mx-auto animate-fade-in">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 sm:px-4 py-2 mb-4 sm:mb-6">
             <Sparkles className="w-4 h-4 text-white" />
-            <span className="text-sm text-white/90">Professional Prompt Engineering</span>
+            <span className="text-xs sm:text-sm text-white/90">Professional Prompt Engineering</span>
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Transform Vague Ideas into
-            <br />
-            Perfect AI Prompts
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+            Transform Vague Ideas into<br className="hidden sm:block" />
+            <span className="inline sm:block">Perfect AI Prompts</span>
           </h1>
           
-          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
+          <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
             Professional prompt engineering tool that optimizes your requests for ChatGPT, MidJourney, Stable Diffusion, and other AI platforms.
           </p>
           
-          <Button variant="secondary" size="lg" onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}>
-            <Wand2 className="w-5 h-5" />
-            Start Engineering Prompts
+          <Button 
+            variant="secondary" 
+            size="lg" 
+            className="animate-pulse-glow"
+            onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            <Wand2 className="w-4 sm:w-5 h-4 sm:h-5" />
+            <span className="hidden sm:inline">Start Engineering Prompts</span>
+            <span className="sm:hidden">Get Started</span>
           </Button>
         </div>
       </section>
 
       {/* Workflow Steps */}
-      <section className="py-16 px-4">
+      <section className="py-12 sm:py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 animate-fade-in">How It Works</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
             {WORKFLOW_STEPS.map((step, index) => (
-              <Card key={step.number} className="relative border-border bg-card/50 backdrop-blur-sm">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge variant="secondary" className="bg-accent text-accent-foreground">
+              <Card 
+                key={step.number} 
+                className="relative border-border bg-card/50 backdrop-blur-sm hover:bg-card/70 transition-all duration-300 animate-slide-up"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <CardContent className="pt-4 sm:pt-6">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs sm:text-sm">
                       {step.number}
                     </Badge>
                     {index < WORKFLOW_STEPS.length - 1 && (
-                      <div className="hidden md:block absolute top-8 -right-3 w-6 h-px bg-border" />
+                      <div className="hidden lg:block absolute top-6 sm:top-8 -right-3 w-6 h-px bg-border" />
                     )}
                   </div>
-                  <h3 className="font-semibold mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground">{step.description}</p>
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">{step.title}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -160,29 +143,33 @@ export const PromptEngineer = () => {
       </section>
 
       {/* Main Tool */}
-      <section id="tool-selector" className="py-16 px-4">
+      <section id="tool-selector" className="py-12 sm:py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <Card className="border-border bg-card/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">AI Tool Selector</CardTitle>
+          <Card className="border-border bg-card/50 backdrop-blur-sm shadow-lg animate-scale-in">
+            <CardHeader className="pb-4 sm:pb-6">
+              <CardTitle className="text-xl sm:text-2xl text-center">AI Tool Selector</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 sm:space-y-8">
               {/* Tool Selection */}
               <div>
-                <h3 className="text-lg font-semibold mb-4">Select Your Target AI Tool</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Select Your Target AI Tool</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
                   {AI_TOOLS.map((tool) => {
                     const Icon = tool.icon;
                     return (
                       <Button
                         key={tool.id}
                         variant={selectedTool === tool.id ? "gradient" : "outline"}
-                        className={`flex flex-col h-auto p-4 ${selectedTool === tool.id ? 'shadow-glow' : ''}`}
+                        className={`flex flex-col h-auto p-3 sm:p-4 transition-all duration-300 hover:scale-105 ${
+                          selectedTool === tool.id ? 'shadow-glow scale-105' : 'hover:shadow-lg'
+                        }`}
                         onClick={() => setSelectedTool(tool.id)}
                       >
-                        <Icon className="w-8 h-8 mb-2" />
-                        <span className="font-medium">{tool.name}</span>
-                        <span className="text-xs opacity-70">{tool.description}</span>
+                        <Icon className="w-6 sm:w-8 h-6 sm:h-8 mb-1 sm:mb-2" />
+                        <span className="font-medium text-xs sm:text-sm">{tool.name}</span>
+                        <span className="text-xs opacity-70 hidden sm:block text-center leading-tight">
+                          {tool.description}
+                        </span>
                       </Button>
                     );
                   })}
@@ -191,32 +178,45 @@ export const PromptEngineer = () => {
 
               {/* Input Area */}
               <div>
-                <h3 className="text-lg font-semibold mb-4">Enter Your Request</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Enter Your Request</h3>
                 <Textarea
                   placeholder="Enter your vague idea or request here... (e.g., 'make me a video idea' or 'I want an image of a house')"
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  className="min-h-[120px] bg-background border-border"
+                  className="min-h-[100px] sm:min-h-[120px] bg-background border-border resize-none text-sm sm:text-base"
+                  rows={4}
                 />
+                {userInput.length > 0 && (
+                  <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
+                    <span>{userInput.length} characters</span>
+                    {selectedTool && (
+                      <Badge variant="secondary" className="text-xs">
+                        {AI_TOOLS.find(t => t.id === selectedTool)?.name} Ready
+                      </Badge>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Generate Button */}
               <Button 
                 variant="hero" 
                 size="lg" 
-                className="w-full" 
+                className="w-full transition-all duration-300" 
                 onClick={generatePrompts}
                 disabled={isGenerating || !selectedTool || !userInput.trim()}
               >
                 {isGenerating ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current" />
-                    Optimizing Your Prompt...
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                    <span className="hidden sm:inline">Optimizing Your Prompt...</span>
+                    <span className="sm:hidden">Generating...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-5 h-5" />
-                    Generate Optimized Prompts
+                    <Sparkles className="w-4 sm:w-5 h-4 sm:h-5" />
+                    <span className="hidden sm:inline">Generate Optimized Prompts</span>
+                    <span className="sm:hidden">Generate Prompts</span>
                   </>
                 )}
               </Button>
@@ -227,37 +227,90 @@ export const PromptEngineer = () => {
 
       {/* Results */}
       {optimizedPrompts.length > 0 && (
-        <section className="py-16 px-4">
+        <section id="results" className="py-12 sm:py-16 px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-8">Your Optimized Prompts</h2>
-            <div className="space-y-4">
-              {optimizedPrompts.map((prompt, index) => (
-                <Card key={index} className="border-border bg-card/50 backdrop-blur-sm">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-lg">
-                      Version {index + 1}
-                      {index === 0 && <Badge className="ml-2 bg-accent text-accent-foreground">Recommended</Badge>}
-                    </CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleCopy(prompt, index)}
-                      className="h-8 w-8 p-0"
-                    >
-                      {copiedIndex === index ? (
-                        <CheckCircle className="w-4 h-4 text-accent" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm bg-background/50 rounded-lg p-4 border border-border font-mono">
-                      {prompt}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+            <h2 className={`text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 transition-all duration-500 ${
+              showResults ? 'animate-fade-in' : 'opacity-0'
+            }`}>
+              Your Optimized Prompts
+            </h2>
+            <div className="space-y-4 sm:space-y-6">
+              {optimizedPrompts.map((promptTemplate, index) => {
+                const getIcon = (title: string) => {
+                  if (title.includes('Quick') || title.includes('Simple')) return Zap;
+                  if (title.includes('Professional') || title.includes('Production')) return Target;
+                  if (title.includes('Creative') || title.includes('Artistic')) return Sparkles;
+                  if (title.includes('Educational') || title.includes('Learning')) return BookOpen;
+                  return Sparkles;
+                };
+                const Icon = getIcon(promptTemplate.title);
+                
+                return (
+                  <Card 
+                    key={index} 
+                    className={`border-border bg-card/50 backdrop-blur-sm hover:bg-card/70 transition-all duration-500 hover:shadow-lg ${
+                      showResults ? 'animate-slide-up' : 'opacity-0 translate-y-4'
+                    }`}
+                    style={{ animationDelay: `${index * 200}ms` }}
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 sm:pb-3">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Icon className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                        <CardTitle className="text-base sm:text-lg">
+                          {promptTemplate.title}
+                          {index === 0 && (
+                            <Badge className="ml-2 bg-primary text-primary-foreground text-xs">
+                              Recommended
+                            </Badge>
+                          )}
+                        </CardTitle>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCopy(promptTemplate.prompt, index)}
+                        className="h-8 w-8 p-0 hover:bg-primary/10 transition-colors"
+                        title="Copy to clipboard"
+                      >
+                        {copiedIndex === index ? (
+                          <CheckCircle className="w-4 h-4 text-primary" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="bg-background/50 rounded-lg p-3 sm:p-4 border border-border">
+                        <pre className="text-xs sm:text-sm whitespace-pre-wrap font-mono leading-relaxed text-foreground break-words">
+                          {promptTemplate.prompt}
+                        </pre>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+            
+            {/* Additional Actions */}
+            <div className={`mt-8 text-center transition-all duration-700 ${
+              showResults ? 'animate-fade-in' : 'opacity-0'
+            }`}>
+              <p className="text-sm text-muted-foreground mb-4">
+                Need different variations? Try adjusting your input or selecting a different AI tool.
+              </p>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setOptimizedPrompts([]);
+                  setShowResults(false);
+                  setUserInput('');
+                  document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="hover:bg-primary/10"
+              >
+                <Wand2 className="w-4 h-4 mr-2" />
+                Create New Prompts
+              </Button>
             </div>
           </div>
         </section>
