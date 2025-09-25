@@ -30,6 +30,9 @@ export const PromptEngineer = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [enhancedInput, setEnhancedInput] = useState('');
+  const [inputEnhancements, setInputEnhancements] = useState<string[]>([]);
+  const [isEnhancing, setIsEnhancing] = useState(false);
   const { toast } = useToast();
 
   const handleCopy = async (text: string, index: number) => {
@@ -50,6 +53,75 @@ export const PromptEngineer = () => {
     }
   };
 
+  const enhanceUserInput = async (input: string): Promise<{ enhanced: string; improvements: string[] }> => {
+    const improvements: string[] = [];
+    let enhanced = input.trim();
+
+    // Fix common grammar issues
+    if (enhanced.length > 0) {
+      // Capitalize first letter
+      if (enhanced[0] !== enhanced[0].toUpperCase()) {
+        enhanced = enhanced.charAt(0).toUpperCase() + enhanced.slice(1);
+        improvements.push("Capitalized first letter");
+      }
+
+      // Add period if missing
+      if (!enhanced.match(/[.!?]$/)) {
+        enhanced += '.';
+        improvements.push("Added proper punctuation");
+      }
+
+      // Fix common typos and grammar
+      const commonFixes = [
+        { from: /\bi\b/g, to: 'I', desc: 'Fixed capitalization of "I"' },
+        { from: /\bteh\b/g, to: 'the', desc: 'Fixed "teh" → "the"' },
+        { from: /\bwant to\b/g, to: 'need to', desc: 'Made language more specific' },
+        { from: /\bkinda\b/g, to: 'somewhat', desc: 'Made language more professional' },
+        { from: /\bgonna\b/g, to: 'going to', desc: 'Made language more formal' },
+        { from: /\bwanna\b/g, to: 'want to', desc: 'Made language more formal' },
+        { from: /\bu\b/g, to: 'you', desc: 'Expanded "u" to "you"' },
+        { from: /\bur\b/g, to: 'your', desc: 'Expanded "ur" to "your"' },
+        { from: /\bthat will\b/g, to: 'that should', desc: 'Made requirements clearer' }
+      ];
+
+      const originalLength = enhanced.length;
+      commonFixes.forEach(fix => {
+        if (fix.from.test(enhanced)) {
+          enhanced = enhanced.replace(fix.from, fix.to);
+          if (!improvements.includes(fix.desc)) {
+            improvements.push(fix.desc);
+          }
+        }
+      });
+
+      // Detect incomplete thoughts and enhance
+      if (enhanced.length < 20) {
+        enhanced = `Please create ${enhanced} Make it professional, detailed, and effective for the selected AI tool.`;
+        improvements.push("Expanded brief request with context");
+      }
+
+      // Add context for vague requests
+      const vaguePatterns = [
+        /^(make|create|build|generate)$/i,
+        /^(help|assist|support)$/i,
+        /^(write|code|design)$/i
+      ];
+
+      if (vaguePatterns.some(pattern => pattern.test(enhanced))) {
+        enhanced = `${enhanced} Please provide a comprehensive and detailed solution that includes clear structure, relevant examples, and actionable steps.`;
+        improvements.push("Added context for vague request");
+      }
+
+      // Enhance for AI tool optimization
+      if (!enhanced.toLowerCase().includes('detailed') && !enhanced.toLowerCase().includes('specific')) {
+        enhanced = enhanced.replace('.', '. Make it detailed and specific.');
+        improvements.push("Added request for detailed output");
+      }
+    }
+
+    return { enhanced, improvements };
+  };
+
   const generatePrompts = async () => {
     if (!selectedTool || !userInput.trim()) {
       toast({
@@ -61,12 +133,27 @@ export const PromptEngineer = () => {
     }
 
     setIsGenerating(true);
+    setIsEnhancing(true);
     setShowResults(false);
+    setInputEnhancements([]);
     
-    // Simulate processing time for better UX
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Phase 1: Enhance the user input
+    await new Promise(resolve => setTimeout(resolve, 800));
+    const { enhanced, improvements } = await enhanceUserInput(userInput);
+    setEnhancedInput(enhanced);
+    setInputEnhancements(improvements);
+    setIsEnhancing(false);
+
+    if (improvements.length > 0) {
+      toast({
+        title: "Input Enhanced!",
+        description: `Applied ${improvements.length} improvement${improvements.length > 1 ? 's' : ''} to your prompt`,
+      });
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
     
-    const generatedPrompts = PromptGenerator.generate(selectedTool, userInput);
+    // Phase 2: Generate optimized prompts using enhanced input
+    const generatedPrompts = PromptGenerator.generate(selectedTool, enhanced);
     setOptimizedPrompts(generatedPrompts);
     setIsGenerating(false);
     
@@ -286,6 +373,41 @@ export const PromptEngineer = () => {
                 </div>
               </div>
 
+              {/* Enhanced Input Preview */}
+              {enhancedInput && (
+                <div className="mb-8 animate-slide-up">
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 rounded-2xl p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-green-100 dark:bg-green-900 rounded-xl">
+                        <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-green-800 dark:text-green-200">Input Enhanced!</h4>
+                        <p className="text-sm text-green-600 dark:text-green-400">AI automatically improved your prompt</p>
+                      </div>
+                    </div>
+                    
+                    {inputEnhancements.length > 0 && (
+                      <div className="mb-4">
+                        <h5 className="font-semibold text-green-800 dark:text-green-200 mb-2 text-sm">Applied Improvements:</h5>
+                        <div className="flex flex-wrap gap-2">
+                          {inputEnhancements.map((improvement, idx) => (
+                            <Badge key={idx} className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
+                              {improvement}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="bg-white/60 dark:bg-black/20 rounded-xl p-4 border border-green-200/50 dark:border-green-800/50">
+                      <p className="text-sm text-green-800 dark:text-green-200 font-medium">Enhanced Version:</p>
+                      <p className="text-green-700 dark:text-green-300 mt-1">{enhancedInput}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Generate Button */}
               <Button 
                 variant="stylish" 
@@ -297,12 +419,14 @@ export const PromptEngineer = () => {
                 {isGenerating ? (
                   <div className="flex items-center gap-3">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-current" />
-                    <span>Engineering your prompts...</span>
+                    <span>
+                      {isEnhancing ? 'Enhancing your input...' : 'Engineering your prompts...'}
+                    </span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-3">
                     <Sparkles className="w-6 h-6 group-hover:animate-pulse" />
-                    <span>Generate Premium Prompts</span>
+                    <span>Generate Perfect AI Prompts</span>
                     <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
                   </div>
                 )}
