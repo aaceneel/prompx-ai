@@ -332,7 +332,7 @@ export const PromptEngineer = () => {
   return (
     <div className="min-h-screen bg-gradient-bg">
       {/* Hero Section */}
-      <section className="relative py-20 sm:py-24 lg:py-32 px-4 text-center bg-gradient-hero overflow-hidden">
+      <section className="relative py-20 sm:py-24 lg:py-32 px-0 text-center bg-gradient-hero overflow-hidden w-full">
         {/* Animated Background Layers */}
         <div className="absolute inset-0">
           {/* Primary gradient overlay */}
@@ -357,7 +357,7 @@ export const PromptEngineer = () => {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_70%,rgba(0,0,0,0.4)_100%)]" />
         </div>
         
-        <div className="max-w-5xl mx-auto relative z-10 animate-fade-in">
+        <div className="max-w-7xl mx-auto relative z-10 animate-fade-in px-4">
           {/* Premium Badge */}
           <div className="inline-flex items-center gap-3 bg-black/30 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 mb-8 shadow-2xl hover:bg-black/40 transition-all duration-300 group">
             <div className="flex items-center gap-3">
