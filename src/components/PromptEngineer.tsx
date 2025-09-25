@@ -99,12 +99,12 @@ export const PromptEngineer = () => {
             </div>
           </div>
           
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-[0.9] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 sm:mb-8 leading-tight tracking-tight">
             Craft Perfect<br />
             <span className="bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">AI Prompts</span>
           </h1>
           
-          <p className="text-xl sm:text-2xl text-white/80 max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+          <p className="text-base sm:text-lg md:text-xl lg:text-xl text-white/80 max-w-2xl lg:max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light px-4 sm:px-0">
             Transform your ideas into precision-engineered prompts that unlock the full potential of any AI model.
           </p>
           
@@ -131,10 +131,10 @@ export const PromptEngineer = () => {
       <section className="py-20 sm:py-24 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 animate-fade-in">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 animate-fade-in px-4 sm:px-0">
               Engineering Process
             </h2>
-            <p className="text-lg text-muted-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <p className="text-base sm:text-lg text-muted-foreground animate-fade-in px-4 sm:px-0 max-w-2xl mx-auto" style={{ animationDelay: '0.1s' }}>
               Five steps to transform your vision into AI-ready instructions
             </p>
           </div>
@@ -155,8 +155,8 @@ export const PromptEngineer = () => {
                         <div className="hidden lg:block flex-1 h-px bg-gradient-to-r from-border via-border/60 to-transparent" />
                       )}
                     </div>
-                    <h3 className="font-bold text-lg mb-3 text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                    <h3 className="font-bold text-base sm:text-lg mb-2 sm:mb-3 text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                   </CardContent>
                 </Card>
               </div>
@@ -171,10 +171,10 @@ export const PromptEngineer = () => {
           <Card className="bg-gradient-card shadow-elegant border-0 animate-scale-in overflow-hidden">
             <div className="p-8 sm:p-12">
               <div className="text-center mb-10">
-                <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 px-4 sm:px-0">
                   Select Your AI Platform
                 </h3>
-                <p className="text-lg text-muted-foreground">
+                <p className="text-base sm:text-lg text-muted-foreground px-4 sm:px-0 max-w-2xl mx-auto">
                   Choose the AI tool you want to create optimized prompts for
                 </p>
               </div>
@@ -204,12 +204,12 @@ export const PromptEngineer = () => {
                           }`} />
                         </div>
                         <div className="text-center">
-                          <span className={`text-sm font-bold block ${
+                          <span className={`text-xs sm:text-sm font-bold block ${
                             selectedTool === tool.id ? 'text-white' : 'text-foreground'
                           }`}>
                             {tool.name}
                           </span>
-                          <span className={`text-xs mt-1 hidden sm:block ${
+                          <span className={`text-xs mt-1 hidden md:block ${
                             selectedTool === tool.id ? 'text-white/80' : 'text-muted-foreground'
                           }`}>
                             {tool.description}
@@ -228,7 +228,7 @@ export const PromptEngineer = () => {
 
               {/* Input Area */}
               <div className="mb-8">
-                <h3 className="text-xl font-bold text-foreground mb-4">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-4 px-4 sm:px-0">
                   Describe Your Vision
                 </h3>
                 <div className="relative">
@@ -253,7 +253,7 @@ export const PromptEngineer = () => {
               <Button 
                 variant="stylish" 
                 size="lg" 
-                className="w-full h-14 text-lg font-bold" 
+                className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold mx-4 sm:mx-0" 
                 onClick={generatePrompts}
                 disabled={isGenerating || !selectedTool || !userInput.trim()}
               >
@@ -282,10 +282,10 @@ export const PromptEngineer = () => {
             <div className={`text-center mb-12 transition-all duration-700 ${
               showResults ? 'animate-fade-in' : 'opacity-0'
             }`}>
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 px-4 sm:px-0">
                 Your Premium Prompts
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base sm:text-lg text-muted-foreground px-4 sm:px-0 max-w-2xl mx-auto">
                 Copy and paste these optimized prompts into your AI tool
               </p>
             </div>
@@ -315,7 +315,7 @@ export const PromptEngineer = () => {
                           <Icon className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                          <CardTitle className="text-xl font-bold text-foreground">
+                          <CardTitle className="text-lg sm:text-xl font-bold text-foreground">
                             {promptTemplate.title}
                           </CardTitle>
                           {index === 0 && (
@@ -345,8 +345,8 @@ export const PromptEngineer = () => {
                       </Button>
                     </CardHeader>
                     <CardContent className="p-6">
-                      <div className="bg-background/70 backdrop-blur rounded-xl p-6 border border-border/30 shadow-inner">
-                        <pre className="text-sm whitespace-pre-wrap leading-relaxed text-foreground break-words font-mono">
+                      <div className="bg-background/70 backdrop-blur rounded-xl p-4 sm:p-6 border border-border/30 shadow-inner">
+                        <pre className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed text-foreground break-words font-mono">
                           {promptTemplate.prompt}
                         </pre>
                       </div>
