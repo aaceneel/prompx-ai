@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen, ArrowRight } from "lucide-react";
+import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen, ArrowRight, Stars, Palette, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PromptGenerator, type PromptTemplate } from "@/lib/promptGenerator";
 
@@ -84,61 +84,81 @@ export const PromptEngineer = () => {
   return (
     <div className="min-h-screen bg-gradient-bg">
       {/* Hero Section */}
-      <section className="relative py-16 sm:py-20 lg:py-24 px-4 text-center bg-gradient-primary">
-        <div className="max-w-4xl mx-auto animate-fade-in">
-          <div className="inline-flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/10 rounded-full px-4 py-1.5 mb-6">
-            <div className="w-2 h-2 bg-primary-foreground/60 rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-primary-foreground/80 tracking-wide">AI PROMPT ENGINEERING</span>
+      <section className="relative py-20 sm:py-24 lg:py-32 px-4 text-center bg-gradient-hero overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),rgba(255,255,255,0))]" />
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_35%,rgba(255,255,255,0.05)_50%,transparent_65%)]" />
+        </div>
+        
+        <div className="max-w-5xl mx-auto relative z-10 animate-fade-in">
+          <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 mb-8 shadow-lg">
+            <div className="flex items-center gap-2">
+              <Stars className="w-4 h-4 text-white/90 animate-pulse-subtle" />
+              <span className="text-sm font-semibold text-white/90 tracking-wider">PROFESSIONAL AI ENGINEERING</span>
+            </div>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-primary-foreground mb-6 leading-[1.1] tracking-tight">
-            Professional Prompt<br />
-            <span className="text-primary-foreground/80">Engineering Platform</span>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-[0.9] tracking-tight">
+            Craft Perfect<br />
+            <span className="bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">AI Prompts</span>
           </h1>
           
-          <p className="text-lg sm:text-xl text-primary-foreground/70 max-w-2xl mx-auto mb-8 leading-relaxed font-light">
-            Transform your ideas into precision-crafted prompts for any AI model. Built for professionals who demand excellence.
+          <p className="text-xl sm:text-2xl text-white/80 max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+            Transform your ideas into precision-engineered prompts that unlock the full potential of any AI model.
           </p>
           
-          <Button 
-            variant="grok" 
-            size="lg" 
-            className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 group"
-            onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            <span className="font-medium">Get Started</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button 
+              variant="premium" 
+              size="lg" 
+              className="bg-white/95 text-primary hover:bg-white hover:shadow-elegant group text-lg px-10 py-4 h-14"
+              onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <Palette className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+              <span className="font-bold">Start Crafting</span>
+              <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+            </Button>
+            <div className="flex items-center gap-2 text-white/70 text-sm font-medium">
+              <Brain className="w-4 h-4" />
+              <span>Powered by Advanced AI Engineering</span>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Workflow Steps */}
-      <section className="py-16 sm:py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-medium text-center mb-12 animate-fade-in text-foreground/90">
-            How it works
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
+      <section className="py-20 sm:py-24 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 animate-fade-in">
+              Engineering Process
+            </h2>
+            <p className="text-lg text-muted-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              Five steps to transform your vision into AI-ready instructions
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-6">
             {WORKFLOW_STEPS.map((step, index) => (
               <div 
                 key={step.number} 
                 className="relative group animate-slide-up"
-                style={{ animationDelay: `${index * 100}ms` }}
+                style={{ animationDelay: `${index * 150}ms` }}
               >
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 border border-border flex items-center justify-center">
-                      <span className="text-sm font-medium text-primary">{step.number}</span>
+                <Card className="h-full bg-gradient-card shadow-md hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 border-0 overflow-hidden group-hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-md group-hover:animate-float">
+                        <span className="text-lg font-bold text-white">{step.number}</span>
+                      </div>
+                      {index < WORKFLOW_STEPS.length - 1 && (
+                        <div className="hidden lg:block flex-1 h-px bg-gradient-to-r from-border via-border/60 to-transparent" />
+                      )}
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="font-medium mb-2 text-sm text-foreground">{step.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{step.description}</p>
-                  </div>
-                </div>
-                {index < WORKFLOW_STEPS.length - 1 && (
-                  <div className="hidden lg:block absolute top-4 -right-4 w-8 h-px bg-border" />
-                )}
+                    <h3 className="font-bold text-lg mb-3 text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                  </CardContent>
+                </Card>
               </div>
             ))}
           </div>
@@ -146,28 +166,60 @@ export const PromptEngineer = () => {
       </section>
 
       {/* Main Tool */}
-      <section id="tool-selector" className="py-16 sm:py-20 px-4 bg-gradient-subtle">
-        <div className="max-w-3xl mx-auto">
-          <Card className="border-border bg-card shadow-lg animate-scale-in">
-            <CardContent className="p-6 sm:p-8">
+      <section id="tool-selector" className="py-20 sm:py-24 px-4">
+        <div className="max-w-4xl mx-auto">
+          <Card className="bg-gradient-card shadow-elegant border-0 animate-scale-in overflow-hidden">
+            <div className="p-8 sm:p-12">
+              <div className="text-center mb-10">
+                <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+                  Select Your AI Platform
+                </h3>
+                <p className="text-lg text-muted-foreground">
+                  Choose the AI tool you want to create optimized prompts for
+                </p>
+              </div>
+
               {/* Tool Selection */}
-              <div className="mb-8">
-                <h3 className="text-lg font-medium mb-4 text-foreground">Select AI Platform</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div className="mb-10">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                   {AI_TOOLS.map((tool) => {
                     const Icon = tool.icon;
                     return (
                       <button
                         key={tool.id}
-                        className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all hover:bg-accent/50 ${
+                        className={`group relative flex flex-col items-center gap-3 p-6 rounded-2xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
                           selectedTool === tool.id 
-                            ? 'bg-primary text-primary-foreground border-primary' 
-                            : 'bg-background border-border hover:border-border/60'
+                            ? 'bg-gradient-primary text-white border-primary shadow-glow scale-105' 
+                            : 'bg-background border-border/30 hover:border-primary/30 hover:shadow-md'
                         }`}
                         onClick={() => setSelectedTool(tool.id)}
                       >
-                        <Icon className="w-5 h-5" />
-                        <span className="text-xs font-medium">{tool.name}</span>
+                        <div className={`p-3 rounded-xl transition-all duration-300 ${
+                          selectedTool === tool.id 
+                            ? 'bg-white/20 group-hover:animate-pulse' 
+                            : 'bg-primary/5 group-hover:bg-primary/10'
+                        }`}>
+                          <Icon className={`w-6 h-6 transition-colors ${
+                            selectedTool === tool.id ? 'text-white' : 'text-primary'
+                          }`} />
+                        </div>
+                        <div className="text-center">
+                          <span className={`text-sm font-bold block ${
+                            selectedTool === tool.id ? 'text-white' : 'text-foreground'
+                          }`}>
+                            {tool.name}
+                          </span>
+                          <span className={`text-xs mt-1 hidden sm:block ${
+                            selectedTool === tool.id ? 'text-white/80' : 'text-muted-foreground'
+                          }`}>
+                            {tool.description}
+                          </span>
+                        </div>
+                        {selectedTool === tool.id && (
+                          <div className="absolute -top-1 -right-1">
+                            <div className="w-3 h-3 bg-white rounded-full animate-pulse-subtle shadow-md" />
+                          </div>
+                        )}
                       </button>
                     );
                   })}
@@ -175,108 +227,152 @@ export const PromptEngineer = () => {
               </div>
 
               {/* Input Area */}
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-4 text-foreground">Describe your task</h3>
-                <Textarea
-                  placeholder="What would you like the AI to do? Be as specific or general as you'd like..."
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  className="min-h-[120px] bg-background border-border resize-none text-sm rounded-lg focus:ring-1 focus:ring-primary/20"
-                  rows={5}
-                />
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  Describe Your Vision
+                </h3>
+                <div className="relative">
+                  <Textarea
+                    placeholder="What would you like the AI to accomplish? Describe your goal, the context, and any specific requirements..."
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    className="min-h-[140px] bg-background/50 backdrop-blur border-2 border-border/30 focus:border-primary/50 resize-none text-base rounded-2xl shadow-inner focus:shadow-md transition-all duration-300 p-6"
+                    rows={6}
+                  />
+                  {userInput.length > 0 && (
+                    <div className="absolute bottom-4 right-4">
+                      <Badge className="bg-primary/90 text-primary-foreground shadow-md">
+                        {userInput.length} chars
+                      </Badge>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Generate Button */}
               <Button 
-                variant="grok" 
+                variant="stylish" 
                 size="lg" 
-                className="w-full" 
+                className="w-full h-14 text-lg font-bold" 
                 onClick={generatePrompts}
                 disabled={isGenerating || !selectedTool || !userInput.trim()}
               >
                 {isGenerating ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                    <span>Generating prompts...</span>
-                  </>
+                  <div className="flex items-center gap-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-current" />
+                    <span>Engineering your prompts...</span>
+                  </div>
                 ) : (
-                  <>
-                    <span>Generate Prompts</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-6 h-6 group-hover:animate-pulse" />
+                    <span>Generate Premium Prompts</span>
+                    <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
+                  </div>
                 )}
               </Button>
-            </CardContent>
+            </div>
           </Card>
         </div>
       </section>
 
       {/* Results */}
       {optimizedPrompts.length > 0 && (
-        <section id="results" className="py-16 px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className={`text-2xl font-medium text-center mb-8 transition-all duration-500 ${
+        <section id="results" className="py-20 px-4 bg-muted/20">
+          <div className="max-w-4xl mx-auto">
+            <div className={`text-center mb-12 transition-all duration-700 ${
               showResults ? 'animate-fade-in' : 'opacity-0'
             }`}>
-              Generated Prompts
-            </h2>
-            <div className="space-y-4">
-              {optimizedPrompts.map((promptTemplate, index) => (
-                <Card 
-                  key={index} 
-                  className={`border-border bg-card shadow-md hover:shadow-lg transition-all duration-300 ${
-                    showResults ? 'animate-slide-up' : 'opacity-0 translate-y-4'
-                  }`}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                    <CardTitle className="text-base font-medium">
-                      {promptTemplate.title}
-                      {index === 0 && (
-                        <Badge className="ml-2 bg-primary text-primary-foreground text-xs">
-                          Recommended
-                        </Badge>
-                      )}
-                    </CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleCopy(promptTemplate.prompt, index)}
-                      className="h-8 w-8 p-0 hover:bg-accent"
-                    >
-                      {copiedIndex === index ? (
-                        <CheckCircle className="w-4 h-4 text-primary" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
-                      <pre className="text-sm whitespace-pre-wrap font-mono leading-relaxed text-foreground break-words">
-                        {promptTemplate.prompt}
-                      </pre>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+                Your Premium Prompts
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Copy and paste these optimized prompts into your AI tool
+              </p>
+            </div>
+            
+            <div className="space-y-6">
+              {optimizedPrompts.map((promptTemplate, index) => {
+                const getIcon = (title: string) => {
+                  if (title.includes('Quick') || title.includes('Simple')) return Zap;
+                  if (title.includes('Professional') || title.includes('Production')) return Target;
+                  if (title.includes('Creative') || title.includes('Artistic')) return Sparkles;
+                  if (title.includes('Educational') || title.includes('Learning')) return BookOpen;
+                  return Sparkles;
+                };
+                const Icon = getIcon(promptTemplate.title);
+                
+                return (
+                  <Card 
+                    key={index} 
+                    className={`bg-gradient-card shadow-elegant hover:shadow-glow border-0 transition-all duration-700 hover:-translate-y-1 group overflow-hidden ${
+                      showResults ? 'animate-slide-up' : 'opacity-0 translate-y-4'
+                    }`}
+                    style={{ animationDelay: `${index * 150}ms` }}
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-border/20 bg-gradient-to-r from-primary/5 to-transparent">
+                      <div className="flex items-center gap-4">
+                        <div className="p-2 rounded-xl bg-primary/10 group-hover:animate-pulse">
+                          <Icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-xl font-bold text-foreground">
+                            {promptTemplate.title}
+                          </CardTitle>
+                          {index === 0 && (
+                            <Badge className="mt-1 bg-gradient-primary text-white shadow-md">
+                              ⭐ Recommended
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleCopy(promptTemplate.prompt, index)}
+                        className="hover:bg-primary hover:text-primary-foreground transition-all duration-300 group/copy"
+                      >
+                        {copiedIndex === index ? (
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                            <span className="text-sm font-medium">Copied!</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Copy className="w-4 h-4 group-hover/copy:animate-pulse" />
+                            <span className="text-sm font-medium">Copy</span>
+                          </div>
+                        )}
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="bg-background/70 backdrop-blur rounded-xl p-6 border border-border/30 shadow-inner">
+                        <pre className="text-sm whitespace-pre-wrap leading-relaxed text-foreground break-words font-mono">
+                          {promptTemplate.prompt}
+                        </pre>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
             
             {/* Reset Button */}
-            <div className={`mt-8 text-center transition-all duration-500 ${
+            <div className={`mt-12 text-center transition-all duration-700 ${
               showResults ? 'animate-fade-in' : 'opacity-0'
             }`}>
               <Button 
                 variant="outline" 
+                size="lg"
                 onClick={() => {
                   setOptimizedPrompts([]);
                   setShowResults(false);
                   setUserInput('');
                   document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="hover:bg-accent"
+                className="group"
               >
-                Generate New Prompts
+                <Wand2 className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                Create New Prompts
               </Button>
             </div>
           </div>
