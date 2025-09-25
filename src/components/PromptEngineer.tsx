@@ -108,26 +108,26 @@ export const PromptEngineer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-bg">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 text-center">
+      <section className="relative py-20 px-4 text-center bg-gradient-hero">
         <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-secondary/20 border border-border rounded-full px-4 py-2 mb-6">
-            <Sparkles className="w-4 h-4 text-accent" />
-            <span className="text-sm text-muted-foreground">Professional Prompt Engineering</span>
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 mb-6">
+            <Sparkles className="w-4 h-4 text-white" />
+            <span className="text-sm text-white/90">Professional Prompt Engineering</span>
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Transform Vague Ideas into
             <br />
             Perfect AI Prompts
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
             Professional prompt engineering tool that optimizes your requests for ChatGPT, MidJourney, Stable Diffusion, and other AI platforms.
           </p>
           
-          <Button variant="hero" size="lg" onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}>
+          <Button variant="secondary" size="lg" onClick={() => document.getElementById('tool-selector')?.scrollIntoView({ behavior: 'smooth' })}>
             <Wand2 className="w-5 h-5" />
             Start Engineering Prompts
           </Button>
