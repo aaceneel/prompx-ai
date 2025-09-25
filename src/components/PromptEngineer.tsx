@@ -53,70 +53,231 @@ export const PromptEngineer = () => {
     }
   };
 
+  const detectUserIntent = (input: string): { 
+    intent: string; 
+    domain: string; 
+    style: string; 
+    confidence: number;
+    context: string[];
+  } => {
+    const lower = input.toLowerCase();
+    
+    // Intent patterns
+    const intentPatterns = {
+      create: /\b(create|make|build|generate|produce|design|craft)\b/i,
+      improve: /\b(improve|enhance|optimize|refine|polish|upgrade|fix)\b/i,
+      explain: /\b(explain|describe|tell|show|how|what|why|define)\b/i,
+      analyze: /\b(analyze|review|evaluate|assess|compare|examine)\b/i,
+      plan: /\b(plan|strategy|roadmap|outline|framework|structure)\b/i,
+      solve: /\b(solve|fix|debug|troubleshoot|resolve|handle)\b/i,
+      learn: /\b(learn|understand|tutorial|guide|teach|study)\b/i,
+      convert: /\b(convert|transform|translate|change|adapt|modify)\b/i
+    };
+
+    // Domain patterns
+    const domainPatterns = {
+      business: /\b(business|marketing|sales|revenue|profit|strategy|company|corporate|enterprise|startup)\b/i,
+      technical: /\b(code|programming|software|development|API|database|system|tech|algorithm|function)\b/i,
+      creative: /\b(creative|art|design|visual|story|content|copy|brand|aesthetic|beautiful|artistic)\b/i,
+      academic: /\b(research|study|academic|paper|thesis|analysis|scientific|scholarly|education)\b/i,
+      personal: /\b(personal|lifestyle|health|fitness|relationship|family|hobby|self|individual)\b/i,
+      professional: /\b(professional|career|job|work|skill|resume|interview|workplace|office)\b/i
+    };
+
+    // Style patterns
+    const stylePatterns = {
+      formal: /\b(formal|professional|official|corporate|serious|academic)\b/i,
+      casual: /\b(casual|friendly|relaxed|informal|conversational|easy)\b/i,
+      creative: /\b(creative|innovative|unique|original|artistic|imaginative)\b/i,
+      technical: /\b(technical|precise|detailed|specific|systematic|structured)\b/i,
+      persuasive: /\b(persuasive|convincing|compelling|engaging|powerful|impactful)\b/i,
+      educational: /\b(educational|teaching|learning|tutorial|instructional|explanatory)\b/i
+    };
+
+    // Detect patterns
+    const intent = Object.entries(intentPatterns).find(([_, pattern]) => pattern.test(input))?.[0] || 'create';
+    const domain = Object.entries(domainPatterns).find(([_, pattern]) => pattern.test(input))?.[0] || 'general';
+    const style = Object.entries(stylePatterns).find(([_, pattern]) => pattern.test(input))?.[0] || 'professional';
+
+    // Calculate confidence based on pattern matches and specificity
+    let confidence = 0.5;
+    if (input.length > 50) confidence += 0.2;
+    if (input.includes('specific') || input.includes('detailed')) confidence += 0.1;
+    if (Object.values(intentPatterns).some(pattern => pattern.test(input))) confidence += 0.1;
+    if (Object.values(domainPatterns).some(pattern => pattern.test(input))) confidence += 0.1;
+
+    // Context inference
+    const context: string[] = [];
+    if (input.length < 30) context.push('needs_expansion');
+    if (!input.match(/[.!?]$/)) context.push('needs_punctuation');
+    if (/\b(i|me|my|myself)\b/i.test(input)) context.push('personal_request');
+    if (/\b(we|us|our|team|company)\b/i.test(input)) context.push('team_request');
+    if (/\b(urgent|asap|quickly|fast|immediate)\b/i.test(input)) context.push('time_sensitive');
+    if (/\b(professional|business|client|customer)\b/i.test(input)) context.push('professional_context');
+
+    return { intent, domain, style, confidence, context };
+  };
+
   const enhanceUserInput = async (input: string): Promise<{ enhanced: string; improvements: string[] }> => {
     const improvements: string[] = [];
     let enhanced = input.trim();
 
-    // Fix common grammar issues
-    if (enhanced.length > 0) {
-      // Capitalize first letter
-      if (enhanced[0] !== enhanced[0].toUpperCase()) {
-        enhanced = enhanced.charAt(0).toUpperCase() + enhanced.slice(1);
-        improvements.push("Capitalized first letter");
-      }
+    if (!enhanced) return { enhanced, improvements };
 
-      // Add period if missing
-      if (!enhanced.match(/[.!?]$/)) {
-        enhanced += '.';
-        improvements.push("Added proper punctuation");
-      }
+    // Detect user intent and context
+    const analysis = detectUserIntent(enhanced);
+    
+    // Phase 1: Basic language fixes
+    if (enhanced[0] !== enhanced[0].toUpperCase()) {
+      enhanced = enhanced.charAt(0).toUpperCase() + enhanced.slice(1);
+      improvements.push("Capitalized first letter");
+    }
 
-      // Fix common typos and grammar
-      const commonFixes = [
-        { from: /\bi\b/g, to: 'I', desc: 'Fixed capitalization of "I"' },
-        { from: /\bteh\b/g, to: 'the', desc: 'Fixed "teh" → "the"' },
-        { from: /\bwant to\b/g, to: 'need to', desc: 'Made language more specific' },
-        { from: /\bkinda\b/g, to: 'somewhat', desc: 'Made language more professional' },
-        { from: /\bgonna\b/g, to: 'going to', desc: 'Made language more formal' },
-        { from: /\bwanna\b/g, to: 'want to', desc: 'Made language more formal' },
-        { from: /\bu\b/g, to: 'you', desc: 'Expanded "u" to "you"' },
-        { from: /\bur\b/g, to: 'your', desc: 'Expanded "ur" to "your"' },
-        { from: /\bthat will\b/g, to: 'that should', desc: 'Made requirements clearer' }
-      ];
+    if (!enhanced.match(/[.!?]$/)) {
+      enhanced += '.';
+      improvements.push("Added proper punctuation");
+    }
 
-      const originalLength = enhanced.length;
-      commonFixes.forEach(fix => {
-        if (fix.from.test(enhanced)) {
-          enhanced = enhanced.replace(fix.from, fix.to);
-          if (!improvements.includes(fix.desc)) {
-            improvements.push(fix.desc);
-          }
+    // Advanced typo and grammar fixes
+    const advancedFixes = [
+      // Common typos
+      { from: /\bi\b/g, to: 'I', desc: 'Fixed capitalization' },
+      { from: /\bteh\b/g, to: 'the', desc: 'Fixed typo' },
+      { from: /\brecieve\b/g, to: 'receive', desc: 'Fixed spelling' },
+      { from: /\bdefintely\b/g, to: 'definitely', desc: 'Fixed spelling' },
+      { from: /\bwant to\b/g, to: 'need to', desc: 'Made more specific' },
+      
+      // Informal to formal
+      { from: /\bkinda\b/g, to: 'somewhat', desc: 'Made more professional' },
+      { from: /\bgonna\b/g, to: 'going to', desc: 'Made more formal' },
+      { from: /\bwanna\b/g, to: 'want to', desc: 'Made more formal' },
+      { from: /\bu\b/g, to: 'you', desc: 'Expanded abbreviation' },
+      { from: /\bur\b/g, to: 'your', desc: 'Expanded abbreviation' },
+      { from: /\btn\b/g, to: 'than', desc: 'Fixed abbreviation' },
+      { from: /\bw\/\b/g, to: 'with', desc: 'Expanded abbreviation' },
+      
+      // Clarity improvements
+      { from: /\bthat will\b/g, to: 'that should', desc: 'Clarified requirements' },
+      { from: /\bstuff\b/g, to: 'content', desc: 'Made more specific' },
+      { from: /\bthings\b/g, to: 'elements', desc: 'Made more specific' },
+      { from: /\bokay\b/g, to: 'suitable', desc: 'Made more professional' },
+      { from: /\bcool\b/g, to: 'effective', desc: 'Made more professional' }
+    ];
+
+    advancedFixes.forEach(fix => {
+      if (fix.from.test(enhanced)) {
+        enhanced = enhanced.replace(fix.from, fix.to);
+        if (!improvements.includes(fix.desc)) {
+          improvements.push(fix.desc);
         }
-      });
-
-      // Detect incomplete thoughts and enhance
-      if (enhanced.length < 20) {
-        enhanced = `Please create ${enhanced} Make it professional, detailed, and effective for the selected AI tool.`;
-        improvements.push("Expanded brief request with context");
       }
+    });
 
-      // Add context for vague requests
-      const vaguePatterns = [
-        /^(make|create|build|generate)$/i,
-        /^(help|assist|support)$/i,
-        /^(write|code|design)$/i
-      ];
+    // Phase 2: Smart content enhancement based on analysis
+    const originalEnhanced = enhanced;
 
-      if (vaguePatterns.some(pattern => pattern.test(enhanced))) {
-        enhanced = `${enhanced} Please provide a comprehensive and detailed solution that includes clear structure, relevant examples, and actionable steps.`;
-        improvements.push("Added context for vague request");
+    // Handle very short inputs
+    if (enhanced.length < 25) {
+      const intentMap = {
+        create: 'Create a comprehensive',
+        improve: 'Improve and optimize',
+        explain: 'Provide a detailed explanation of',
+        analyze: 'Conduct a thorough analysis of',
+        plan: 'Develop a strategic plan for',
+        solve: 'Provide a solution for',
+        learn: 'Create a learning guide about',
+        convert: 'Convert and transform'
+      };
+      
+      enhanced = `${intentMap[analysis.intent as keyof typeof intentMap] || 'Create'} ${enhanced.replace(/^(create|make|build|generate|improve|explain|analyze|plan|solve|learn|convert)\s*/i, '')}`;
+      improvements.push("Expanded brief request with smart context");
+    }
+
+    // Add domain-specific context
+    if (analysis.domain !== 'general') {
+      const domainContext = {
+        business: 'Focus on practical business value, ROI, and actionable insights.',
+        technical: 'Include technical specifications, best practices, and implementation details.',
+        creative: 'Emphasize originality, visual appeal, and creative innovation.',
+        academic: 'Ensure scholarly rigor, proper citations, and comprehensive analysis.',
+        personal: 'Make it relatable, practical, and personally meaningful.',
+        professional: 'Maintain professional tone and industry standards.'
+      };
+
+      if (!enhanced.toLowerCase().includes(analysis.domain)) {
+        enhanced = `${enhanced} ${domainContext[analysis.domain as keyof typeof domainContext]}`;
+        improvements.push(`Added ${analysis.domain} domain context`);
       }
+    }
 
-      // Enhance for AI tool optimization
-      if (!enhanced.toLowerCase().includes('detailed') && !enhanced.toLowerCase().includes('specific')) {
-        enhanced = enhanced.replace('.', '. Make it detailed and specific.');
-        improvements.push("Added request for detailed output");
+    // Add style-specific enhancements
+    const styleEnhancements = {
+      formal: 'Use formal language and professional structure.',
+      casual: 'Keep the tone conversational and approachable.',
+      creative: 'Be innovative and think outside the box.',
+      technical: 'Provide precise, detailed, and systematic information.',
+      persuasive: 'Make it compelling and convincing.',
+      educational: 'Structure it for easy learning and understanding.'
+    };
+
+    if (analysis.confidence > 0.7 && !enhanced.toLowerCase().includes(analysis.style)) {
+      enhanced = `${enhanced} ${styleEnhancements[analysis.style as keyof typeof styleEnhancements]}`;
+      improvements.push(`Added ${analysis.style} style guidance`);
+    }
+
+    // Handle context-specific improvements
+    if (analysis.context.includes('time_sensitive')) {
+      enhanced = enhanced.replace('.', '. Prioritize quick, actionable solutions.');
+      improvements.push("Added urgency context");
+    }
+
+    if (analysis.context.includes('team_request')) {
+      enhanced = enhanced.replace('.', '. Consider team collaboration and stakeholder needs.');
+      improvements.push("Added team context");
+    }
+
+    if (analysis.context.includes('professional_context')) {
+      enhanced = enhanced.replace('.', '. Ensure professional quality and business standards.');
+      improvements.push("Added professional context");
+    }
+
+    // Phase 3: AI-tool specific optimization
+    if (!enhanced.toLowerCase().includes('detailed') && !enhanced.toLowerCase().includes('specific')) {
+      enhanced = enhanced.replace(/\.$/, '. Provide detailed, specific, and actionable results.');
+      improvements.push("Added specificity requirements");
+    }
+
+    // Handle vague requests with smart expansion
+    const vaguePatterns = [
+      { pattern: /^(make|create|build|generate)\s*$/i, expansion: 'a comprehensive solution' },
+      { pattern: /^(help|assist|support)\s*$/i, expansion: 'with detailed guidance and actionable steps' },
+      { pattern: /^(write|code|design)\s*$/i, expansion: 'something professional and effective' },
+      { pattern: /^(improve|enhance|optimize)\s*$/i, expansion: 'the quality and effectiveness' },
+      { pattern: /^(explain|describe|tell)\s*$/i, expansion: 'in clear, comprehensive detail' }
+    ];
+
+    vaguePatterns.forEach(({ pattern, expansion }) => {
+      if (pattern.test(enhanced)) {
+        enhanced = enhanced.replace(pattern, (match) => `${match} ${expansion}`);
+        improvements.push("Clarified vague request");
       }
+    });
+
+    // Add smart examples request when appropriate
+    if (analysis.domain === 'technical' && !enhanced.toLowerCase().includes('example')) {
+      enhanced = enhanced.replace(/\.$/, '. Include practical examples and code snippets where relevant.');
+      improvements.push("Added request for examples");
+    }
+
+    if (analysis.domain === 'business' && !enhanced.toLowerCase().includes('metric')) {
+      enhanced = enhanced.replace(/\.$/, '. Include relevant metrics and success indicators.');
+      improvements.push("Added business metrics context");
+    }
+
+    // Final quality check - ensure the enhancement was meaningful
+    if (enhanced === originalEnhanced && improvements.length === 0) {
+      enhanced = `${enhanced} Please ensure the output is comprehensive, well-structured, and tailored for optimal AI results.`;
+      improvements.push("Added general optimization guidance");
     }
 
     return { enhanced, improvements };
