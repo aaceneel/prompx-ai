@@ -356,6 +356,145 @@ export const PromptEngineer = () => {
     return { corrected, spellCorrections: corrections };
   };
 
+  // Content quality analysis function
+  const analyzeContentQuality = (text: string): { score: number; suggestions: string[] } => {
+    const suggestions: string[] = [];
+    let score = 50; // Base score
+
+    // Length analysis
+    if (text.length < 20) {
+      suggestions.push("Consider adding more specific details to improve clarity");
+      score -= 15;
+    } else if (text.length > 100) {
+      score += 10;
+    }
+
+    // Clarity indicators
+    const clarityWords = ['specific', 'detailed', 'exactly', 'precisely', 'clearly'];
+    if (clarityWords.some(word => text.toLowerCase().includes(word))) {
+      score += 10;
+    } else {
+      suggestions.push("Add specific requirements or constraints for better results");
+    }
+
+    // Professional tone check
+    const professionalTerms = ['implement', 'develop', 'optimize', 'enhance', 'analyze', 'create'];
+    if (professionalTerms.some(term => text.toLowerCase().includes(term))) {
+      score += 5;
+    }
+
+    // Context richness
+    const contextWords = ['because', 'in order to', 'for the purpose of', 'considering', 'given that'];
+    if (contextWords.some(word => text.toLowerCase().includes(word))) {
+      score += 10;
+    } else {
+      suggestions.push("Include context or reasoning to improve AI understanding");
+    }
+
+    // Goal clarity
+    const goalWords = ['should', 'need', 'want', 'require', 'expect', 'goal', 'objective'];
+    if (goalWords.some(word => text.toLowerCase().includes(word))) {
+      score += 10;
+    } else {
+      suggestions.push("Clearly state your desired outcome or goal");
+    }
+
+    // Technical specificity for code/technical prompts
+    if (text.toLowerCase().includes('code') || text.toLowerCase().includes('program')) {
+      const techTerms = ['framework', 'library', 'language', 'version', 'api', 'database'];
+      if (techTerms.some(term => text.toLowerCase().includes(term))) {
+        score += 10;
+      } else {
+        suggestions.push("Specify programming language, framework, or technical requirements");
+      }
+    }
+
+    return { score: Math.min(100, Math.max(0, score)), suggestions };
+  };
+
+  // Professional tone enhancement
+  const enhanceProfessionalTone = (text: string): { enhanced: string; changes: string[] } => {
+    const changes: string[] = [];
+    let enhanced = text;
+
+    const improvements = [
+      // Casual to professional replacements
+      { from: /\bkinda\b/gi, to: 'somewhat', desc: 'Replaced casual language' },
+      { from: /\bsorta\b/gi, to: 'somewhat', desc: 'Replaced casual language' },
+      { from: /\bgonna\b/gi, to: 'going to', desc: 'Used formal language' },
+      { from: /\bwanna\b/gi, to: 'want to', desc: 'Used formal language' },
+      { from: /\bcan't\b/gi, to: 'cannot', desc: 'Used formal contractions' },
+      { from: /\bwon't\b/gi, to: 'will not', desc: 'Used formal contractions' },
+      { from: /\bisn't\b/gi, to: 'is not', desc: 'Used formal contractions' },
+      { from: /\baren't\b/gi, to: 'are not', desc: 'Used formal contractions' },
+      
+      // Vague to specific language
+      { from: /\bstuff\b/gi, to: 'content', desc: 'Used specific terminology' },
+      { from: /\bthings\b/gi, to: 'elements', desc: 'Used specific terminology' },
+      { from: /\ba lot of\b/gi, to: 'numerous', desc: 'Used professional language' },
+      { from: /\bpretty good\b/gi, to: 'effective', desc: 'Used professional language' },
+      { from: /\breally\s+(\w+)/gi, to: 'highly $1', desc: 'Enhanced professional tone' },
+      
+      // Uncertainty to confidence
+      { from: /\bi think\b/gi, to: 'I believe', desc: 'Enhanced confidence' },
+      { from: /\bmaybe\b/gi, to: 'potentially', desc: 'Used professional language' },
+      { from: /\bkind of\b/gi, to: 'somewhat', desc: 'Used professional language' },
+      
+      // Add professional action verbs
+      { from: /\bmake\s+(\w+)/gi, to: 'develop $1', desc: 'Used professional action verbs' },
+      { from: /\bshow\s+me\b/gi, to: 'demonstrate', desc: 'Used professional language' },
+      { from: /\bfigure out\b/gi, to: 'determine', desc: 'Used professional language' },
+    ];
+
+    improvements.forEach(({ from, to, desc }) => {
+      if (from.test(enhanced)) {
+        enhanced = enhanced.replace(from, to);
+        if (!changes.includes(desc)) {
+          changes.push(desc);
+        }
+      }
+    });
+
+    return { enhanced, changes };
+  };
+
+  // Structure optimization for better AI comprehension
+  const optimizeStructure = (text: string): { optimized: string; improvements: string[] } => {
+    const improvements: string[] = [];
+    let optimized = text;
+
+    // Add structure for complex requests
+    if (text.length > 50 && !text.includes(':') && !text.includes('-')) {
+      // Check if it's a multi-part request
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 5);
+      if (sentences.length > 2) {
+        // Try to identify different parts
+        const parts: string[] = [];
+        sentences.forEach(sentence => {
+          const trimmed = sentence.trim();
+          if (trimmed) {
+            parts.push(`- ${trimmed.charAt(0).toUpperCase() + trimmed.slice(1)}`);
+          }
+        });
+        
+        if (parts.length > 1) {
+          optimized = `Please help with the following:\n\n${parts.join('\n')}`;
+          improvements.push("Restructured into clear bullet points");
+        }
+      }
+    }
+
+    // Add context prompts for vague requests
+    if (text.length < 30 && !text.includes('specific') && !text.includes('detailed')) {
+      if (!optimized.includes('Please provide')) {
+        optimized = `${optimized}\n\nPlease provide specific examples and detailed explanations.`;
+        improvements.push("Added request for specificity");
+      }
+    }
+
+    return { optimized, improvements };
+  };
+
   const enhanceUserInput = async (input: string): Promise<{ enhanced: string; improvements: string[] }> => {
     const improvements: string[] = [];
     let enhanced = input.trim();
@@ -390,6 +529,26 @@ export const PromptEngineer = () => {
     if (spellCorrections.length > 0) {
       enhanced = corrected;
       improvements.push(...spellCorrections);
+    }
+
+    // Content quality analysis
+    const qualityAnalysis = analyzeContentQuality(enhanced);
+    if (qualityAnalysis.score < 70) {
+      improvements.push(`Content quality: ${qualityAnalysis.score}/100 - Consider improvements`);
+    }
+
+    // Professional tone enhancement
+    const { enhanced: professionalEnhanced, changes: toneChanges } = enhanceProfessionalTone(enhanced);
+    if (toneChanges.length > 0) {
+      enhanced = professionalEnhanced;
+      improvements.push(...toneChanges);
+    }
+
+    // Structure optimization
+    const { optimized: structureOptimized, improvements: structureImprovements } = optimizeStructure(enhanced);
+    if (structureImprovements.length > 0) {
+      enhanced = structureOptimized;
+      improvements.push(...structureImprovements);
     }
 
     // Grammar and style fixes

@@ -9,36 +9,106 @@ export class PromptGenerator {
     intent: string;
     specificity: 'vague' | 'moderate' | 'detailed';
     keywords: string[];
+    complexity: 'simple' | 'moderate' | 'complex';
+    domain: string;
+    urgency: 'low' | 'medium' | 'high';
   } {
     const lowerInput = input.toLowerCase();
     const words = input.split(/\s+/);
     
-    // Detect intent
+    // Enhanced intent detection with more patterns
     let intent = 'create';
-    if (lowerInput.includes('explain') || lowerInput.includes('how') || lowerInput.includes('what')) {
-      intent = 'explain';
-    } else if (lowerInput.includes('improve') || lowerInput.includes('fix') || lowerInput.includes('better')) {
-      intent = 'improve';
-    } else if (lowerInput.includes('analyze') || lowerInput.includes('review')) {
-      intent = 'analyze';
+    const intentPatterns = {
+      explain: /\b(explain|describe|tell|show|how|what|why|define|clarify|elaborate)\b/i,
+      improve: /\b(improve|enhance|optimize|refine|fix|better|upgrade|boost|polish)\b/i,
+      analyze: /\b(analyze|review|evaluate|assess|examine|compare|study|investigate)\b/i,
+      create: /\b(create|make|build|generate|produce|design|develop|craft|construct)\b/i,
+      solve: /\b(solve|fix|debug|troubleshoot|resolve|address|handle)\b/i,
+      plan: /\b(plan|strategy|roadmap|outline|organize|structure|schedule)\b/i,
+      learn: /\b(learn|understand|master|study|practice|tutorial|guide)\b/i
+    };
+
+    for (const [key, pattern] of Object.entries(intentPatterns)) {
+      if (pattern.test(input)) {
+        intent = key;
+        break;
+      }
     }
 
-    // Determine specificity
+    // Enhanced specificity analysis
     let specificity: 'vague' | 'moderate' | 'detailed' = 'vague';
-    if (words.length > 20) specificity = 'detailed';
-    else if (words.length > 8) specificity = 'moderate';
+    const specificityIndicators = {
+      detailed: /\b(specific|detailed|comprehensive|thorough|complete|in-depth|step-by-step)\b/i,
+      moderate: /\b(brief|quick|simple|basic|overview|summary)\b/i
+    };
 
-    // Extract keywords
-    const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'up', 'down', 'out', 'off', 'over', 'under', 'again', 'further', 'then', 'once'];
+    if (words.length > 25 || specificityIndicators.detailed.test(input)) {
+      specificity = 'detailed';
+    } else if (words.length > 10 || specificityIndicators.moderate.test(input)) {
+      specificity = 'moderate';
+    }
+
+    // Domain detection
+    let domain = 'general';
+    const domainPatterns = {
+      business: /\b(business|marketing|sales|revenue|profit|strategy|company|corporate|startup|enterprise)\b/i,
+      technical: /\b(code|programming|software|development|API|database|system|tech|algorithm|framework)\b/i,
+      creative: /\b(creative|art|design|visual|story|content|copy|brand|aesthetic|artistic)\b/i,
+      academic: /\b(research|study|academic|paper|thesis|analysis|scientific|scholarly|education)\b/i,
+      personal: /\b(personal|lifestyle|health|fitness|relationship|family|hobby|self)\b/i,
+      professional: /\b(professional|career|job|work|skill|resume|interview|workplace)\b/i
+    };
+
+    for (const [key, pattern] of Object.entries(domainPatterns)) {
+      if (pattern.test(input)) {
+        domain = key;
+        break;
+      }
+    }
+
+    // Complexity assessment
+    let complexity: 'simple' | 'moderate' | 'complex' = 'simple';
+    const complexityIndicators = {
+      complex: /\b(complex|advanced|sophisticated|comprehensive|multi-step|intricate)\b/i,
+      moderate: /\b(moderate|intermediate|standard|typical|regular)\b/i
+    };
+
+    if (words.length > 30 || complexityIndicators.complex.test(input)) {
+      complexity = 'complex';
+    } else if (words.length > 15 || complexityIndicators.moderate.test(input)) {
+      complexity = 'moderate';
+    }
+
+    // Urgency detection
+    let urgency: 'low' | 'medium' | 'high' = 'low';
+    const urgencyPatterns = {
+      high: /\b(urgent|asap|immediately|quickly|fast|rush|deadline|critical)\b/i,
+      medium: /\b(soon|timely|prompt|efficient|expedite)\b/i
+    };
+
+    for (const [key, pattern] of Object.entries(urgencyPatterns)) {
+      if (pattern.test(input)) {
+        urgency = key as 'medium' | 'high';
+        break;
+      }
+    }
+
+    // Enhanced keyword extraction
+    const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'up', 'down', 'out', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'please', 'help', 'me', 'i', 'you', 'this', 'that', 'these', 'those'];
     const keywords = words
       .filter(word => word.length > 2 && !stopWords.includes(word.toLowerCase()))
-      .slice(0, 10);
+      .map(word => word.toLowerCase())
+      .filter((word, index, arr) => arr.indexOf(word) === index) // Remove duplicates
+      .slice(0, 12);
 
     return {
-      topic: input.substring(0, 50) + (input.length > 50 ? '...' : ''),
+      topic: input.substring(0, 60) + (input.length > 60 ? '...' : ''),
       intent,
       specificity,
-      keywords
+      keywords,
+      complexity,
+      domain,
+      urgency
     };
   }
 
@@ -46,26 +116,58 @@ export class PromptGenerator {
     const analysis = this.analyzeInput(input);
     const prompts: PromptTemplate[] = [];
 
-    // Generate dynamic ending based on user intent and specificity
-    const getDynamicInstructions = (intent: string, specificity: string, keywords: string[]) => {
+    // Generate intelligent, context-aware instructions
+    const getDynamicInstructions = (intent: string, specificity: string, keywords: string[], domain: string, complexity: string) => {
       const isQuestion = input.toLowerCase().includes('?') || intent === 'explain';
-      const isCreative = keywords.some(k => ['creative', 'innovative', 'unique', 'original'].includes(k.toLowerCase()));
-      const isTechnical = keywords.some(k => ['technical', 'code', 'algorithm', 'process', 'method'].includes(k.toLowerCase()));
-      const isAnalytical = keywords.some(k => ['analyze', 'compare', 'evaluate', 'assess'].includes(k.toLowerCase()));
+      const isCreative = keywords.some(k => ['creative', 'innovative', 'unique', 'original', 'artistic'].includes(k));
+      const isTechnical = keywords.some(k => ['technical', 'code', 'algorithm', 'process', 'method', 'system'].includes(k));
+      const isAnalytical = keywords.some(k => ['analyze', 'compare', 'evaluate', 'assess', 'review'].includes(k));
+      const isBusiness = domain === 'business' || keywords.some(k => ['business', 'marketing', 'strategy', 'revenue'].includes(k));
+      const isUrgent = keywords.some(k => ['urgent', 'quick', 'fast', 'asap'].includes(k));
       
-      if (isCreative) {
-        return "Present your response with creative flair, using vivid examples and innovative perspectives that inspire action.";
-      } else if (isTechnical) {
-        return "Provide precise, technical details with step-by-step explanations and practical implementation guidance.";
-      } else if (isAnalytical) {
-        return "Include thorough analysis with data-driven insights, comparisons, and evidence-based conclusions.";
-      } else if (isQuestion) {
-        return "Answer directly and comprehensively, anticipating follow-up questions and providing actionable next steps.";
-      } else if (specificity === 'detailed') {
-        return "Deliver comprehensive coverage with multiple perspectives, detailed examples, and strategic recommendations.";
+      // Context-aware response formatting
+      let responseFormat = "";
+      let contentApproach = "";
+      let deliveryStyle = "";
+      
+      // Determine response format based on complexity and domain
+      if (complexity === 'complex' || specificity === 'detailed') {
+        responseFormat = "Structure your response with clear headings, numbered steps, and detailed explanations. ";
+      } else if (isUrgent || specificity === 'moderate') {
+        responseFormat = "Provide a concise, well-organized response with key points highlighted. ";
       } else {
-        return "Focus on clarity and actionable insights that can be immediately understood and applied.";
+        responseFormat = "Present information clearly with logical flow and easy-to-follow structure. ";
       }
+      
+      // Content approach based on intent and domain
+      if (isCreative && domain === 'creative') {
+        contentApproach = "Use innovative thinking, creative examples, and inspire new perspectives. ";
+      } else if (isTechnical && domain === 'technical') {
+        contentApproach = "Include specific technical details, code examples, best practices, and implementation guidance. ";
+      } else if (isAnalytical) {
+        contentApproach = "Provide data-driven insights, comparative analysis, and evidence-based recommendations. ";
+      } else if (isBusiness) {
+        contentApproach = "Focus on practical business value, ROI considerations, and strategic implications. ";
+      } else if (isQuestion || intent === 'explain') {
+        contentApproach = "Answer comprehensively with clear explanations, examples, and actionable next steps. ";
+      } else {
+        contentApproach = "Provide practical, actionable guidance with real-world applications. ";
+      }
+      
+      // Delivery style based on user needs
+      if (domain === 'academic') {
+        deliveryStyle = "Maintain scholarly rigor with citations and theoretical foundations where appropriate.";
+      } else if (domain === 'professional' || isBusiness) {
+        deliveryStyle = "Use professional language suitable for workplace communication and decision-making.";
+      } else if (keywords.some(k => ['beginner', 'simple', 'basic', 'easy'].includes(k))) {
+        deliveryStyle = "Explain concepts in accessible terms with beginner-friendly examples and avoid jargon.";
+      } else if (isUrgent) {
+        deliveryStyle = "Prioritize the most critical information and provide quick, implementable solutions.";
+      } else {
+        deliveryStyle = "Balance thoroughness with clarity, ensuring the response is both comprehensive and practical.";
+      }
+      
+      return responseFormat + contentApproach + deliveryStyle;
     };
 
     // Quick & Simple version
@@ -73,7 +175,7 @@ export class PromptGenerator {
       title: "Quick & Simple",
       prompt: `You are a professional ${analysis.intent === 'explain' ? 'educator' : 'content strategist'}. ${input}
 
-${getDynamicInstructions(analysis.intent, analysis.specificity, analysis.keywords)}`
+${getDynamicInstructions(analysis.intent, analysis.specificity, analysis.keywords, analysis.domain, analysis.complexity)}`
     });
 
     // Detailed & Professional version
@@ -93,7 +195,9 @@ ${getDynamicInstructions(analysis.intent, analysis.specificity, analysis.keyword
       title: "Detailed & Professional", 
       prompt: `Act as a subject matter expert in ${analysis.keywords.slice(0, 3).join(', ')}. Transform this request: "${input}" into a comprehensive guide.
 
-${getDetailedApproach()}`
+${getDetailedApproach()}
+
+${getDynamicInstructions(analysis.intent, analysis.specificity, analysis.keywords, analysis.domain, analysis.complexity)}`
     });
 
     // Creative & Engaging version
@@ -112,7 +216,9 @@ ${getDetailedApproach()}`
       title: "Creative & Engaging",
       prompt: `You are a creative strategist and storyteller specializing in ${analysis.keywords.slice(0, 2).join(' and ')}. Based on "${input}":
 
-${getCreativeApproach()}`
+${getCreativeApproach()}
+
+${getDynamicInstructions(analysis.intent, analysis.specificity, analysis.keywords, analysis.domain, analysis.complexity)}`
     });
 
     return prompts;
