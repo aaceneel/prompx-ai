@@ -148,6 +148,8 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden; /* Prevent horizontal scroll issues */
+    position: relative;
   }
 
   /* Enhanced touch targets for mobile */
@@ -251,5 +253,69 @@ All colors MUST be HSL.
 
   .safe-right {
     padding-right: env(safe-area-inset-right);
+  }
+
+  /* Layout positioning utilities to fix dynamic placement issues */
+  .position-stable {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+  }
+
+  .layout-fixed {
+    position: static !important;
+  }
+
+  /* Prevent unwanted absolute positioning */
+  [style*="left:"],
+  [style*="top:"] {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+  }
+
+  /* Better z-index management */
+  .z-base { z-index: 0; }
+  .z-dropdown { z-index: 1000; }
+  .z-modal { z-index: 2000; }
+  .z-toast { z-index: 3000; }
+
+  /* Dropdown specific fixes */
+  [data-radix-popper-content-wrapper] {
+    z-index: 1000 !important;
+    position: absolute !important;
+  }
+
+  /* Animation improvements */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }

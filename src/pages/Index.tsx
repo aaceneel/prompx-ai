@@ -1,7 +1,12 @@
 import { PromptEngineer } from "@/components/PromptEngineer";
+import Layout from "@/components/Layout";
 
 const Index = () => {
-  return <PromptEngineer />;
+  return (
+    <Layout>
+      <PromptEngineer />
+    </Layout>
+  );
 };
 
 export default Index;

@@ -845,9 +845,9 @@ export const PromptEngineer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-bg safe-top safe-bottom">
+    <div className="min-h-screen w-full bg-gradient-bg">
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 text-center bg-gradient-hero overflow-hidden w-full touch-pan-y">
+      <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 text-center bg-gradient-hero overflow-hidden">
         {/* Animated Background Layers */}
         <div className="absolute inset-0">
           {/* Dynamic gradient overlay with movement */}
@@ -855,21 +855,21 @@ export const PromptEngineer = () => {
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-zinc-800/50 to-transparent animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
           
           {/* Enhanced floating orbs */}
-          <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 opacity-30 pointer-events-none">
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl animate-float" style={{ animationDuration: '6s' }} />
             <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-l from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-float" style={{ animationDuration: '8s', animationDelay: '2s' }} />
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-cyan-500/15 to-blue-500/15 rounded-full blur-2xl animate-float" style={{ animationDuration: '7s', animationDelay: '3s' }} />
           </div>
           
-          {/* Animated particles */}
-          <div className="absolute inset-0 opacity-20">
+          {/* Animated particles - contained */}
+          <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
             {[...Array(12)].map((_, i) => (
               <div
                 key={i}
                 className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
+                  left: `${20 + (i * 8)}%`,
+                  top: `${30 + (i * 5)}%`,
                   animationDuration: `${2 + Math.random() * 3}s`,
                   animationDelay: `${Math.random() * 2}s`
                 }}
@@ -893,7 +893,7 @@ export const PromptEngineer = () => {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_60%,rgba(0,0,0,0.6)_100%)]" />
         </div>
         
-        <div className="container-responsive relative z-10 animate-fade-in">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 animate-fade-in">
           {/* Premium Badge */}
           <div className="inline-flex items-center gap-2 sm:gap-3 bg-black/40 backdrop-blur-xl border border-white/20 rounded-full px-3 sm:px-6 py-2 sm:py-3 mb-6 sm:mb-8 shadow-2xl hover:bg-black/50 transition-all duration-300 group touch-none">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -948,8 +948,8 @@ export const PromptEngineer = () => {
       </section>
 
       {/* Workflow Steps */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
-        <div className="container-responsive">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4 animate-fade-in">
               Engineering Process
@@ -986,8 +986,8 @@ export const PromptEngineer = () => {
       </section>
 
       {/* Main Tool */}
-      <section id="tool-selector" className="py-12 sm:py-16 md:py-20 lg:py-24">
-        <div className="container-responsive">
+      <section id="tool-selector" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Card className="bg-gradient-card shadow-xl border border-border/30 animate-scale-in overflow-hidden max-w-5xl mx-auto">
             <div className="p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12">
               <div className="text-center mb-6 sm:mb-8 md:mb-10">
@@ -1001,13 +1001,13 @@ export const PromptEngineer = () => {
 
               {/* Tool Selection */}
               <div className="mb-6 sm:mb-8 md:mb-10">
-                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto">
                   {AI_TOOLS.map((tool) => {
                     const Icon = tool.icon;
                     return (
                       <button
                         key={tool.id}
-                        className={`group relative flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 hover:shadow-lg min-h-[80px] sm:min-h-[120px] touch-manipulation ${
+                        className={`group relative flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 hover:shadow-lg min-h-[100px] sm:min-h-[120px] touch-manipulation ${
                           selectedTool === tool.id 
                             ? 'bg-gradient-primary text-white border-primary shadow-glow scale-[1.02] sm:scale-105' 
                             : 'bg-background border-border/50 hover:border-primary/40 hover:shadow-md hover:bg-primary/5'
@@ -1019,7 +1019,7 @@ export const PromptEngineer = () => {
                             ? 'bg-white/20 group-hover:animate-bounce-gentle' 
                             : 'bg-primary/10 group-hover:bg-primary/20'
                         }`}>
-                          <Icon className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-colors ${
+                          <Icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
                             selectedTool === tool.id ? 'text-white' : 'text-primary'
                           }`} />
                         </div>
@@ -1037,7 +1037,7 @@ export const PromptEngineer = () => {
                         </div>
                         {selectedTool === tool.id && (
                           <div className="absolute -top-1 -right-1">
-                            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full animate-pulse-subtle shadow-md" />
+                            <div className="w-3 h-3 bg-white rounded-full animate-pulse shadow-md" />
                           </div>
                         )}
                       </button>
@@ -1070,27 +1070,27 @@ export const PromptEngineer = () => {
                     rows={5}
                   />
                   
-                  {/* Voice Input Button */}
-                  <div className="absolute top-3 sm:top-4 right-3 sm:right-4 flex flex-col gap-2">
+                  {/* Voice Input Button - Fixed positioning */}
+                  <div className="absolute top-4 right-4 z-10">
                     <Button
                       variant={isRecording ? "destructive" : "secondary"}
                       size="sm"
                       onClick={isRecording ? stopVoiceInput : startVoiceInput}
-                      className="h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-full shadow-md hover:scale-110 transition-all duration-300 touch-manipulation"
+                      className="h-10 w-10 p-0 rounded-full shadow-md hover:scale-110 transition-all duration-300 touch-manipulation bg-background/90 backdrop-blur-sm border border-border/50"
                       disabled={isProcessingVoice}
                     >
                       {isProcessingVoice ? (
-                        <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                        <Loader2 className="w-4 h-4 animate-spin" />
                       ) : isRecording ? (
-                        <MicOff className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse text-white" />
+                        <MicOff className="w-4 h-4 animate-pulse text-white" />
                       ) : (
-                        <Mic className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <Mic className="w-4 h-4" />
                       )}
                     </Button>
                   </div>
                   
-                  {/* Character count and language indicator */}
-                  <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 flex flex-wrap items-center gap-1 sm:gap-2">
+                  {/* Character count and language indicator - Fixed positioning */}
+                  <div className="absolute bottom-4 right-4 z-10 flex flex-wrap items-center gap-2">
                     {detectedLanguage && (
                       <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
                         <Globe className="w-2 h-2 sm:w-3 sm:h-3 mr-1" />
