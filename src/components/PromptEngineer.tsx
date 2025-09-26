@@ -278,6 +278,84 @@ export const PromptEngineer = () => {
     return { intent, domain, style, confidence, context };
   };
 
+  // Advanced spell check function
+  const performAdvancedSpellCheck = (text: string): { corrected: string; spellCorrections: string[] } => {
+    const corrections: string[] = [];
+    let corrected = text;
+    
+    // Comprehensive spell check dictionary with common mistakes
+    const spellCheckDict: Record<string, string> = {
+      // Common typos
+      'teh': 'the', 'adn': 'and', 'ot': 'to', 'fo': 'of', 'hte': 'the',
+      'taht': 'that', 'wich': 'which', 'waht': 'what', 'whe': 'when',
+      'reciever': 'receiver', 'recieve': 'receive', 'acheive': 'achieve',
+      'beleive': 'believe', 'seperate': 'separate', 'definately': 'definitely',
+      'neccessary': 'necessary', 'occured': 'occurred', 'occurence': 'occurrence',
+      'begining': 'beginning', 'writting': 'writing', 'succesful': 'successful',
+      'accomodate': 'accommodate', 'embarass': 'embarrass', 'ocasionally': 'occasionally',
+      'proffesional': 'professional', 'bussiness': 'business', 'recomend': 'recommend',
+      'reccomend': 'recommend', 'explaination': 'explanation', 'alot': 'a lot',
+      'everytime': 'every time', 'aswell': 'as well', 'incase': 'in case',
+      'alright': 'all right', 'anyways': 'anyway', 'alittle': 'a little',
+      
+      // Homophones and confusing words
+      'loose': 'lose', 'brake': 'break', 'breath': 'breathe', 'advise': 'advice',
+      'affect': 'effect', 'than': 'then', 'were': 'where', 'weather': 'whether',
+      'accept': 'except', 'compliment': 'complement', 'stationary': 'stationery',
+      'principle': 'principal', 'capitol': 'capital', 'council': 'counsel',
+      'dessert': 'desert', 'lightening': 'lightning', 'waist': 'waste',
+      
+      // Technical terms
+      'algoritm': 'algorithm', 'databse': 'database', 'progam': 'program',
+      'programing': 'programming', 'sofware': 'software', 'hardward': 'hardware',
+      'framwork': 'framework', 'libary': 'library', 'functin': 'function',
+      'varaible': 'variable', 'instace': 'instance', 'responce': 'response',
+      'comunication': 'communication', 'compatiblity': 'compatibility',
+      
+      // Business terms
+      'managment': 'management', 'oppurtunity': 'opportunity', 'experiance': 'experience',
+      'performace': 'performance', 'implmentation': 'implementation', 'anaylsis': 'analysis',
+      'requirment': 'requirement', 'devlopment': 'development', 'efficency': 'efficiency',
+      'maintanance': 'maintenance', 'strategey': 'strategy', 'finacial': 'financial',
+      
+      // Double letter corrections
+      'comming': 'coming', 'runing': 'running', 'geting': 'getting',
+      'puting': 'putting', 'planing': 'planning', 'stoping': 'stopping', 
+      'droping': 'dropping', 'shiping': 'shipping',
+      
+      // Reversed letters
+      'form': 'from', 'united': 'untied', 'filed': 'field', 'trial': 'trail'
+    };
+    
+    // Apply spell corrections
+    let hasSpellCorrections = false;
+    Object.entries(spellCheckDict).forEach(([wrong, correct]) => {
+      const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+      if (regex.test(corrected)) {
+        corrected = corrected.replace(regex, correct);
+        if (!hasSpellCorrections) {
+          corrections.push("Fixed spelling errors");
+          hasSpellCorrections = true;
+        }
+      }
+    });
+    
+    // Fix double spaces and formatting
+    const originalCorrected = corrected;
+    corrected = corrected
+      .replace(/\s+/g, ' ') // Multiple spaces to single space
+      .replace(/\s*([.!?])/g, '$1') // Remove spaces before punctuation
+      .replace(/([.!?])\s*([a-z])/g, '$1 $2') // Add space after punctuation
+      .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between camelCase
+      .trim();
+      
+    if (corrected !== originalCorrected) {
+      corrections.push("Fixed text formatting");
+    }
+    
+    return { corrected, spellCorrections: corrections };
+  };
+
   const enhanceUserInput = async (input: string): Promise<{ enhanced: string; improvements: string[] }> => {
     const improvements: string[] = [];
     let enhanced = input.trim();
@@ -307,37 +385,56 @@ export const PromptEngineer = () => {
       improvements.push("Added proper punctuation");
     }
 
-    // Advanced typo and grammar fixes
-    const advancedFixes = [
-      // Common typos
-      { from: /\bi\b/g, to: 'I', desc: 'Fixed capitalization' },
-      { from: /\bteh\b/g, to: 'the', desc: 'Fixed typo' },
-      { from: /\brecieve\b/g, to: 'receive', desc: 'Fixed spelling' },
-      { from: /\bdefintely\b/g, to: 'definitely', desc: 'Fixed spelling' },
-      { from: /\bwant to\b/g, to: 'need to', desc: 'Made more specific' },
+    // Advanced spell check and grammar corrections
+    const { corrected, spellCorrections } = performAdvancedSpellCheck(enhanced);
+    if (spellCorrections.length > 0) {
+      enhanced = corrected;
+      improvements.push(...spellCorrections);
+    }
+
+    // Grammar and style fixes
+    const grammarFixes = [
+      // Common grammar mistakes
+      { from: /\bi\b/g, to: 'I', desc: 'Fixed capitalization of "I"' },
+      { from: /\byour\s+welcome\b/gi, to: 'you\'re welcome', desc: 'Fixed grammar (you\'re vs your)' },
+      { from: /\bits\s+([aeiou])/gi, to: 'it\'s $1', desc: 'Fixed contraction (it\'s vs its)' },
+      { from: /\btheir\s+going\b/gi, to: 'they\'re going', desc: 'Fixed grammar (they\'re vs their)' },
+      { from: /\bwhos\s+([a-z])/gi, to: 'who\'s $1', desc: 'Fixed contraction (who\'s vs whose)' },
+      { from: /\bthere\s+going\b/gi, to: 'they\'re going', desc: 'Fixed grammar (they\'re vs there)' },
+      { from: /\bcant\b/gi, to: 'can\'t', desc: 'Added apostrophe in contraction' },
+      { from: /\bdont\b/gi, to: 'don\'t', desc: 'Added apostrophe in contraction' },
+      { from: /\bwont\b/gi, to: 'won\'t', desc: 'Added apostrophe in contraction' },
+      { from: /\bisnt\b/gi, to: 'isn\'t', desc: 'Added apostrophe in contraction' },
+      { from: /\barent\b/gi, to: 'aren\'t', desc: 'Added apostrophe in contraction' },
+      { from: /\bcouldnt\b/gi, to: 'couldn\'t', desc: 'Added apostrophe in contraction' },
+      { from: /\bshouldnt\b/gi, to: 'shouldn\'t', desc: 'Added apostrophe in contraction' },
+      { from: /\bwouldnt\b/gi, to: 'wouldn\'t', desc: 'Added apostrophe in contraction' },
       
-      // Informal to formal
-      { from: /\bkinda\b/g, to: 'somewhat', desc: 'Made more professional' },
-      { from: /\bgonna\b/g, to: 'going to', desc: 'Made more formal' },
-      { from: /\bwanna\b/g, to: 'want to', desc: 'Made more formal' },
+      // Informal to formal/professional
+      { from: /\bkinda\b/gi, to: 'somewhat', desc: 'Made more professional' },
+      { from: /\bgonna\b/gi, to: 'going to', desc: 'Made more formal' },
+      { from: /\bwanna\b/gi, to: 'want to', desc: 'Made more formal' },
       { from: /\bu\b/g, to: 'you', desc: 'Expanded abbreviation' },
       { from: /\bur\b/g, to: 'your', desc: 'Expanded abbreviation' },
       { from: /\btn\b/g, to: 'than', desc: 'Fixed abbreviation' },
       { from: /\bw\/\b/g, to: 'with', desc: 'Expanded abbreviation' },
+      { from: /\b&\b/g, to: 'and', desc: 'Expanded symbol' },
       
       // Clarity improvements
-      { from: /\bthat will\b/g, to: 'that should', desc: 'Clarified requirements' },
-      { from: /\bstuff\b/g, to: 'content', desc: 'Made more specific' },
-      { from: /\bthings\b/g, to: 'elements', desc: 'Made more specific' },
-      { from: /\bokay\b/g, to: 'suitable', desc: 'Made more professional' },
-      { from: /\bcool\b/g, to: 'effective', desc: 'Made more professional' }
+      { from: /\bstuff\b/gi, to: 'content', desc: 'Made more specific' },
+      { from: /\bthings\b/gi, to: 'elements', desc: 'Made more specific' },
+      { from: /\bokay\b/gi, to: 'suitable', desc: 'Made more professional' },
+      { from: /\bcool\b/gi, to: 'effective', desc: 'Made more professional' },
+      { from: /\bawesome\b/gi, to: 'excellent', desc: 'Made more professional' }
     ];
 
-    advancedFixes.forEach(fix => {
+    let hasGrammarFixes = false;
+    grammarFixes.forEach(fix => {
       if (fix.from.test(enhanced)) {
         enhanced = enhanced.replace(fix.from, fix.to);
-        if (!improvements.includes(fix.desc)) {
-          improvements.push(fix.desc);
+        if (!hasGrammarFixes) {
+          improvements.push("Applied grammar and style corrections");
+          hasGrammarFixes = true;
         }
       }
     });
