@@ -46,47 +46,73 @@ export class PromptGenerator {
     const analysis = this.analyzeInput(input);
     const prompts: PromptTemplate[] = [];
 
+    // Generate dynamic ending based on user intent and specificity
+    const getDynamicInstructions = (intent: string, specificity: string, keywords: string[]) => {
+      const isQuestion = input.toLowerCase().includes('?') || intent === 'explain';
+      const isCreative = keywords.some(k => ['creative', 'innovative', 'unique', 'original'].includes(k.toLowerCase()));
+      const isTechnical = keywords.some(k => ['technical', 'code', 'algorithm', 'process', 'method'].includes(k.toLowerCase()));
+      const isAnalytical = keywords.some(k => ['analyze', 'compare', 'evaluate', 'assess'].includes(k.toLowerCase()));
+      
+      if (isCreative) {
+        return "Present your response with creative flair, using vivid examples and innovative perspectives that inspire action.";
+      } else if (isTechnical) {
+        return "Provide precise, technical details with step-by-step explanations and practical implementation guidance.";
+      } else if (isAnalytical) {
+        return "Include thorough analysis with data-driven insights, comparisons, and evidence-based conclusions.";
+      } else if (isQuestion) {
+        return "Answer directly and comprehensively, anticipating follow-up questions and providing actionable next steps.";
+      } else if (specificity === 'detailed') {
+        return "Deliver comprehensive coverage with multiple perspectives, detailed examples, and strategic recommendations.";
+      } else {
+        return "Focus on clarity and actionable insights that can be immediately understood and applied.";
+      }
+    };
+
     // Quick & Simple version
     prompts.push({
       title: "Quick & Simple",
-      prompt: `You are a professional ${analysis.intent === 'explain' ? 'educator' : 'content strategist'}. ${input}. 
+      prompt: `You are a professional ${analysis.intent === 'explain' ? 'educator' : 'content strategist'}. ${input}
 
-Please provide a clear, structured response with:
-- Direct answer to the main question
-- Key points in bullet format
-- Practical examples where relevant
-- Professional yet accessible tone
-
-Keep it concise but comprehensive.`
+${getDynamicInstructions(analysis.intent, analysis.specificity, analysis.keywords)}`
     });
 
     // Detailed & Professional version
+    const getDetailedApproach = () => {
+      if (analysis.intent === 'explain') {
+        return `Provide comprehensive education covering theory, practical application, and real-world implications with expert-level depth.`;
+      } else if (analysis.intent === 'improve') {
+        return `Deliver strategic improvement framework with measurable outcomes, implementation roadmap, and success metrics.`;
+      } else if (analysis.intent === 'analyze') {
+        return `Conduct thorough analysis with multiple methodologies, data interpretation, and actionable strategic recommendations.`;
+      } else {
+        return `Create comprehensive implementation guide with industry best practices, risk mitigation, and scalability considerations.`;
+      }
+    };
+
     prompts.push({
       title: "Detailed & Professional", 
-      prompt: `Act as a subject matter expert. Transform this request: "${input}" into a comprehensive guide.
+      prompt: `Act as a subject matter expert in ${analysis.keywords.slice(0, 3).join(', ')}. Transform this request: "${input}" into a comprehensive guide.
 
-Requirements:
-- **Background Context**: Relevant industry knowledge and frameworks
-- **Step-by-Step Process**: Clear, actionable instructions
-- **Best Practices**: Industry standards and recommendations  
-- **Examples**: Real-world applications and case studies
-- **Next Steps**: What to do after implementation
-
-Tone: Authoritative yet engaging, with clear structure using headers and bullet points.`
+${getDetailedApproach()}`
     });
 
-    // Creative & Engaging version  
+    // Creative & Engaging version
+    const getCreativeApproach = () => {
+      const themes = analysis.keywords.slice(0, 2);
+      if (analysis.intent === 'explain') {
+        return `Transform complex concepts into engaging narratives using ${themes.join(' and ')} as creative anchors that make learning memorable and fun.`;
+      } else if (themes.some(t => ['business', 'marketing', 'strategy'].includes(t.toLowerCase()))) {
+        return `Craft compelling business storytelling that connects emotionally while delivering strategic insights and innovative solutions.`;
+      } else {
+        return `Create inspiring content that sparks curiosity and motivates action through creative examples and fresh perspectives.`;
+      }
+    };
+
     prompts.push({
       title: "Creative & Engaging",
-      prompt: `You are a creative strategist and storyteller. Based on "${input}", create compelling content that:
+      prompt: `You are a creative strategist and storyteller specializing in ${analysis.keywords.slice(0, 2).join(' and ')}. Based on "${input}":
 
-- Opens with a hook that captures attention
-- Uses storytelling elements and analogies
-- Includes actionable insights with creative examples
-- Incorporates relevant trends and innovative approaches
-- Ends with thought-provoking questions or challenges
-
-Style: Dynamic, inspiring, and memorable while maintaining accuracy.`
+${getCreativeApproach()}`
     });
 
     return prompts;
@@ -96,49 +122,57 @@ Style: Dynamic, inspiring, and memorable while maintaining accuracy.`
     const analysis = this.analyzeInput(input);
     const prompts: PromptTemplate[] = [];
 
+    const getImageContext = () => {
+      const isPortrait = analysis.keywords.some(k => ['person', 'people', 'portrait', 'face'].includes(k.toLowerCase()));
+      const isLandscape = analysis.keywords.some(k => ['landscape', 'nature', 'outdoor', 'scenery'].includes(k.toLowerCase()));
+      const isProduct = analysis.keywords.some(k => ['product', 'object', 'commercial', 'brand'].includes(k.toLowerCase()));
+      
+      if (isPortrait) return 'portrait photography with perfect skin tones and natural expressions';
+      if (isLandscape) return 'landscape photography with dramatic natural lighting and atmospheric depth';
+      if (isProduct) return 'commercial product photography with clean backgrounds and professional presentation';
+      return 'professional photography with optimal composition and lighting';
+    };
+
     // Photorealistic version
     prompts.push({
       title: "Photorealistic",
       prompt: `Create a stunning photorealistic image: ${input}
 
-Technical specs:
-- Style: Professional photography, cinematic lighting
-- Quality: 8K resolution, ultra-detailed, masterpiece quality
-- Camera: DSLR setup, perfect focus, optimal composition
-- Lighting: Dramatic, well-balanced, studio-quality
-- Color: Rich saturation, professional color grading
-
-Composition: Rule of thirds, dynamic angles, depth of field --ar 16:9 --style raw`
+Focus on ${getImageContext()}, captured with cinema-quality equipment and post-production excellence. --ar 16:9 --style raw --quality 2`
     });
 
     // Artistic & Creative version
+    const getArtisticStyle = () => {
+      const style = analysis.keywords.find(k => ['modern', 'vintage', 'abstract', 'realistic', 'minimalist', 'detailed'].includes(k.toLowerCase()));
+      const mood = analysis.keywords.find(k => ['dark', 'bright', 'colorful', 'monochrome', 'vibrant', 'subtle'].includes(k.toLowerCase()));
+      
+      return `${style || 'contemporary'} artistic style with ${mood || 'balanced'} aesthetic, emphasizing ${analysis.keywords.slice(0, 2).join(' and ')} themes`;
+    };
+
     prompts.push({
       title: "Artistic & Creative", 
       prompt: `Generate artistic interpretation of: ${input}
 
-Art direction:
-- Style: Modern digital art, concept art quality
-- Mood: ${analysis.intent === 'create' ? 'Inspiring and captivating' : 'Professional and clean'}
-- Colors: Vibrant palette, perfect harmony, visual impact
-- Technique: Mixed media, detailed textures, artistic flair
-- Composition: Visually striking, balanced, memorable
-
-Output: Gallery-worthy, print-ready, trending on ArtStation --v 6`
+Create ${getArtisticStyle()} that captures the essence of your vision with masterful artistic execution. --v 6 --stylize 750`
     });
 
     // Commercial & Clean version
+    const getCommercialPurpose = () => {
+      if (analysis.keywords.some(k => ['marketing', 'advertisement', 'promotion'].includes(k.toLowerCase()))) {
+        return 'marketing campaign ready with strong brand appeal and conversion optimization';
+      } else if (analysis.keywords.some(k => ['website', 'web', 'digital'].includes(k.toLowerCase()))) {
+        return 'web-optimized with fast loading and responsive design considerations';
+      } else if (analysis.keywords.some(k => ['social', 'media', 'instagram'].includes(k.toLowerCase()))) {
+        return 'social media optimized for maximum engagement and shareability';
+      }
+      return 'versatile commercial use with professional presentation standards';
+    };
+
     prompts.push({
       title: "Commercial & Clean",
       prompt: `Professional commercial image for: ${input}
 
-Business requirements:
-- Purpose: Marketing/advertising ready
-- Style: Clean, modern, brand-appropriate  
-- Background: Minimalist or contextually relevant
-- Quality: High-resolution, print and web ready
-- Mood: Professional, trustworthy, appealing to target audience
-
-Technical: Perfect lighting, sharp focus, commercial photography standards --ar 1:1`
+Deliver ${getCommercialPurpose()} with clean, modern aesthetics that align with current design trends. --ar 1:1 --quality 2`
     });
 
     return prompts;
@@ -148,153 +182,193 @@ Technical: Perfect lighting, sharp focus, commercial photography standards --ar 
     const analysis = this.analyzeInput(input);
     const prompts: PromptTemplate[] = [];
 
+    const getCodeContext = () => {
+      const tech = analysis.keywords.find(k => ['react', 'javascript', 'python', 'java', 'api', 'database'].includes(k.toLowerCase()));
+      const purpose = analysis.keywords.find(k => ['app', 'website', 'system', 'algorithm', 'function'].includes(k.toLowerCase()));
+      
+      if (tech && purpose) {
+        return `optimized ${tech} ${purpose} with enterprise-grade architecture and comprehensive testing suite`;
+      } else if (analysis.intent === 'improve') {
+        return `refactored solution with enhanced performance, security, and maintainability standards`;
+      } else {
+        return `robust, scalable solution following current industry best practices and design patterns`;
+      }
+    };
+
     // Production Ready
     prompts.push({
       title: "Production Ready",
       prompt: `Create production-grade code for: ${input}
 
-Requirements:
-- **Architecture**: Clean, scalable, maintainable design
-- **Code Quality**: Follow industry best practices and conventions
-- **Error Handling**: Comprehensive error management and validation
-- **Documentation**: Clear comments and usage examples
-- **Testing**: Include unit tests and edge case handling
-- **Performance**: Optimized for efficiency and speed
-
-Provide complete implementation with setup instructions and deployment notes.`
+Deliver ${getCodeContext()} with complete documentation and deployment readiness.`
     });
 
     // Learning & Educational
+    const getLearningApproach = () => {
+      if (analysis.specificity === 'vague') {
+        return `comprehensive learning guide starting from basics and building up to advanced concepts with interactive examples`;
+      } else if (analysis.keywords.some(k => ['beginner', 'learn', 'tutorial'].includes(k.toLowerCase()))) {
+        return `beginner-friendly tutorial with clear explanations, practical exercises, and common mistake prevention`;
+      } else {
+        return `structured educational implementation with progressive complexity and hands-on learning opportunities`;
+      }
+    };
+
     prompts.push({
       title: "Learning & Educational",
       prompt: `Build educational implementation of: ${input}
 
-Structure:
-1. **Concept Explanation**: What this solves and why
-2. **Step-by-Step Build**: Incremental development process
-3. **Code Comments**: Detailed explanations of logic
-4. **Variations**: Different approaches and their trade-offs
-5. **Common Pitfalls**: What to avoid and debugging tips
-6. **Extensions**: How to expand and improve
-
-Focus on learning and understanding over complexity.`
+Create ${getLearningApproach()} that maximizes understanding and retention.`
     });
 
     // Quick Solution
+    const getQuickSolutionFocus = () => {
+      if (analysis.intent === 'fix') {
+        return `immediate fix with minimal changes that resolves the core issue efficiently and safely`;
+      } else if (analysis.keywords.some(k => ['prototype', 'mvp', 'demo'].includes(k.toLowerCase()))) {
+        return `rapid prototype demonstrating core functionality with clean, extensible foundation`;
+      } else {
+        return `streamlined solution focusing on essential features with clear, maintainable code structure`;
+      }
+    };
+
     prompts.push({
       title: "Quick Solution",
       prompt: `Rapid implementation for: ${input}
 
-Deliver:
-- Minimal viable solution that works immediately
-- Clean, readable code with essential features only
-- Basic error handling for common scenarios  
-- Simple usage examples
-- Quick setup instructions
-
-Priority: Speed of implementation while maintaining code quality.`
+Provide ${getQuickSolutionFocus()} ready for immediate use and future enhancement.`
     });
 
     return prompts;
   }
 
   static generateForAudio(input: string): PromptTemplate[] {
+    const analysis = this.analyzeInput(input);
     const prompts: PromptTemplate[] = [];
+
+    const getAudioContext = () => {
+      if (analysis.keywords.some(k => ['podcast', 'interview', 'conversation'].includes(k.toLowerCase()))) {
+        return 'engaging podcast-style delivery with natural conversational flow and authentic personality';
+      } else if (analysis.keywords.some(k => ['presentation', 'business', 'corporate'].includes(k.toLowerCase()))) {
+        return 'executive-level professional presentation with authoritative confidence and clarity';
+      } else if (analysis.keywords.some(k => ['story', 'narrative', 'book'].includes(k.toLowerCase()))) {
+        return 'compelling storytelling with dramatic pacing and emotional resonance';
+      } else {
+        return 'versatile professional narration adapted to content requirements and audience expectations';
+      }
+    };
 
     // Professional Narration
     prompts.push({
       title: "Professional Narration",
       prompt: `Create professional audio narration for: ${input}
 
-Voice specifications:
-- Tone: Authoritative yet warm and engaging
-- Pace: Well-measured, clear articulation
-- Style: Conversational professional, trustworthy
-- Emotion: Appropriate to content, genuine
-- Quality: Studio-grade, broadcast ready
-
-Technical: 48kHz, noise-free, optimized levels, perfect pronunciation`
+Deliver ${getAudioContext()} with broadcast-quality production standards.`
     });
 
     // Conversational & Friendly
+    const getFriendlyApproach = () => {
+      if (analysis.keywords.some(k => ['tutorial', 'guide', 'how-to'].includes(k.toLowerCase()))) {
+        return 'friendly tutorial style that makes complex topics feel approachable and easy to understand';
+      } else if (analysis.keywords.some(k => ['story', 'personal', 'experience'].includes(k.toLowerCase()))) {
+        return 'intimate storytelling that creates personal connection and emotional engagement';
+      } else {
+        return 'warm, relatable conversation that feels like chatting with a knowledgeable friend';
+      }
+    };
+
     prompts.push({
       title: "Conversational & Friendly",
       prompt: `Generate friendly, conversational audio: ${input}
 
-Characteristics:
-- Personality: Warm, approachable, relatable
-- Delivery: Natural rhythm, conversational flow
-- Engagement: Interactive tone, as if speaking to a friend
-- Energy: Enthusiastic but not overwhelming
-- Clarity: Easy to understand, well-paced
-
-Format: Podcast-quality, engaging storytelling style`
+Create ${getFriendlyApproach()} with authentic personality and natural charm.`
     });
 
     // Formal & Authoritative
+    const getAuthorityLevel = () => {
+      if (analysis.keywords.some(k => ['academic', 'research', 'scientific'].includes(k.toLowerCase()))) {
+        return 'scholarly authority with academic precision and evidence-based credibility';
+      } else if (analysis.keywords.some(k => ['business', 'executive', 'corporate'].includes(k.toLowerCase()))) {
+        return 'executive leadership presence with strategic insight and business acumen';
+      } else if (analysis.keywords.some(k => ['legal', 'medical', 'technical'].includes(k.toLowerCase()))) {
+        return 'professional expertise with technical accuracy and regulatory compliance';
+      } else {
+        return 'authoritative expertise with confident delivery and subject matter mastery';
+      }
+    };
+
     prompts.push({
       title: "Formal & Authoritative", 
       prompt: `Produce formal, authoritative audio content: ${input}
 
-Professional standards:
-- Authority: Expert-level confidence and knowledge
-- Clarity: Precise pronunciation, perfect diction
-- Formality: Business/academic appropriate tone
-- Credibility: Trustworthy, well-researched delivery
-- Structure: Clear introduction, body, conclusion
-
-Output: Conference/presentation quality, executive-level polish`
+Establish ${getAuthorityLevel()} with impeccable professional presentation standards.`
     });
 
     return prompts;
   }
 
   static generateForVideo(input: string): PromptTemplate[] {
+    const analysis = this.analyzeInput(input);
     const prompts: PromptTemplate[] = [];
+
+    const getCinematicStyle = () => {
+      if (analysis.keywords.some(k => ['commercial', 'advertisement', 'brand'].includes(k.toLowerCase()))) {
+        return 'high-end commercial cinematography with brand storytelling and emotional impact';
+      } else if (analysis.keywords.some(k => ['documentary', 'interview', 'real'].includes(k.toLowerCase()))) {
+        return 'documentary-style cinematography with authentic storytelling and compelling visual narrative';
+      } else if (analysis.keywords.some(k => ['artistic', 'creative', 'experimental'].includes(k.toLowerCase()))) {
+        return 'artistic cinematography with creative visual language and innovative filming techniques';
+      } else {
+        return 'cinematic excellence with professional production values and compelling visual storytelling';
+      }
+    };
 
     // Cinematic & Professional
     prompts.push({
       title: "Cinematic & Professional",
       prompt: `Create cinematic video sequence: ${input}
 
-Production value:
-- Cinematography: Professional camera work, varied shot compositions
-- Lighting: Cinematic lighting setup, mood-appropriate
-- Movement: Smooth camera moves, dynamic transitions  
-- Color: Professional color grading, visual consistency
-- Pacing: Engaging rhythm, well-timed cuts
-
-Technical: 4K resolution, 24fps, broadcast quality --duration 60s`
+Produce ${getCinematicStyle()} with 4K broadcast quality. --duration 60s --fps 24`
     });
 
     // Social Media Optimized
+    const getSocialStrategy = () => {
+      if (analysis.keywords.some(k => ['tiktok', 'viral', 'trending'].includes(k.toLowerCase()))) {
+        return 'viral TikTok content with trending hooks, fast-paced editing, and maximum shareability';
+      } else if (analysis.keywords.some(k => ['instagram', 'reel', 'story'].includes(k.toLowerCase()))) {
+        return 'Instagram-optimized content with aesthetic appeal and engagement-driven storytelling';
+      } else if (analysis.keywords.some(k => ['educational', 'tutorial', 'tips'].includes(k.toLowerCase()))) {
+        return 'educational social content with quick learning value and actionable takeaways';
+      } else {
+        return 'platform-optimized content designed for maximum engagement and organic reach';
+      }
+    };
+
     prompts.push({
       title: "Social Media Ready",
       prompt: `Generate social media video for: ${input}
 
-Social optimization:
-- Format: Vertical/square for mobile consumption
-- Hook: Attention-grabbing opening 3 seconds
-- Pacing: Fast, engaging, thumb-stopping content
-- Text: On-screen text for sound-off viewing
-- CTA: Clear call-to-action for engagement
-
-Platform: Instagram/TikTok ready, viral potential --aspect 9:16 --duration 30s`
+Create ${getSocialStrategy()} with mobile-first design. --aspect 9:16 --duration 30s`
     });
 
-    // Educational & Informative
+    // Educational & Clear
+    const getEducationalFocus = () => {
+      if (analysis.keywords.some(k => ['tutorial', 'how-to', 'guide'].includes(k.toLowerCase()))) {
+        return 'comprehensive tutorial with step-by-step demonstrations and practical hands-on learning';
+      } else if (analysis.keywords.some(k => ['explain', 'concept', 'theory'].includes(k.toLowerCase()))) {
+        return 'concept explanation with visual aids, examples, and clear knowledge progression';
+      } else if (analysis.keywords.some(k => ['course', 'lesson', 'training'].includes(k.toLowerCase()))) {
+        return 'structured educational content with learning objectives and retention optimization';
+      } else {
+        return 'educational video content designed for effective knowledge transfer and engagement';
+      }
+    };
+
     prompts.push({
       title: "Educational & Clear",
       prompt: `Produce educational video content: ${input}
 
-Educational focus:
-- Structure: Clear introduction, main content, summary
-- Visuals: Supporting graphics, demonstrations, examples
-- Narration: Clear, well-paced explanation
-- Flow: Logical progression, easy to follow
-- Retention: Engaging throughout, key points emphasized
-
-Style: Professional educational, tutorial-quality production`
+Deliver ${getEducationalFocus()} with professional instructional design principles.`
     });
 
     return prompts;
