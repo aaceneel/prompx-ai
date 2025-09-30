@@ -149,7 +149,7 @@ const Auth = () => {
             textShadow: '0 0 50px rgba(255,255,255,0.10)'
           }}
         >
-          PromptX
+          PrompX
         </div>
       </div>
 
@@ -184,7 +184,7 @@ const Auth = () => {
         <CardHeader className="space-y-3 sm:space-y-4 pb-8 px-6 sm:px-8 pt-10 relative z-10">
           <div className="space-y-3">
             <CardTitle className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
-              Welcome to <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">PromptX</span>
+              Welcome to <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">PrompX</span>
             </CardTitle>
             <CardDescription className="text-zinc-400 text-base leading-relaxed font-light">
               Sign in to continue your journey
