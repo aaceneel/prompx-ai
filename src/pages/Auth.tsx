@@ -142,12 +142,11 @@ const Auth = () => {
         <div 
           className="text-[clamp(5rem,20vw,24vw)] sm:text-[clamp(8rem,20vw,26vw)] font-extrabold whitespace-nowrap tracking-tighter"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.15) 100%)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.12) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            letterSpacing: '-0.05em',
-            textShadow: '0 0 40px rgba(255,255,255,0.1)'
+            letterSpacing: '-0.05em'
           }}
         >
           PrompX
