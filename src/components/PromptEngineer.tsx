@@ -76,12 +76,18 @@ export const PromptEngineer = () => {
   const [isProcessingVoice, setIsProcessingVoice] = useState(false);
   const [detectedLanguage, setDetectedLanguage] = useState<string>('');
   const [voiceTranscript, setVoiceTranscript] = useState('');
+  const [interimTranscript, setInterimTranscript] = useState('');
   const [supportedLanguages, setSupportedLanguages] = useState<string[]>([]);
   const [isListening, setIsListening] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const [confidence, setConfidence] = useState(0);
   const recognitionRef = useRef<any>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const { toast } = useToast();
 
-  // Initialize voice recognition on component mount
+  // Initialize voice recognition and audio visualization
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -109,34 +115,49 @@ export const PromptEngineer = () => {
       };
       
       recognitionRef.current.onresult = async (event: any) => {
-        let transcript = '';
-        let isFinal = false;
+        let finalTranscript = '';
+        let interimText = '';
+        let maxConfidence = 0;
         
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i];
-          transcript += result[0].transcript;
+          const transcript = result[0].transcript;
+          const currentConfidence = result[0].confidence;
+          
           if (result.isFinal) {
-            isFinal = true;
+            finalTranscript += transcript + ' ';
+            maxConfidence = Math.max(maxConfidence, currentConfidence);
+          } else {
+            interimText += transcript;
           }
         }
         
-        setVoiceTranscript(transcript);
+        // Update interim transcript for real-time display
+        setInterimTranscript(interimText);
         
-        if (isFinal && transcript.trim()) {
+        // Update confidence level
+        if (maxConfidence > 0) {
+          setConfidence(Math.round(maxConfidence * 100));
+        }
+        
+        if (finalTranscript.trim()) {
+          const fullTranscript = voiceTranscript + finalTranscript;
+          setVoiceTranscript(fullTranscript);
+          setInterimTranscript('');
           setIsProcessingVoice(true);
           
           // Detect language
-          const language = await detectLanguage(transcript);
+          const language = await detectLanguage(fullTranscript);
           setDetectedLanguage(language);
           
           // Auto-enhance the voice input
-          const { enhanced, improvements } = await enhanceUserInput(transcript);
+          const { enhanced, improvements } = await enhanceUserInput(fullTranscript);
           setUserInput(enhanced);
           
           if (improvements.length > 0) {
             toast({
-              title: `Voice Input Processed! (${language})`,
-              description: `Applied ${improvements.length} enhancement${improvements.length > 1 ? 's' : ''} to your voice input`,
+              title: `🎯 Voice Input Processed! (${language})`,
+              description: `Applied ${improvements.length} enhancement${improvements.length > 1 ? 's' : ''} • ${confidence}% confidence`,
             });
           }
           
@@ -160,8 +181,14 @@ export const PromptEngineer = () => {
       recognitionRef.current.onend = () => {
         setIsRecording(false);
         setIsListening(false);
+        setInterimTranscript('');
+        stopAudioVisualization();
       };
     }
+    
+    return () => {
+      stopAudioVisualization();
+    };
   }, []);
 
   const handleCopy = async (text: string, index: number) => {
@@ -182,6 +209,47 @@ export const PromptEngineer = () => {
     }
   };
 
+  // Audio visualization functions
+  const startAudioVisualization = async (stream: MediaStream) => {
+    try {
+      audioContextRef.current = new AudioContext();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      source.connect(analyserRef.current);
+      analyserRef.current.fftSize = 256;
+      
+      const bufferLength = analyserRef.current.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      const updateAudioLevel = () => {
+        if (!analyserRef.current) return;
+        
+        analyserRef.current.getByteFrequencyData(dataArray);
+        const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+        setAudioLevel(Math.min(100, Math.round(average / 2.55)));
+        
+        animationFrameRef.current = requestAnimationFrame(updateAudioLevel);
+      };
+      
+      updateAudioLevel();
+    } catch (error) {
+      console.error('Audio visualization error:', error);
+    }
+  };
+
+  const stopAudioVisualization = () => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    analyserRef.current = null;
+    setAudioLevel(0);
+  };
+
   const startVoiceInput = async () => {
     if (!recognitionRef.current) {
       toast({
@@ -193,15 +261,18 @@ export const PromptEngineer = () => {
     }
     
     try {
-      // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Request microphone permission and start audio visualization
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      await startAudioVisualization(stream);
       
       // Auto-detect language or use browser language
       const browserLang = navigator.language || 'en-US';
       recognitionRef.current.lang = browserLang;
       
       setVoiceTranscript('');
+      setInterimTranscript('');
       setDetectedLanguage('');
+      setConfidence(0);
       recognitionRef.current.start();
       
       toast({
@@ -209,6 +280,7 @@ export const PromptEngineer = () => {
         description: "Speak your prompt in any language...",
       });
     } catch (error) {
+      stopAudioVisualization();
       toast({
         title: "Microphone Access Denied",
         description: "Please allow microphone access to use voice input",
@@ -221,6 +293,7 @@ export const PromptEngineer = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
+    stopAudioVisualization();
   };
 
   const detectUserIntent = (input: string): {
@@ -1260,23 +1333,41 @@ export const PromptEngineer = () => {
                     rows={5}
                   />
                   
-                  {/* Voice Input Button - Fixed positioning */}
+                  {/* Voice Input Button - Enhanced */}
                   <div className="absolute top-4 right-4 z-10">
-                    <Button
-                      variant={isRecording ? "destructive" : "secondary"}
-                      size="sm"
-                      onClick={isRecording ? stopVoiceInput : startVoiceInput}
-                      className="h-10 w-10 p-0 rounded-full shadow-md hover:scale-110 transition-all duration-300 touch-manipulation bg-background/90 backdrop-blur-sm border border-border/50"
-                      disabled={isProcessingVoice}
-                    >
-                      {isProcessingVoice ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : isRecording ? (
-                        <MicOff className="w-4 h-4 animate-pulse text-white" />
-                      ) : (
-                        <Mic className="w-4 h-4" />
+                    <div className="relative">
+                      <Button
+                        variant={isRecording ? "destructive" : "secondary"}
+                        size="sm"
+                        onClick={isRecording ? stopVoiceInput : startVoiceInput}
+                        className={`h-12 w-12 p-0 rounded-full shadow-lg hover:scale-110 transition-all duration-300 touch-manipulation ${
+                          isRecording 
+                            ? 'bg-gradient-to-r from-red-500 to-pink-500 border-2 border-white dark:border-red-900' 
+                            : 'bg-gradient-to-r from-primary/90 to-primary backdrop-blur-sm border-2 border-primary/20'
+                        }`}
+                        disabled={isProcessingVoice}
+                      >
+                        {isProcessingVoice ? (
+                          <Loader2 className="w-5 h-5 animate-spin text-white" />
+                        ) : isRecording ? (
+                          <>
+                            <MicOff className="w-5 h-5 animate-pulse text-white" />
+                            {/* Animated ring for recording state */}
+                            <div className="absolute inset-0 rounded-full border-2 border-white animate-ping opacity-75" />
+                          </>
+                        ) : (
+                          <Mic className="w-5 h-5 text-white" />
+                        )}
+                      </Button>
+                      
+                      {/* Audio level indicator */}
+                      {isRecording && audioLevel > 0 && (
+                        <div 
+                          className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 bg-gradient-to-r from-red-500 to-pink-500 rounded-full transition-all duration-100"
+                          style={{ width: `${Math.max(20, audioLevel)}%` }}
+                        />
                       )}
-                    </Button>
+                    </div>
                   </div>
                   
                   {/* Character count and language indicator - Fixed positioning */}
@@ -1296,21 +1387,75 @@ export const PromptEngineer = () => {
                   </div>
                 </div>
 
-                {/* Voice Recording Status */}
+                {/* Voice Recording Status with Real-time Transcription */}
                 {isRecording && (
-                  <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg sm:rounded-xl animate-pulse">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
-                      <span className="text-red-600 dark:text-red-400 font-medium text-sm sm:text-base">
-                        🎤 Listening... Speak in any language
-                      </span>
-                      <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 animate-bounce-gentle flex-shrink-0" />
+                  <div className="mt-3 sm:mt-4 space-y-3">
+                    {/* Recording indicator with audio level visualization */}
+                    <div className="p-3 sm:p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/30 dark:to-pink-950/30 border border-red-200 dark:border-red-800 rounded-lg sm:rounded-xl overflow-hidden relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-pink-500/10 animate-pulse" />
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
+                          <span className="text-red-600 dark:text-red-400 font-bold text-sm sm:text-base">
+                            🎤 Listening...
+                          </span>
+                          <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 animate-bounce-gentle flex-shrink-0" />
+                          {confidence > 0 && (
+                            <Badge className="ml-auto bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
+                              {confidence}% confidence
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        {/* Audio level visualization */}
+                        <div className="mb-3">
+                          <div className="flex items-center gap-1 h-8">
+                            {[...Array(20)].map((_, i) => {
+                              const barHeight = Math.max(4, (audioLevel / 100) * 32 * (1 - Math.abs(i - 10) / 10));
+                              return (
+                                <div
+                                  key={i}
+                                  className="flex-1 bg-gradient-to-t from-red-500 to-pink-500 rounded-full transition-all duration-100"
+                                  style={{
+                                    height: `${barHeight}px`,
+                                    opacity: audioLevel > 0 ? 1 : 0.3
+                                  }}
+                                />
+                              );
+                            })}
+                          </div>
+                          <div className="flex justify-between items-center mt-1">
+                            <span className="text-xs text-red-600/70 dark:text-red-400/70">Audio Level</span>
+                            <span className="text-xs font-mono text-red-600 dark:text-red-400">{audioLevel}%</span>
+                          </div>
+                        </div>
+                        
+                        {/* Real-time interim transcription */}
+                        {interimTranscript && (
+                          <div className="bg-white/50 dark:bg-black/30 rounded-lg p-3 border border-red-300/50 dark:border-red-700/50">
+                            <div className="flex items-start gap-2">
+                              <span className="text-xs font-semibold text-red-700 dark:text-red-300">Live:</span>
+                              <p className="text-sm text-red-700 dark:text-red-300 italic break-words flex-1 animate-pulse">
+                                "{interimTranscript}"
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Final transcript display */}
+                        {voiceTranscript && (
+                          <div className="bg-white/70 dark:bg-black/40 rounded-lg p-3 border border-red-300/50 dark:border-red-700/50 mt-2">
+                            <div className="flex items-start gap-2">
+                              <span className="text-xs font-semibold text-red-800 dark:text-red-200">Final:</span>
+                              <p className="text-sm text-red-800 dark:text-red-200 break-words flex-1">
+                                {voiceTranscript}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    {voiceTranscript && (
-                      <p className="text-red-700 dark:text-red-300 mt-2 text-xs sm:text-sm italic break-words">
-                        "{voiceTranscript}"
-                      </p>
-                    )}
                   </div>
                 )}
 
