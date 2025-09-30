@@ -144,24 +144,47 @@ export const PromptEngineer = () => {
           const fullTranscript = voiceTranscript + finalTranscript;
           setVoiceTranscript(fullTranscript);
           setInterimTranscript('');
-          setIsProcessingVoice(true);
           
-          // Detect language
-          const language = await detectLanguage(fullTranscript);
-          setDetectedLanguage(language);
+          // Immediately update the textarea with the transcript
+          setUserInput(fullTranscript);
           
-          // Auto-enhance the voice input
-          const { enhanced, improvements } = await enhanceUserInput(fullTranscript);
-          setUserInput(enhanced);
-          
-          if (improvements.length > 0) {
+          // Detect language and enhance in the background
+          try {
+            setIsProcessingVoice(true);
+            
+            const language = await detectLanguage(fullTranscript);
+            setDetectedLanguage(language);
+            
+            // Try to enhance the input, but don't block if it fails
+            const { enhanced, improvements } = await enhanceUserInput(fullTranscript);
+            
+            // Only update if enhancement actually improved the input
+            if (enhanced && enhanced !== fullTranscript) {
+              setUserInput(enhanced);
+              
+              if (improvements.length > 0) {
+                toast({
+                  title: `🎯 Voice Input Enhanced! (${language})`,
+                  description: `Applied ${improvements.length} improvement${improvements.length > 1 ? 's' : ''} • ${confidence}% confidence`,
+                });
+              }
+            } else {
+              // Just show that voice input was captured
+              toast({
+                title: `🎤 Voice Input Captured! (${language})`,
+                description: `${confidence}% confidence`,
+              });
+            }
+          } catch (error) {
+            console.error('Voice enhancement error:', error);
+            // Input is already set to the transcript, so user sees their text
             toast({
-              title: `🎯 Voice Input Processed! (${language})`,
-              description: `Applied ${improvements.length} enhancement${improvements.length > 1 ? 's' : ''} • ${confidence}% confidence`,
+              title: "✅ Voice Input Captured!",
+              description: "Your voice input has been captured successfully",
             });
+          } finally {
+            setIsProcessingVoice(false);
           }
-          
-          setIsProcessingVoice(false);
         }
       };
       
@@ -254,7 +277,7 @@ export const PromptEngineer = () => {
     if (!recognitionRef.current) {
       toast({
         title: "Voice Input Not Supported",
-        description: "Your browser doesn't support voice input",
+        description: "Your browser doesn't support voice input. Try using Chrome or Edge.",
         variant: "destructive",
       });
       return;
@@ -262,28 +285,38 @@ export const PromptEngineer = () => {
     
     try {
       // Request microphone permission and start audio visualization
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        } 
+      });
       await startAudioVisualization(stream);
       
       // Auto-detect language or use browser language
       const browserLang = navigator.language || 'en-US';
       recognitionRef.current.lang = browserLang;
       
+      // Clear previous state
       setVoiceTranscript('');
       setInterimTranscript('');
       setDetectedLanguage('');
       setConfidence(0);
+      setUserInput(''); // Clear the input field
+      
       recognitionRef.current.start();
       
       toast({
-        title: "🎤 Voice Input Started",
-        description: "Speak your prompt in any language...",
+        title: "🎤 Listening...",
+        description: "Speak your prompt clearly",
       });
     } catch (error) {
+      console.error('Microphone error:', error);
       stopAudioVisualization();
       toast({
         title: "Microphone Access Denied",
-        description: "Please allow microphone access to use voice input",
+        description: "Please allow microphone access in your browser settings",
         variant: "destructive",
       });
     }
