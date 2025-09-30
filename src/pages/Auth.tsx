@@ -137,16 +137,17 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center p-4 sm:p-6">
-      {/* Animated PromptX background text with gradient effect - Responsive */}
+      {/* Animated PrompX background text with gradient effect - Enhanced for Mobile */}
       <div className="absolute inset-0 -z-10 flex items-center justify-center overflow-hidden pointer-events-none select-none">
         <div 
-          className="text-[clamp(3.5rem,14vw,20vw)] sm:text-[clamp(6rem,15vw,20vw)] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter opacity-100"
+          className="text-[clamp(4rem,16vw,22vw)] sm:text-[clamp(7rem,18vw,24vw)] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.30) 50%, rgba(255,255,255,0.15) 100%)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0.25) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            textShadow: '0 0 50px rgba(255,255,255,0.10)'
+            textShadow: '0 0 80px rgba(255,255,255,0.2), 0 0 40px rgba(255,255,255,0.15)',
+            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))'
           }}
         >
           PrompX
