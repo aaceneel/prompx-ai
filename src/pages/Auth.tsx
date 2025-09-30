@@ -136,23 +136,59 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Welcome</CardTitle>
-          <CardDescription>Sign in to your account or create a new one</CardDescription>
+    <div className="min-h-screen relative overflow-hidden bg-black flex items-center justify-center p-4">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-zinc-950 to-black opacity-90" />
+      
+      {/* Large decorative text background */}
+      <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none overflow-hidden">
+        <h1 className="text-[20rem] md:text-[30rem] font-bold text-white/[0.02] tracking-tighter leading-none">
+          AUTH
+        </h1>
+      </div>
+
+      {/* Subtle grid pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.03]" 
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }}
+      />
+
+      {/* Elegant card with glassmorphism */}
+      <Card className="w-full max-w-lg relative z-10 border-white/10 bg-zinc-950/50 backdrop-blur-xl shadow-2xl animate-scale-in">
+        <CardHeader className="space-y-3 pb-8">
+          <CardTitle className="text-4xl font-light tracking-tight text-white">
+            Welcome
+          </CardTitle>
+          <CardDescription className="text-zinc-400 text-base">
+            Sign in to your account or create a new one to continue
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-zinc-900/50 border border-white/10 p-1">
+              <TabsTrigger 
+                value="signin"
+                className="data-[state=active]:bg-white data-[state=active]:text-black text-zinc-400 transition-all duration-300"
+              >
+                Sign In
+              </TabsTrigger>
+              <TabsTrigger 
+                value="signup"
+                className="data-[state=active]:bg-white data-[state=active]:text-black text-zinc-400 transition-all duration-300"
+              >
+                Sign Up
+              </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
+            <TabsContent value="signin" className="mt-8">
+              <form onSubmit={handleSignIn} className="space-y-6">
+                <div className="space-y-3">
+                  <Label htmlFor="signin-email" className="text-zinc-300 text-sm font-medium">
+                    Email Address
+                  </Label>
                   <Input
                     id="signin-email"
                     type="email"
@@ -160,28 +196,45 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="signin-password" className="text-zinc-300 text-sm font-medium">
+                    Password
+                  </Label>
                   <Input
                     id="signin-password"
                     type="password"
+                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Signing in..." : "Sign In"}
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-white/20"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="animate-pulse">Signing in...</span>
+                    </span>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
             </TabsContent>
             
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-username">Username</Label>
+            <TabsContent value="signup" className="mt-8">
+              <form onSubmit={handleSignUp} className="space-y-6">
+                <div className="space-y-3">
+                  <Label htmlFor="signup-username" className="text-zinc-300 text-sm font-medium">
+                    Username
+                  </Label>
                   <Input
                     id="signup-username"
                     type="text"
@@ -189,10 +242,13 @@ const Auth = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="signup-email" className="text-zinc-300 text-sm font-medium">
+                    Email Address
+                  </Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -200,20 +256,35 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="signup-password" className="text-zinc-300 text-sm font-medium">
+                    Password
+                  </Label>
                   <Input
                     id="signup-password"
                     type="password"
+                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Creating account..." : "Sign Up"}
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-white/20"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="animate-pulse">Creating account...</span>
+                    </span>
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
               </form>
             </TabsContent>
