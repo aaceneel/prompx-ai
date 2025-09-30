@@ -13,8 +13,8 @@ export const Layout = ({ children, user }: LayoutProps) => {
     <div className="min-h-screen w-full bg-black flex flex-col">
       <Header user={user} />
       
-      {/* Main Content Container with top padding for fixed header */}
-      <main className="w-full pt-20 flex-1">
+      {/* Main Content Container with responsive top padding for fixed header */}
+      <main className="w-full pt-16 lg:pt-20 flex-1">
         {children}
       </main>
 

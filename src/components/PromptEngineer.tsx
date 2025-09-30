@@ -1306,22 +1306,22 @@ export const PromptEngineer = () => {
 
               {/* Enhanced Input Preview */}
               {enhancedInput && (
-                <div className="mb-8 animate-slide-up">
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 rounded-2xl p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-green-100 dark:bg-green-900 rounded-xl">
-                        <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <div className="mb-6 sm:mb-8 animate-slide-up">
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                    <div className="flex items-start sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                      <div className="p-1.5 sm:p-2 bg-green-100 dark:bg-green-900 rounded-lg sm:rounded-xl flex-shrink-0">
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-green-800 dark:text-green-200">Input Enhanced!</h4>
-                        <p className="text-sm text-green-600 dark:text-green-400">AI automatically improved your prompt</p>
+                        <h4 className="font-bold text-green-800 dark:text-green-200 text-sm sm:text-base">Input Enhanced!</h4>
+                        <p className="text-xs sm:text-sm text-green-600 dark:text-green-400">AI automatically improved your prompt</p>
                       </div>
                     </div>
                     
                     {inputEnhancements.length > 0 && (
-                      <div className="mb-4">
-                        <h5 className="font-semibold text-green-800 dark:text-green-200 mb-2 text-sm">Applied Improvements:</h5>
-                        <div className="flex flex-wrap gap-2">
+                      <div className="mb-3 sm:mb-4">
+                        <h5 className="font-semibold text-green-800 dark:text-green-200 mb-2 text-xs sm:text-sm">Applied Improvements:</h5>
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
                           {inputEnhancements.map((improvement, idx) => (
                             <Badge key={idx} className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
                               {improvement}
@@ -1331,9 +1331,9 @@ export const PromptEngineer = () => {
                       </div>
                     )}
                     
-                    <div className="bg-white/60 dark:bg-black/20 rounded-xl p-4 border border-green-200/50 dark:border-green-800/50">
-                      <p className="text-sm text-green-800 dark:text-green-200 font-medium">Enhanced Version:</p>
-                      <p className="text-green-700 dark:text-green-300 mt-1">{enhancedInput}</p>
+                    <div className="bg-white/60 dark:bg-black/20 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-green-200/50 dark:border-green-800/50">
+                      <p className="text-xs sm:text-sm text-green-800 dark:text-green-200 font-medium mb-1">Enhanced Version:</p>
+                      <p className="text-sm sm:text-base text-green-700 dark:text-green-300 break-words">{enhancedInput}</p>
                     </div>
                   </div>
                 </div>
@@ -1343,23 +1343,23 @@ export const PromptEngineer = () => {
               <Button 
                 variant="stylish" 
                 size="lg" 
-                className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold mx-4 sm:mx-0" 
+                className="w-full h-12 sm:h-14 md:h-16 text-sm sm:text-base md:text-lg font-bold touch-manipulation" 
                 onClick={generatePrompts}
                 disabled={isGenerating || !selectedTool || !userInput.trim()}
               >
                 {isGenerating ? (
-                  <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-current" />
-                    <span>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 border-b-2 border-current" />
+                    <span className="text-sm sm:text-base">
                       {isEnhancing ? 'Enhancing your input...' : 'Engineering your prompts...'}
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3">
-                    <Brain className="w-6 h-6 group-hover:animate-pulse" />
-                    <span>Generate Perfect AI Prompts</span>
-                    <span className="text-xs opacity-75">(Any Language)</span>
-                    <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Brain className="w-5 h-5 sm:w-6 sm:h-6 group-hover:animate-pulse flex-shrink-0" />
+                    <span className="truncate">Generate Perfect AI Prompts</span>
+                    <span className="text-xs opacity-75 hidden sm:inline">(Any Language)</span>
+                    <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:translate-x-1 flex-shrink-0" />
                   </div>
                 )}
               </Button>
@@ -1370,20 +1370,20 @@ export const PromptEngineer = () => {
 
       {/* Results */}
       {optimizedPrompts.length > 0 && (
-        <section id="results" className="py-20 px-4 bg-muted/20">
+        <section id="results" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-muted/20">
           <div className="max-w-4xl mx-auto">
-            <div className={`text-center mb-12 transition-all duration-700 ${
+            <div className={`text-center mb-8 sm:mb-10 md:mb-12 transition-all duration-700 ${
               showResults ? 'animate-fade-in' : 'opacity-0'
             }`}>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 px-4 sm:px-0">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4 px-2 sm:px-0">
                 Your Premium Prompts
               </h2>
-              <p className="text-base sm:text-lg text-muted-foreground px-4 sm:px-0 max-w-2xl mx-auto">
+              <p className="text-sm xs:text-base sm:text-lg text-muted-foreground px-2 sm:px-0 max-w-2xl mx-auto">
                 Copy and paste these optimized prompts into your AI tool
               </p>
             </div>
             
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {optimizedPrompts.map((promptTemplate, index) => {
                 const getIcon = (title: string) => {
                   if (title.includes('Quick') || title.includes('Simple')) return Zap;

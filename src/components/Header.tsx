@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, LogOut } from 'lucide-react';
+import { Sparkles, LogOut, Menu, X } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface HeaderProps {
   user?: User | null;
@@ -13,6 +14,7 @@ interface HeaderProps {
 export const Header = ({ user }: HeaderProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -25,70 +27,127 @@ export const Header = ({ user }: HeaderProps) => {
     } else {
       navigate("/auth");
     }
+    setMobileMenuOpen(false);
   };
 
+  const navLinks = [
+    { label: 'HOME', href: '#' },
+    { label: 'FEATURES', href: '#' },
+    { label: 'DOCS', href: '#' },
+  ];
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-black" />
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-md flex items-center justify-center">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
             </div>
-            <span className="text-xl font-light text-white tracking-tight">
+            <span className="text-lg sm:text-xl font-light text-white tracking-tight">
               PromptX
             </span>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <a 
-              href="#" 
-              className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light tracking-wide"
-            >
-              HOME
-            </a>
-            <a 
-              href="#" 
-              className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light tracking-wide"
-            >
-              FEATURES
-            </a>
-            <a 
-              href="#" 
-              className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light tracking-wide"
-            >
-              DOCS
-            </a>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <a 
+                key={link.label}
+                href={link.href} 
+                className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light tracking-wide"
+              >
+                {link.label}
+              </a>
+            ))}
           </nav>
 
-          {/* User Actions */}
-          <div className="flex items-center gap-4">
+          {/* Desktop User Actions */}
+          <div className="hidden md:flex items-center gap-3 lg:gap-4">
             {user ? (
               <>
-                <span className="hidden sm:block text-sm text-zinc-400 font-light">
+                <span className="hidden lg:block text-sm text-zinc-400 font-light truncate max-w-[180px]">
                   {user.email}
                 </span>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleLogout}
-                  className="bg-transparent border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 h-9 px-4"
+                  className="bg-transparent border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 h-9 px-3 lg:px-4"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
+                  <LogOut className="w-4 h-4 lg:mr-2" />
+                  <span className="hidden lg:inline">Sign Out</span>
                 </Button>
               </>
             ) : (
               <Button
                 onClick={() => navigate("/auth")}
-                className="bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 h-9 px-6"
+                className="bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 h-9 px-4 lg:px-6 text-sm"
               >
                 GET STARTED
               </Button>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden text-white hover:bg-white/10 h-9 w-9 p-0"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px] bg-black/95 border-white/10 backdrop-blur-xl">
+              <div className="flex flex-col gap-6 mt-8">
+                {/* Mobile Navigation Links */}
+                <nav className="flex flex-col gap-4">
+                  {navLinks.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-base text-zinc-300 hover:text-white transition-colors duration-300 font-light tracking-wide py-2"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </nav>
+
+                {/* Mobile User Section */}
+                <div className="pt-6 border-t border-white/10">
+                  {user ? (
+                    <div className="flex flex-col gap-4">
+                      <span className="text-sm text-zinc-400 font-light truncate">
+                        {user.email}
+                      </span>
+                      <Button
+                        variant="outline"
+                        onClick={handleLogout}
+                        className="w-full bg-transparent border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 h-10"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        navigate("/auth");
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 h-10"
+                    >
+                      GET STARTED
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

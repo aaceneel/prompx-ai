@@ -136,13 +136,13 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-black flex items-center justify-center p-4">
+    <div className="min-h-screen relative overflow-hidden bg-black flex items-center justify-center p-4 sm:p-6">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-zinc-950 to-black opacity-90" />
       
       {/* Large decorative text background */}
       <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none overflow-hidden">
-        <h1 className="text-[20rem] md:text-[30rem] font-bold text-white/[0.02] tracking-tighter leading-none">
+        <h1 className="text-[12rem] sm:text-[20rem] md:text-[30rem] font-bold text-white/[0.02] tracking-tighter leading-none">
           AUTH
         </h1>
       </div>
@@ -158,35 +158,35 @@ const Auth = () => {
 
       {/* Elegant card with glassmorphism */}
       <Card className="w-full max-w-lg relative z-10 border-white/10 bg-zinc-950/50 backdrop-blur-xl shadow-2xl animate-scale-in">
-        <CardHeader className="space-y-3 pb-8">
-          <CardTitle className="text-4xl font-light tracking-tight text-white">
+        <CardHeader className="space-y-2 sm:space-y-3 pb-6 sm:pb-8 px-4 sm:px-6">
+          <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-white">
             Welcome
           </CardTitle>
-          <CardDescription className="text-zinc-400 text-base">
+          <CardDescription className="text-zinc-400 text-sm sm:text-base">
             Sign in to your account or create a new one to continue
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-zinc-900/50 border border-white/10 p-1">
+            <TabsList className="grid w-full grid-cols-2 bg-zinc-900/50 border border-white/10 p-1 h-10 sm:h-11">
               <TabsTrigger 
                 value="signin"
-                className="data-[state=active]:bg-white data-[state=active]:text-black text-zinc-400 transition-all duration-300"
+                className="data-[state=active]:bg-white data-[state=active]:text-black text-zinc-400 transition-all duration-300 text-sm sm:text-base"
               >
                 Sign In
               </TabsTrigger>
               <TabsTrigger 
                 value="signup"
-                className="data-[state=active]:bg-white data-[state=active]:text-black text-zinc-400 transition-all duration-300"
+                className="data-[state=active]:bg-white data-[state=active]:text-black text-zinc-400 transition-all duration-300 text-sm sm:text-base"
               >
                 Sign Up
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="signin" className="mt-8">
-              <form onSubmit={handleSignIn} className="space-y-6">
-                <div className="space-y-3">
-                  <Label htmlFor="signin-email" className="text-zinc-300 text-sm font-medium">
+            <TabsContent value="signin" className="mt-6 sm:mt-8">
+              <form onSubmit={handleSignIn} className="space-y-4 sm:space-y-6">
+                <div className="space-y-2 sm:space-y-3">
+                  <Label htmlFor="signin-email" className="text-zinc-300 text-xs sm:text-sm font-medium">
                     Email Address
                   </Label>
                   <Input
@@ -196,11 +196,11 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-11 sm:h-12 text-sm sm:text-base transition-all duration-300"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label htmlFor="signin-password" className="text-zinc-300 text-sm font-medium">
+                <div className="space-y-2 sm:space-y-3">
+                  <Label htmlFor="signin-password" className="text-zinc-300 text-xs sm:text-sm font-medium">
                     Password
                   </Label>
                   <Input
@@ -210,12 +210,12 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-11 sm:h-12 text-sm sm:text-base transition-all duration-300"
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-white/20"
+                  className="w-full h-11 sm:h-12 bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-white/20 text-sm sm:text-base touch-manipulation"
                   disabled={loading}
                 >
                   {loading ? (
@@ -229,10 +229,10 @@ const Auth = () => {
               </form>
             </TabsContent>
             
-            <TabsContent value="signup" className="mt-8">
-              <form onSubmit={handleSignUp} className="space-y-6">
-                <div className="space-y-3">
-                  <Label htmlFor="signup-username" className="text-zinc-300 text-sm font-medium">
+            <TabsContent value="signup" className="mt-6 sm:mt-8">
+              <form onSubmit={handleSignUp} className="space-y-4 sm:space-y-6">
+                <div className="space-y-2 sm:space-y-3">
+                  <Label htmlFor="signup-username" className="text-zinc-300 text-xs sm:text-sm font-medium">
                     Username
                   </Label>
                   <Input
@@ -242,11 +242,11 @@ const Auth = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-11 sm:h-12 text-sm sm:text-base transition-all duration-300"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label htmlFor="signup-email" className="text-zinc-300 text-sm font-medium">
+                <div className="space-y-2 sm:space-y-3">
+                  <Label htmlFor="signup-email" className="text-zinc-300 text-xs sm:text-sm font-medium">
                     Email Address
                   </Label>
                   <Input
@@ -256,11 +256,11 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-11 sm:h-12 text-sm sm:text-base transition-all duration-300"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label htmlFor="signup-password" className="text-zinc-300 text-sm font-medium">
+                <div className="space-y-2 sm:space-y-3">
+                  <Label htmlFor="signup-password" className="text-zinc-300 text-xs sm:text-sm font-medium">
                     Password
                   </Label>
                   <Input
@@ -270,12 +270,12 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-12 transition-all duration-300"
+                    className="bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-600 focus:border-white/30 focus:ring-white/20 h-11 sm:h-12 text-sm sm:text-base transition-all duration-300"
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-white/20"
+                  className="w-full h-11 sm:h-12 bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 hover:shadow-lg hover:shadow-white/20 text-sm sm:text-base touch-manipulation"
                   disabled={loading}
                 >
                   {loading ? (
