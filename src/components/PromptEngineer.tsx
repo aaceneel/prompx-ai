@@ -119,10 +119,11 @@ export const PromptEngineer = () => {
         let interimText = '';
         let maxConfidence = 0;
         
-        for (let i = event.resultIndex; i < event.results.length; i++) {
+        // Build complete transcript from all results
+        for (let i = 0; i < event.results.length; i++) {
           const result = event.results[i];
           const transcript = result[0].transcript;
-          const currentConfidence = result[0].confidence;
+          const currentConfidence = result[0].confidence || 0;
           
           if (result.isFinal) {
             finalTranscript += transcript + ' ';
@@ -132,7 +133,7 @@ export const PromptEngineer = () => {
           }
         }
         
-        // Update interim transcript for real-time display
+        // Always show interim results for immediate feedback
         setInterimTranscript(interimText);
         
         // Update confidence level
@@ -140,72 +141,77 @@ export const PromptEngineer = () => {
           setConfidence(Math.round(maxConfidence * 100));
         }
         
+        // When we have final text, update the textarea immediately
         if (finalTranscript.trim()) {
-          const fullTranscript = voiceTranscript + finalTranscript;
-          setVoiceTranscript(fullTranscript);
+          const newText = (voiceTranscript + finalTranscript).trim();
+          
+          console.log('Voice input - Final transcript:', newText);
+          
+          // CRITICAL: Update textarea immediately so user sees their text
+          setUserInput(newText);
+          setVoiceTranscript(newText);
           setInterimTranscript('');
           
-          // Immediately update the textarea with the transcript
-          setUserInput(fullTranscript);
-          
-          // Detect language and enhance in the background
-          try {
-            setIsProcessingVoice(true);
-            
-            const language = await detectLanguage(fullTranscript);
+          // Detect language in the background (don't wait for it)
+          detectLanguage(newText).then(language => {
             setDetectedLanguage(language);
             
-            // Try to enhance the input, but don't block if it fails
-            const { enhanced, improvements } = await enhanceUserInput(fullTranscript);
-            
-            // Only update if enhancement actually improved the input
-            if (enhanced && enhanced !== fullTranscript) {
-              setUserInput(enhanced);
-              
-              if (improvements.length > 0) {
-                toast({
-                  title: `🎯 Voice Input Enhanced! (${language})`,
-                  description: `Applied ${improvements.length} improvement${improvements.length > 1 ? 's' : ''} • ${confidence}% confidence`,
-                });
-              }
-            } else {
-              // Just show that voice input was captured
-              toast({
-                title: `🎤 Voice Input Captured! (${language})`,
-                description: `${confidence}% confidence`,
-              });
-            }
-          } catch (error) {
-            console.error('Voice enhancement error:', error);
-            // Input is already set to the transcript, so user sees their text
+            toast({
+              title: `✅ Voice Input Captured! (${language})`,
+              description: maxConfidence > 0 ? `${Math.round(maxConfidence * 100)}% confidence` : 'Processing...',
+            });
+          }).catch(err => {
+            console.error('Language detection error:', err);
             toast({
               title: "✅ Voice Input Captured!",
-              description: "Your voice input has been captured successfully",
+              description: "Your voice input has been saved",
             });
-          } finally {
-            setIsProcessingVoice(false);
-          }
+          });
         }
       };
       
       recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
+        console.error('Speech recognition error:', event.error, event);
         setIsRecording(false);
         setIsListening(false);
         setIsProcessingVoice(false);
+        stopAudioVisualization();
+        
+        let errorMessage = "Please try again or check microphone permissions";
+        
+        // Handle specific error types
+        if (event.error === 'no-speech') {
+          errorMessage = "No speech detected. Please try speaking again.";
+        } else if (event.error === 'audio-capture') {
+          errorMessage = "Microphone not working. Please check your device settings.";
+        } else if (event.error === 'not-allowed') {
+          errorMessage = "Microphone permission denied. Please enable it in settings.";
+        } else if (event.error === 'network') {
+          errorMessage = "Network error. Please check your connection and try again.";
+        } else if (event.error === 'aborted') {
+          // User stopped recording - this is normal, don't show error
+          return;
+        }
         
         toast({
           title: "Voice Input Error",
-          description: "Please try again or check microphone permissions",
+          description: errorMessage,
           variant: "destructive",
         });
       };
       
       recognitionRef.current.onend = () => {
+        console.log('Speech recognition ended');
         setIsRecording(false);
         setIsListening(false);
         setInterimTranscript('');
         stopAudioVisualization();
+        
+        // If there's text in voiceTranscript, make sure it's in the textarea
+        if (voiceTranscript.trim()) {
+          console.log('Final voice transcript:', voiceTranscript);
+          setUserInput(voiceTranscript.trim());
+        }
       };
     }
     
@@ -277,46 +283,72 @@ export const PromptEngineer = () => {
     if (!recognitionRef.current) {
       toast({
         title: "Voice Input Not Supported",
-        description: "Your browser doesn't support voice input. Try using Chrome or Edge.",
+        description: "Your browser doesn't support voice input. Try using Chrome or Edge browser.",
         variant: "destructive",
       });
       return;
     }
     
+    console.log('Starting voice input...');
+    
     try {
-      // Request microphone permission and start audio visualization
+      // Check if getUserMedia is supported (important for mobile)
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('getUserMedia not supported on this device');
+      }
+      
+      // Request microphone permission with mobile-optimized settings
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
+          autoGainControl: true,
+          // Mobile-specific optimizations
+          channelCount: 1,
+          sampleRate: 16000
         } 
       });
+      
+      console.log('Microphone access granted');
       await startAudioVisualization(stream);
       
-      // Auto-detect language or use browser language
+      // Use browser language or default to English
       const browserLang = navigator.language || 'en-US';
       recognitionRef.current.lang = browserLang;
       
-      // Clear previous state
+      console.log('Speech recognition language:', browserLang);
+      
+      // Clear all previous state for a fresh start
       setVoiceTranscript('');
       setInterimTranscript('');
       setDetectedLanguage('');
       setConfidence(0);
-      setUserInput(''); // Clear the input field
       
+      // Start recognition
       recognitionRef.current.start();
+      console.log('Speech recognition started');
       
       toast({
         title: "🎤 Listening...",
-        description: "Speak your prompt clearly",
+        description: "Speak clearly into your device microphone",
       });
-    } catch (error) {
-      console.error('Microphone error:', error);
+    } catch (error: any) {
+      console.error('Voice input error:', error);
       stopAudioVisualization();
+      
+      let errorMessage = "Please allow microphone access in your browser settings";
+      
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        errorMessage = "Microphone permission denied. Please allow access and try again.";
+      } else if (error.name === 'NotFoundError') {
+        errorMessage = "No microphone found. Please connect a microphone and try again.";
+      } else if (error.message.includes('not supported')) {
+        errorMessage = "Voice input is not supported on this device. Try using Chrome on Android or Safari on iOS.";
+      }
+      
       toast({
-        title: "Microphone Access Denied",
-        description: "Please allow microphone access in your browser settings",
+        title: "Microphone Error",
+        description: errorMessage,
         variant: "destructive",
       });
     }
