@@ -161,7 +161,7 @@ const Auth = () => {
         <CardHeader className="space-y-3 sm:space-y-4 pb-8 px-6 sm:px-8 pt-8">
           <div className="space-y-2">
             <CardTitle className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
-              Welcome
+              Welcome to PromptX
             </CardTitle>
             <CardDescription className="text-zinc-400 text-base leading-relaxed">
               Sign in to continue to PromptX
