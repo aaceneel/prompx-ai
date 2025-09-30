@@ -586,6 +586,7 @@ export const PromptEngineer = () => {
 
     // AI-powered proofread - call backend for accurate corrections
     try {
+      console.log("Attempting AI proofread for:", enhanced);
       const proofreadResponse = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proofread-prompt`,
         {
@@ -600,16 +601,18 @@ export const PromptEngineer = () => {
 
       if (proofreadResponse.ok) {
         const { corrected, changed } = await proofreadResponse.json();
+        console.log("AI proofread result:", { corrected, changed });
         if (changed && corrected) {
           enhanced = corrected;
           improvements.push("AI-powered spelling and grammar corrections applied");
         }
       } else {
-        console.warn("Proofread API failed, continuing with fallback");
+        console.warn("Proofread API failed with status:", proofreadResponse.status);
+        // Will use fallback below
       }
     } catch (error) {
       console.error("Proofread error:", error);
-      // Continue with fallback enhancement if AI fails
+      // Continue with enhanced fallback enhancement if AI fails
     }
 
     // Detect language first
@@ -635,13 +638,64 @@ export const PromptEngineer = () => {
       improvements.push("Added proper punctuation");
     }
 
-    // Fallback spell check (only if AI didn't run)
+    // Enhanced fallback spell check - more comprehensive corrections
     if (!improvements.some(imp => imp.includes("AI-powered"))) {
+      console.log("Using fallback spell checker");
       const { corrected, spellCorrections } = performAdvancedSpellCheck(enhanced);
       if (spellCorrections.length > 0) {
         enhanced = corrected;
-        improvements.push(...spellCorrections);
+        improvements.push(...spellCorrections.map(correction => `Fixed: ${correction}`));
       }
+      
+      // Additional manual corrections for common mistakes
+      const manualCorrections = [
+        { from: /\bi\b/g, to: 'I', desc: 'Capitalized "I"' },
+        { from: /\byour\s+welcome\b/gi, to: "you're welcome", desc: 'Fixed "you\'re" vs "your"' },
+        { from: /\bto\s+to\b/gi, to: 'to', desc: 'Removed duplicate "to"' },
+        { from: /\bthe\s+the\b/gi, to: 'the', desc: 'Removed duplicate "the"' },
+        { from: /\band\s+and\b/gi, to: 'and', desc: 'Removed duplicate "and"' },
+        { from: /\bwant\s+to\s+to\b/gi, to: 'want to', desc: 'Fixed duplicate "to"' },
+        { from: /\bgonna\b/gi, to: 'going to', desc: 'Made more formal' },
+        { from: /\bwanna\b/gi, to: 'want to', desc: 'Made more formal' },
+        { from: /\bcant\b/gi, to: "can't", desc: 'Added apostrophe' },
+        { from: /\bdont\b/gi, to: "don't", desc: 'Added apostrophe' },
+        { from: /\bwont\b/gi, to: "won't", desc: 'Added apostrophe' },
+        { from: /\bisnt\b/gi, to: "isn't", desc: 'Added apostrophe' },
+        { from: /\barent\b/gi, to: "aren't", desc: 'Added apostrophe' },
+        { from: /\bu\b/g, to: 'you', desc: 'Expanded abbreviation' },
+        { from: /\bur\b/g, to: 'your', desc: 'Expanded abbreviation' },
+        { from: /\bteh\b/gi, to: 'the', desc: 'Fixed typo' },
+        { from: /\badn\b/gi, to: 'and', desc: 'Fixed typo' },
+        { from: /\bwaht\b/gi, to: 'what', desc: 'Fixed typo' },
+        { from: /\bwich\b/gi, to: 'which', desc: 'Fixed typo' },
+        { from: /\bthier\b/gi, to: 'their', desc: 'Fixed typo' },
+        { from: /\brecieve\b/gi, to: 'receive', desc: 'Fixed ie/ei error' },
+        { from: /\bbeleive\b/gi, to: 'believe', desc: 'Fixed ie/ei error' },
+        { from: /\bacheive\b/gi, to: 'achieve', desc: 'Fixed ie/ei error' },
+        { from: /\bseperate\b/gi, to: 'separate', desc: 'Fixed spelling' },
+        { from: /\bdefinately\b/gi, to: 'definitely', desc: 'Fixed spelling' },
+        { from: /\boccured\b/gi, to: 'occurred', desc: 'Fixed double consonant' },
+        { from: /\bbegining\b/gi, to: 'beginning', desc: 'Fixed double consonant' },
+        { from: /\bcomming\b/gi, to: 'coming', desc: 'Fixed double consonant' },
+        { from: /\bgeting\b/gi, to: 'getting', desc: 'Fixed double consonant' },
+        { from: /\bruning\b/gi, to: 'running', desc: 'Fixed double consonant' },
+        { from: /\bstoping\b/gi, to: 'stopping', desc: 'Fixed double consonant' },
+        { from: /\balot\b/gi, to: 'a lot', desc: 'Fixed spacing' },
+        { from: /\beverytime\b/gi, to: 'every time', desc: 'Fixed spacing' },
+        { from: /\bincase\b/gi, to: 'in case', desc: 'Fixed spacing' },
+        { from: /\baswell\b/gi, to: 'as well', desc: 'Fixed spacing' }
+      ];
+      
+      let hasManualFixes = false;
+      manualCorrections.forEach(fix => {
+        if (fix.from.test(enhanced)) {
+          enhanced = enhanced.replace(fix.from, fix.to);
+          if (!hasManualFixes) {
+            improvements.push("Applied additional grammar and spelling corrections");
+            hasManualFixes = true;
+          }
+        }
+      });
     }
 
     // Content quality analysis

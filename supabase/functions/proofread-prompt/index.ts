@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -6,12 +7,17 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log(`${req.method} ${req.url}`);
+  
   if (req.method === "OPTIONS") {
+    console.log("CORS preflight request");
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    console.log("Processing proofread request...");
     const { text } = await req.json();
+    console.log("Input text:", text);
 
     if (!text || typeof text !== 'string') {
       return new Response(
