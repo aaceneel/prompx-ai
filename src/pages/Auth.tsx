@@ -137,8 +137,8 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center p-4 sm:p-6">
-      {/* Animated PrompX background text with gradient effect - Enhanced for Mobile */}
-      <div className="absolute inset-0 -z-10 flex items-center justify-center overflow-hidden pointer-events-none select-none">
+      {/* Animated PromptX background text with gradient effect - Enhanced for Mobile */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
         <div 
           className="text-[clamp(4rem,16vw,22vw)] sm:text-[clamp(7rem,18vw,24vw)] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter"
           style={{
