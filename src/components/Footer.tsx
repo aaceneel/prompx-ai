@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 mb-8">
           {/* Brand Section */}
           <div className="space-y-3 sm:space-y-4 sm:col-span-2 lg:col-span-1">
-            <h3 className="text-lg sm:text-xl font-light text-white tracking-tight">PromptX</h3>
+            <h3 className="text-lg sm:text-xl font-light text-white tracking-tight">PrompX</h3>
             <p className="text-sm text-zinc-400 font-light leading-relaxed max-w-xs">
               Advanced AI prompt engineering platform for creating perfect prompts with intelligent suggestions.
             </p>
@@ -95,7 +95,7 @@ export const Footer = () => {
         <div className="pt-6 sm:pt-8 border-t border-white/10">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
             <p className="text-xs sm:text-sm text-zinc-500 font-light text-center sm:text-left">
-              © {new Date().getFullYear()} PromptX. All rights reserved.
+              © {new Date().getFullYear()} PrompX. All rights reserved.
             </p>
             
             {/* Social Links */}

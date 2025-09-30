@@ -46,7 +46,7 @@ export const Header = ({ user }: HeaderProps) => {
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
             </div>
             <span className="text-lg sm:text-xl font-light text-white tracking-tight">
-              PromptX
+              PrompX
             </span>
           </div>
 
