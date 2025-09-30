@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <h3 className="text-xl font-light text-white tracking-tight">PROMPTX</h3>
+            <h3 className="text-xl font-light text-white tracking-tight">PromptX</h3>
             <p className="text-sm text-zinc-400 font-light leading-relaxed">
               Advanced AI prompt engineering platform for creating perfect prompts with intelligent suggestions.
             </p>
