@@ -137,6 +137,13 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center p-4 sm:p-6">
+      {/* Animated PromptX background text */}
+      <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
+        <div className="text-[20vw] font-bold text-white/[0.02] animate-pulse-subtle whitespace-nowrap">
+          PromptX
+        </div>
+      </div>
+
       {/* Animated gradient orbs */}
       <div className="absolute top-0 -left-48 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-subtle" />
       <div className="absolute bottom-0 -right-48 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-subtle" style={{ animationDelay: '1s' }} />
