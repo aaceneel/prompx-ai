@@ -137,15 +137,16 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center p-4 sm:p-6">
-      {/* Animated PromptX background text with gradient effect */}
+      {/* Animated PromptX background text with gradient effect - Responsive */}
       <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
         <div 
-          className="text-[20vw] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter"
+          className="text-[clamp(3rem,12vw,20vw)] sm:text-[clamp(6rem,15vw,20vw)] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter opacity-100"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 100%)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
+            textShadow: '0 0 40px rgba(255,255,255,0.05)',
           }}
         >
           PromptX

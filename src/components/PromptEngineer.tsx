@@ -1333,38 +1333,39 @@ export const PromptEngineer = () => {
                     rows={5}
                   />
                   
-                  {/* Voice Input Button - Enhanced */}
-                  <div className="absolute top-4 right-4 z-10">
+                  {/* Voice Input Button - Enhanced with better mobile visibility */}
+                  <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-10">
                     <div className="relative">
                       <Button
                         variant={isRecording ? "destructive" : "secondary"}
                         size="sm"
                         onClick={isRecording ? stopVoiceInput : startVoiceInput}
-                        className={`h-12 w-12 p-0 rounded-full shadow-lg hover:scale-110 transition-all duration-300 touch-manipulation ${
+                        className={`h-14 w-14 sm:h-12 sm:w-12 p-0 rounded-full shadow-lg hover:scale-110 transition-all duration-300 touch-manipulation ${
                           isRecording 
-                            ? 'bg-gradient-to-r from-red-500 to-pink-500 border-2 border-white dark:border-red-900' 
+                            ? 'bg-gradient-to-r from-red-500 to-pink-500 border-2 border-white dark:border-red-900 animate-pulse' 
                             : 'bg-gradient-to-r from-primary/90 to-primary backdrop-blur-sm border-2 border-primary/20'
                         }`}
                         disabled={isProcessingVoice}
                       >
                         {isProcessingVoice ? (
-                          <Loader2 className="w-5 h-5 animate-spin text-white" />
+                          <Loader2 className="w-6 h-6 sm:w-5 sm:h-5 animate-spin text-white" />
                         ) : isRecording ? (
                           <>
-                            <MicOff className="w-5 h-5 animate-pulse text-white" />
+                            <MicOff className="w-6 h-6 sm:w-5 sm:h-5 animate-pulse text-white" />
                             {/* Animated ring for recording state */}
                             <div className="absolute inset-0 rounded-full border-2 border-white animate-ping opacity-75" />
+                            <div className="absolute inset-0 rounded-full border-4 border-red-300 animate-pulse" />
                           </>
                         ) : (
-                          <Mic className="w-5 h-5 text-white" />
+                          <Mic className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
                         )}
                       </Button>
                       
-                      {/* Audio level indicator */}
+                      {/* Audio level indicator - Enhanced for mobile */}
                       {isRecording && audioLevel > 0 && (
                         <div 
-                          className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 bg-gradient-to-r from-red-500 to-pink-500 rounded-full transition-all duration-100"
-                          style={{ width: `${Math.max(20, audioLevel)}%` }}
+                          className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1.5 sm:h-1 bg-gradient-to-r from-red-500 to-pink-500 rounded-full transition-all duration-100 shadow-glow"
+                          style={{ width: `${Math.max(30, audioLevel)}%` }}
                         />
                       )}
                     </div>
@@ -1387,36 +1388,36 @@ export const PromptEngineer = () => {
                   </div>
                 </div>
 
-                {/* Voice Recording Status with Real-time Transcription */}
+                {/* Voice Recording Status with Real-time Transcription - Enhanced for mobile */}
                 {isRecording && (
-                  <div className="mt-3 sm:mt-4 space-y-3">
+                  <div className="mt-4 space-y-3 animate-slide-up">
                     {/* Recording indicator with audio level visualization */}
-                    <div className="p-3 sm:p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/30 dark:to-pink-950/30 border border-red-200 dark:border-red-800 rounded-lg sm:rounded-xl overflow-hidden relative">
+                    <div className="p-4 sm:p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/30 dark:to-pink-950/30 border-2 border-red-300 dark:border-red-800 rounded-xl sm:rounded-xl overflow-hidden relative shadow-lg">
                       <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-pink-500/10 animate-pulse" />
                       
                       <div className="relative z-10">
-                        <div className="flex items-center gap-2 sm:gap-3 mb-3">
-                          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
-                          <span className="text-red-600 dark:text-red-400 font-bold text-sm sm:text-base">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse flex-shrink-0 shadow-glow" />
+                          <span className="text-red-600 dark:text-red-400 font-bold text-base sm:text-base">
                             🎤 Listening...
                           </span>
-                          <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-500 animate-bounce-gentle flex-shrink-0" />
+                          <Volume2 className="w-5 h-5 sm:w-4 sm:h-4 text-red-500 animate-bounce-gentle flex-shrink-0" />
                           {confidence > 0 && (
-                            <Badge className="ml-auto bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
-                              {confidence}% confidence
+                            <Badge className="ml-auto bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-sm sm:text-xs font-bold">
+                              {confidence}% confident
                             </Badge>
                           )}
                         </div>
                         
-                        {/* Audio level visualization */}
-                        <div className="mb-3">
-                          <div className="flex items-center gap-1 h-8">
-                            {[...Array(20)].map((_, i) => {
-                              const barHeight = Math.max(4, (audioLevel / 100) * 32 * (1 - Math.abs(i - 10) / 10));
+                        {/* Audio level visualization - Larger for mobile */}
+                        <div className="mb-4">
+                          <div className="flex items-center gap-1 sm:gap-1 h-12 sm:h-8">
+                            {[...Array(15)].map((_, i) => {
+                              const barHeight = Math.max(6, (audioLevel / 100) * 48 * (1 - Math.abs(i - 7.5) / 7.5));
                               return (
                                 <div
                                   key={i}
-                                  className="flex-1 bg-gradient-to-t from-red-500 to-pink-500 rounded-full transition-all duration-100"
+                                  className="flex-1 bg-gradient-to-t from-red-500 to-pink-500 rounded-full transition-all duration-100 shadow-sm"
                                   style={{
                                     height: `${barHeight}px`,
                                     opacity: audioLevel > 0 ? 1 : 0.3
@@ -1425,30 +1426,30 @@ export const PromptEngineer = () => {
                               );
                             })}
                           </div>
-                          <div className="flex justify-between items-center mt-1">
-                            <span className="text-xs text-red-600/70 dark:text-red-400/70">Audio Level</span>
-                            <span className="text-xs font-mono text-red-600 dark:text-red-400">{audioLevel}%</span>
+                          <div className="flex justify-between items-center mt-2">
+                            <span className="text-sm sm:text-xs text-red-600/80 dark:text-red-400/80 font-semibold">Audio Level</span>
+                            <span className="text-sm sm:text-xs font-mono text-red-600 dark:text-red-400 font-bold">{audioLevel}%</span>
                           </div>
                         </div>
                         
-                        {/* Real-time interim transcription */}
+                        {/* Real-time interim transcription - Enhanced */}
                         {interimTranscript && (
-                          <div className="bg-white/50 dark:bg-black/30 rounded-lg p-3 border border-red-300/50 dark:border-red-700/50">
+                          <div className="bg-white/60 dark:bg-black/40 rounded-xl p-4 border-2 border-red-300/60 dark:border-red-700/60 shadow-md">
                             <div className="flex items-start gap-2">
-                              <span className="text-xs font-semibold text-red-700 dark:text-red-300">Live:</span>
-                              <p className="text-sm text-red-700 dark:text-red-300 italic break-words flex-1 animate-pulse">
+                              <span className="text-sm sm:text-xs font-bold text-red-700 dark:text-red-300 flex-shrink-0">Live:</span>
+                              <p className="text-base sm:text-sm text-red-700 dark:text-red-300 italic break-words flex-1 animate-pulse font-medium">
                                 "{interimTranscript}"
                               </p>
                             </div>
                           </div>
                         )}
                         
-                        {/* Final transcript display */}
+                        {/* Final transcript display - Enhanced */}
                         {voiceTranscript && (
-                          <div className="bg-white/70 dark:bg-black/40 rounded-lg p-3 border border-red-300/50 dark:border-red-700/50 mt-2">
+                          <div className="bg-white/80 dark:bg-black/50 rounded-xl p-4 border-2 border-red-300/60 dark:border-red-700/60 mt-3 shadow-md">
                             <div className="flex items-start gap-2">
-                              <span className="text-xs font-semibold text-red-800 dark:text-red-200">Final:</span>
-                              <p className="text-sm text-red-800 dark:text-red-200 break-words flex-1">
+                              <span className="text-sm sm:text-xs font-bold text-red-800 dark:text-red-200 flex-shrink-0">Final:</span>
+                              <p className="text-base sm:text-sm text-red-800 dark:text-red-200 break-words flex-1 font-medium">
                                 {voiceTranscript}
                               </p>
                             </div>
@@ -1459,13 +1460,13 @@ export const PromptEngineer = () => {
                   </div>
                 )}
 
-                {/* Voice Processing Status */}
+                {/* Voice Processing Status - Enhanced for mobile */}
                 {isProcessingVoice && (
-                  <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg sm:rounded-xl">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin text-blue-500 flex-shrink-0" />
-                      <span className="text-blue-600 dark:text-blue-400 font-medium text-sm sm:text-base">
-                        🧠 Processing your voice input with AI intelligence...
+                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/30 border-2 border-blue-300 dark:border-blue-800 rounded-xl shadow-lg animate-pulse">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="w-5 h-5 sm:w-4 sm:h-4 animate-spin text-blue-500 flex-shrink-0" />
+                      <span className="text-blue-600 dark:text-blue-400 font-semibold text-base sm:text-base">
+                        🧠 Processing your voice input with AI...
                       </span>
                     </div>
                   </div>
