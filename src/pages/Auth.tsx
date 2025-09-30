@@ -138,15 +138,15 @@ const Auth = () => {
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center p-4 sm:p-6">
       {/* Animated PromptX background text with gradient effect - Responsive */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
+      <div className="absolute inset-0 -z-10 flex items-center justify-center overflow-hidden pointer-events-none select-none">
         <div 
-          className="text-[clamp(3rem,12vw,20vw)] sm:text-[clamp(6rem,15vw,20vw)] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter opacity-100"
+          className="text-[clamp(3.5rem,14vw,20vw)] sm:text-[clamp(6rem,15vw,20vw)] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter opacity-100"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 100%)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.30) 50%, rgba(255,255,255,0.15) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            textShadow: '0 0 40px rgba(255,255,255,0.05)',
+            textShadow: '0 0 50px rgba(255,255,255,0.10)'
           }}
         >
           PromptX
@@ -154,13 +154,13 @@ const Auth = () => {
       </div>
 
       {/* Enhanced animated gradient orbs with glow */}
-      <div className="absolute top-0 -left-48 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse-subtle" />
-      <div className="absolute bottom-0 -right-48 w-96 h-96 bg-gradient-to-tl from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse-subtle" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse-subtle" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute top-0 -left-48 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse-subtle pointer-events-none" />
+      <div className="absolute bottom-0 -right-48 w-96 h-96 bg-gradient-to-tl from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse-subtle pointer-events-none" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse-subtle pointer-events-none" style={{ animationDelay: '0.5s' }} />
       
       {/* Enhanced grid pattern with shimmer effect */}
       <div 
-        className="absolute inset-0 opacity-[0.03]" 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
           backgroundImage: `
             linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
@@ -171,17 +171,17 @@ const Auth = () => {
       />
 
       {/* Premium card with enhanced glassmorphism */}
-      <Card className="w-full max-w-md relative z-10 border border-white/10 bg-zinc-900/90 backdrop-blur-3xl shadow-elegant animate-scale-in overflow-hidden group">
+      <Card className="w-full max-w-md relative z-20 border border-white/10 bg-zinc-900/90 backdrop-blur-3xl shadow-elegant animate-scale-in overflow-hidden group">
         {/* Animated gradient border effect */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </div>
         
         {/* Subtle top accent line */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
         
-        <CardHeader className="space-y-3 sm:space-y-4 pb-8 px-6 sm:px-8 pt-10">
+        <CardHeader className="space-y-3 sm:space-y-4 pb-8 px-6 sm:px-8 pt-10 relative z-10">
           <div className="space-y-3">
             <CardTitle className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
               Welcome to <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">PromptX</span>
