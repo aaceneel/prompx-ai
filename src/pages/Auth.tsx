@@ -137,65 +137,80 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center p-4 sm:p-6">
-      {/* Animated PromptX background text */}
+      {/* Animated PromptX background text with gradient effect */}
       <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
-        <div className="text-[20vw] font-bold text-white/[0.02] animate-pulse-subtle whitespace-nowrap">
+        <div 
+          className="text-[20vw] font-extrabold animate-pulse-subtle whitespace-nowrap tracking-tighter"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
           PromptX
         </div>
       </div>
 
-      {/* Animated gradient orbs */}
-      <div className="absolute top-0 -left-48 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-subtle" />
-      <div className="absolute bottom-0 -right-48 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-subtle" style={{ animationDelay: '1s' }} />
+      {/* Enhanced animated gradient orbs with glow */}
+      <div className="absolute top-0 -left-48 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse-subtle" />
+      <div className="absolute bottom-0 -right-48 w-96 h-96 bg-gradient-to-tl from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse-subtle" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse-subtle" style={{ animationDelay: '0.5s' }} />
       
-      {/* Subtle grid pattern */}
+      {/* Enhanced grid pattern with shimmer effect */}
       <div 
-        className="absolute inset-0 opacity-[0.02]" 
+        className="absolute inset-0 opacity-[0.03]" 
         style={{
           backgroundImage: `
-            linear-gradient(to right, hsl(0 0% 100% / 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, hsl(0 0% 100% / 0.05) 1px, transparent 1px)
+            linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
           `,
           backgroundSize: '80px 80px'
         }}
       />
 
-      {/* Professional card with refined glassmorphism */}
-      <Card className="w-full max-w-md relative z-10 border border-white/10 bg-zinc-900/80 backdrop-blur-2xl shadow-elegant animate-scale-in overflow-hidden">
+      {/* Premium card with enhanced glassmorphism */}
+      <Card className="w-full max-w-md relative z-10 border border-white/10 bg-zinc-900/90 backdrop-blur-3xl shadow-elegant animate-scale-in overflow-hidden group">
+        {/* Animated gradient border effect */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        </div>
+        
         {/* Subtle top accent line */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         
-        <CardHeader className="space-y-3 sm:space-y-4 pb-8 px-6 sm:px-8 pt-8">
-          <div className="space-y-2">
-            <CardTitle className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
-              Welcome to PromptX
+        <CardHeader className="space-y-3 sm:space-y-4 pb-8 px-6 sm:px-8 pt-10">
+          <div className="space-y-3">
+            <CardTitle className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
+              Welcome to <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">PromptX</span>
             </CardTitle>
-            <CardDescription className="text-zinc-400 text-base leading-relaxed">
-              Sign in to continue to PromptX
+            <CardDescription className="text-zinc-400 text-base leading-relaxed font-light">
+              Sign in to continue your journey
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="px-6 sm:px-8 pb-8">
+        <CardContent className="px-6 sm:px-8 pb-10">
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-zinc-950/80 border border-white/5 p-1.5 h-12 rounded-lg mb-8">
+            <TabsList className="grid w-full grid-cols-2 bg-zinc-950/90 border border-white/10 p-1.5 h-12 rounded-xl mb-8 shadow-lg">
               <TabsTrigger 
                 value="signin"
-                className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-zinc-200 transition-all duration-300 text-sm font-medium rounded-md"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-white data-[state=active]:to-zinc-100 data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg text-zinc-400 hover:text-zinc-100 transition-all duration-300 text-sm font-semibold rounded-lg"
               >
                 Sign In
               </TabsTrigger>
               <TabsTrigger 
                 value="signup"
-                className="data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm text-zinc-400 hover:text-zinc-200 transition-all duration-300 text-sm font-medium rounded-md"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-white data-[state=active]:to-zinc-100 data-[state=active]:text-zinc-900 data-[state=active]:shadow-lg text-zinc-400 hover:text-zinc-100 transition-all duration-300 text-sm font-semibold rounded-lg"
               >
                 Sign Up
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin" className="mt-0 space-y-6">
-              <form onSubmit={handleSignIn} className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email" className="text-zinc-200 text-sm font-medium">
+              <form onSubmit={handleSignIn} className="space-y-6">
+                <div className="space-y-2.5">
+                  <Label htmlFor="signin-email" className="text-zinc-100 text-sm font-semibold">
                     Email
                   </Label>
                   <Input
@@ -205,11 +220,11 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-zinc-950/50 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/30 focus:ring-2 focus:ring-white/10 h-12 text-base transition-all duration-300 hover:border-white/20"
+                    className="bg-zinc-950/60 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/40 focus:ring-2 focus:ring-white/20 h-13 text-base transition-all duration-300 hover:border-white/20 hover:bg-zinc-950/80 rounded-lg"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signin-password" className="text-zinc-200 text-sm font-medium">
+                <div className="space-y-2.5">
+                  <Label htmlFor="signin-password" className="text-zinc-100 text-sm font-semibold">
                     Password
                   </Label>
                   <Input
@@ -219,12 +234,12 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-zinc-950/50 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/30 focus:ring-2 focus:ring-white/10 h-12 text-base transition-all duration-300 hover:border-white/20"
+                    className="bg-zinc-950/60 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/40 focus:ring-2 focus:ring-white/20 h-13 text-base transition-all duration-300 hover:border-white/20 hover:bg-zinc-950/80 rounded-lg"
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-white text-zinc-900 hover:bg-zinc-100 font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-white/20 text-base mt-6"
+                  className="w-full h-13 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 text-base mt-8 rounded-lg hover:scale-[1.02] active:scale-[0.98]"
                   disabled={loading}
                 >
                   {loading ? (
@@ -241,8 +256,8 @@ const Auth = () => {
             
             <TabsContent value="signup" className="mt-0 space-y-6">
               <form onSubmit={handleSignUp} className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-username" className="text-zinc-200 text-sm font-medium">
+                <div className="space-y-2.5">
+                  <Label htmlFor="signup-username" className="text-zinc-100 text-sm font-semibold">
                     Username
                   </Label>
                   <Input
@@ -252,11 +267,11 @@ const Auth = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="bg-zinc-950/50 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/30 focus:ring-2 focus:ring-white/10 h-12 text-base transition-all duration-300 hover:border-white/20"
+                    className="bg-zinc-950/60 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/40 focus:ring-2 focus:ring-white/20 h-13 text-base transition-all duration-300 hover:border-white/20 hover:bg-zinc-950/80 rounded-lg"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email" className="text-zinc-200 text-sm font-medium">
+                <div className="space-y-2.5">
+                  <Label htmlFor="signup-email" className="text-zinc-100 text-sm font-semibold">
                     Email
                   </Label>
                   <Input
@@ -266,11 +281,11 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-zinc-950/50 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/30 focus:ring-2 focus:ring-white/10 h-12 text-base transition-all duration-300 hover:border-white/20"
+                    className="bg-zinc-950/60 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/40 focus:ring-2 focus:ring-white/20 h-13 text-base transition-all duration-300 hover:border-white/20 hover:bg-zinc-950/80 rounded-lg"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password" className="text-zinc-200 text-sm font-medium">
+                <div className="space-y-2.5">
+                  <Label htmlFor="signup-password" className="text-zinc-100 text-sm font-semibold">
                     Password
                   </Label>
                   <Input
@@ -280,12 +295,12 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="bg-zinc-950/50 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/30 focus:ring-2 focus:ring-white/10 h-12 text-base transition-all duration-300 hover:border-white/20"
+                    className="bg-zinc-950/60 border-white/10 text-white placeholder:text-zinc-500 focus:border-white/40 focus:ring-2 focus:ring-white/20 h-13 text-base transition-all duration-300 hover:border-white/20 hover:bg-zinc-950/80 rounded-lg"
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-white text-zinc-900 hover:bg-zinc-100 font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-white/20 text-base mt-6"
+                  className="w-full h-13 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 text-base mt-8 rounded-lg hover:scale-[1.02] active:scale-[0.98]"
                   disabled={loading}
                 >
                   {loading ? (
