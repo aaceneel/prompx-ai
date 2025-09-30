@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen, ArrowRight, Stars, Palette, Brain, Mic, MicOff, Volume2, Globe, Languages, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PromptGenerator, type PromptTemplate } from "@/lib/promptGenerator";
+import { supabase } from "@/integrations/supabase/client";
 
 // Language detection and translation
 const detectLanguage = async (text: string): Promise<string> => {
@@ -35,11 +36,20 @@ const detectLanguage = async (text: string): Promise<string> => {
 };
 
 const AI_TOOLS = [
-  { id: 'text', name: 'Text AI', icon: MessageSquare, description: 'ChatGPT, Claude, Gemini' },
-  { id: 'image', name: 'Image AI', icon: Image, description: 'MidJourney, DALL·E, Stable Diffusion' },
-  { id: 'code', name: 'Code AI', icon: Code, description: 'GitHub Copilot, Cursor' },
-  { id: 'audio', name: 'Audio AI', icon: Music, description: 'ElevenLabs, MusicGen' },
-  { id: 'video', name: 'Video AI', icon: Video, description: 'Runway, Pika, Sora' },
+  { id: 'chatgpt', name: 'ChatGPT', icon: MessageSquare, description: 'OpenAI conversational AI' },
+  { id: 'claude', name: 'Claude', icon: Brain, description: 'Anthropic advanced reasoning' },
+  { id: 'gemini', name: 'Gemini', icon: Sparkles, description: 'Google multimodal AI' },
+  { id: 'grok', name: 'Grok', icon: Zap, description: 'xAI real-time assistant' },
+  { id: 'midjourney', name: 'MidJourney', icon: Palette, description: 'AI art generation' },
+  { id: 'dalle', name: 'DALL-E', icon: Image, description: 'OpenAI image creation' },
+  { id: 'stable-diffusion', name: 'Stable Diffusion', icon: Wand2, description: 'Open-source image AI' },
+  { id: 'copilot', name: 'GitHub Copilot', icon: Code, description: 'AI pair programmer' },
+  { id: 'cursor', name: 'Cursor', icon: Target, description: 'AI code editor' },
+  { id: 'elevenlabs', name: 'ElevenLabs', icon: Mic, description: 'Voice synthesis AI' },
+  { id: 'musicgen', name: 'MusicGen', icon: Music, description: 'AI music generation' },
+  { id: 'runway', name: 'Runway', icon: Video, description: 'AI video editing' },
+  { id: 'pika', name: 'Pika', icon: Sparkles, description: 'Text-to-video AI' },
+  { id: 'sora', name: 'Sora', icon: Stars, description: 'OpenAI video generation' },
 ];
 
 const WORKFLOW_STEPS = [
@@ -980,35 +990,48 @@ export const PromptEngineer = () => {
     setShowResults(false);
     setInputEnhancements([]);
     
-    // Phase 1: Enhance the user input
-    await new Promise(resolve => setTimeout(resolve, 800));
-    const { enhanced, improvements } = await enhanceUserInput(userInput);
-    setEnhancedInput(enhanced);
-    setInputEnhancements(improvements);
-    setIsEnhancing(false);
+    try {
+      // Phase 1: Enhance the user input
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const { enhanced, improvements } = await enhanceUserInput(userInput);
+      setEnhancedInput(enhanced);
+      setInputEnhancements(improvements);
+      setIsEnhancing(false);
 
-    if (improvements.length > 0) {
-      toast({
-        title: "Input Enhanced!",
-        description: `Applied ${improvements.length} improvement${improvements.length > 1 ? 's' : ''} to your prompt`,
+      if (improvements.length > 0) {
+        toast({
+          title: "Input Enhanced!",
+          description: `Applied ${improvements.length} improvement${improvements.length > 1 ? 's' : ''} to your prompt`,
+        });
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      // Phase 2: Generate optimized prompts using Lovable AI
+      const { data, error } = await supabase.functions.invoke('optimize-prompt', {
+        body: { text: enhanced, platform: selectedTool }
       });
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-    
-    // Phase 2: Generate optimized prompts using enhanced input
-    const generatedPrompts = PromptGenerator.generate(selectedTool, enhanced);
-    setOptimizedPrompts(generatedPrompts);
-    setIsGenerating(false);
-    
-    // Animate results appearing
-    setTimeout(() => {
+
+      if (error) throw error;
+
+      const generatedPrompts = data.prompts || [];
+      setOptimizedPrompts(generatedPrompts);
+      setIsGenerating(false);
       setShowResults(true);
-      // Scroll to results on mobile
-      document.getElementById('results')?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+
+      toast({
+        title: "✨ AI-Optimized Prompts Generated!",
+        description: `Created ${generatedPrompts.length} platform-specific variations for ${selectedTool}`,
       });
-    }, 100);
+    } catch (error) {
+      console.error("Generation error:", error);
+      setIsGenerating(false);
+      setIsEnhancing(false);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Please try again",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
