@@ -278,32 +278,50 @@ export const PromptEngineer = () => {
     return { intent, domain, style, confidence, context };
   };
 
-  // Advanced spell check function
+  // Advanced spell check function with comprehensive dictionary
   const performAdvancedSpellCheck = (text: string): { corrected: string; spellCorrections: string[] } => {
     const corrections: string[] = [];
     let corrected = text;
     
-    // Comprehensive spell check dictionary with common mistakes
+    // Comprehensive spell check dictionary with 150+ common mistakes
     const spellCheckDict: Record<string, string> = {
-      // Common typos
-      'teh': 'the', 'adn': 'and', 'ot': 'to', 'fo': 'of', 'hte': 'the',
-      'taht': 'that', 'wich': 'which', 'waht': 'what', 'whe': 'when',
-      'reciever': 'receiver', 'recieve': 'receive', 'acheive': 'achieve',
-      'beleive': 'believe', 'seperate': 'separate', 'definately': 'definitely',
-      'neccessary': 'necessary', 'occured': 'occurred', 'occurence': 'occurrence',
-      'begining': 'beginning', 'writting': 'writing', 'succesful': 'successful',
-      'accomodate': 'accommodate', 'embarass': 'embarrass', 'ocasionally': 'occasionally',
-      'proffesional': 'professional', 'bussiness': 'business', 'recomend': 'recommend',
-      'reccomend': 'recommend', 'explaination': 'explanation', 'alot': 'a lot',
-      'everytime': 'every time', 'aswell': 'as well', 'incase': 'in case',
-      'alright': 'all right', 'anyways': 'anyway', 'alittle': 'a little',
+      // Basic typos
+      'teh': 'the', 'adn': 'and', 'ot': 'to', 'fo': 'of', 'hte': 'the', 'nad': 'and',
+      'taht': 'that', 'wich': 'which', 'waht': 'what', 'whe': 'when', 'wiht': 'with',
+      'thier': 'their', 'recive': 'receive', 'youre': "you're", 'becuase': 'because',
       
-      // Homophones and confusing words
-      'loose': 'lose', 'brake': 'break', 'breath': 'breathe', 'advise': 'advice',
-      'affect': 'effect', 'than': 'then', 'were': 'where', 'weather': 'whether',
-      'accept': 'except', 'compliment': 'complement', 'stationary': 'stationery',
-      'principle': 'principal', 'capitol': 'capital', 'council': 'counsel',
-      'dessert': 'desert', 'lightening': 'lightning', 'waist': 'waste',
+      // IE/EI confusion
+      'recieve': 'receive', 'beleive': 'believe', 'acheive': 'achieve', 'freind': 'friend',
+      'peice': 'piece', 'sheild': 'shield', 'wierd': 'weird', 'neice': 'niece',
+      'breif': 'brief', 'cheif': 'chief', 'feild': 'field', 'greif': 'grief',
+      
+      // Double/single letter errors
+      'occured': 'occurred', 'begining': 'beginning', 'comming': 'coming', 'runing': 'running',
+      'geting': 'getting', 'puting': 'putting', 'planing': 'planning', 'stoping': 'stopping',
+      'droping': 'dropping', 'shiping': 'shipping', 'writting': 'writing', 'admited': 'admitted',
+      'commited': 'committed', 'controled': 'controlled', 'occuring': 'occurring',
+      'transfered': 'transferred', 'prefered': 'preferred', 'refered': 'referred',
+      
+      // Common word confusion
+      'seperate': 'separate', 'definate': 'definite', 'definately': 'definitely',
+      'neccessary': 'necessary', 'occurence': 'occurrence',
+      'accross': 'across', 'untill': 'until', 'aquire': 'acquire', 'arguement': 'argument',
+      'athiest': 'atheist', 'concious': 'conscious', 'embarass': 'embarrass',
+      'existance': 'existence', 'persistant': 'persistent', 'resistence': 'resistance',
+      'tendancy': 'tendency', 'succesful': 'successful', 'ocasionally': 'occasionally',
+      
+      // Business & professional terms
+      'accomodate': 'accommodate', 'buisness': 'business', 'bussiness': 'business',
+      'calender': 'calendar', 'collegue': 'colleague', 'concensus': 'consensus',
+      'copywrite': 'copyright', 'enviroment': 'environment', 'goverment': 'government',
+      'independant': 'independent', 'liason': 'liaison', 'lisence': 'license',
+      'maintainance': 'maintenance', 'maintanance': 'maintenance', 'millenium': 'millennium',
+      'mispell': 'misspell', 'occassion': 'occasion', 'parlament': 'parliament',
+      'persue': 'pursue', 'posession': 'possession', 'priviledge': 'privilege',
+      'profesional': 'professional', 'proffesional': 'professional',
+      'publically': 'publicly', 'reccomend': 'recommend', 'recomend': 'recommend',
+      'relevent': 'relevant', 'religous': 'religious', 'supercede': 'supersede',
+      'managment': 'management', 'oppurtunity': 'opportunity', 'experiance': 'experience',
       
       // Technical terms
       'algoritm': 'algorithm', 'databse': 'database', 'progam': 'program',
@@ -311,46 +329,111 @@ export const PromptEngineer = () => {
       'framwork': 'framework', 'libary': 'library', 'functin': 'function',
       'varaible': 'variable', 'instace': 'instance', 'responce': 'response',
       'comunication': 'communication', 'compatiblity': 'compatibility',
-      
-      // Business terms
-      'managment': 'management', 'oppurtunity': 'opportunity', 'experiance': 'experience',
-      'performace': 'performance', 'implmentation': 'implementation', 'anaylsis': 'analysis',
+      'developement': 'development', 'exersize': 'exercise',
+      'heirarchy': 'hierarchy', 'implemention': 'implementation', 'intergrate': 'integrate',
+      'knowlege': 'knowledge', 'optomize': 'optimize', 'paralell': 'parallel',
+      'performace': 'performance', 'performence': 'performance', 'procedue': 'procedure',
+      'effecient': 'efficient',
+      'rythm': 'rhythm', 'seperator': 'separator', 'temperture': 'temperature',
+      'visable': 'visible', 'implmentation': 'implementation', 'anaylsis': 'analysis',
       'requirment': 'requirement', 'devlopment': 'development', 'efficency': 'efficiency',
-      'maintanance': 'maintenance', 'strategey': 'strategy', 'finacial': 'financial',
+      'strategey': 'strategy', 'finacial': 'financial',
       
-      // Double letter corrections
-      'comming': 'coming', 'runing': 'running', 'geting': 'getting',
-      'puting': 'putting', 'planing': 'planning', 'stoping': 'stopping', 
-      'droping': 'dropping', 'shiping': 'shipping',
+      // Common chat/internet mistakes
+      'alot': 'a lot', 'everytime': 'every time', 'aswell': 'as well', 'incase': 'in case',
+      'alittle': 'a little', 'anyways': 'anyway', 'cant': "can't", 'dont': "don't",
+      'wont': "won't", 'isnt': "isn't", 'arent': "aren't", 'doesnt': "doesn't",
+      'didnt': "didn't", 'shouldnt': "shouldn't", 'wouldnt': "wouldn't",
+      'hasnt': "hasn't", 'havent': "haven't", 'wasnt': "wasn't", 'werent': "weren't",
       
-      // Reversed letters
-      'form': 'from', 'united': 'untied', 'filed': 'field', 'trial': 'trail'
+      // Adjectives & adverbs
+      'accidently': 'accidentally', 'basicly': 'basically', 'completly': 'completely',
+      'extreamly': 'extremely', 'finaly': 'finally', 'generaly': 'generally',
+      'originaly': 'originally', 'particulary': 'particularly', 'personaly': 'personally',
+      'practicaly': 'practically', 'probly': 'probably', 'realy': 'really',
+      'seperately': 'separately', 'similiar': 'similar', 'usualy': 'usually',
+      'usefull': 'useful', 'beautifull': 'beautiful', 'carefull': 'careful',
+      'faithfull': 'faithful', 'gratefull': 'grateful', 'hopefull': 'hopeful',
+      
+      // Others
+      'tommorow': 'tomorrow', 'tomorow': 'tomorrow', 'truely': 'truly', 'wether': 'whether',
+      'explaination': 'explanation', 'thru': 'through', 'nite': 'night',
+      'lite': 'light', 'grammer': 'grammar', 'harrass': 'harass', 'cemetary': 'cemetery'
     };
     
-    // Apply spell corrections
-    let hasSpellCorrections = false;
+    // Apply spell corrections with detailed tracking
+    const spellingErrors: string[] = [];
     Object.entries(spellCheckDict).forEach(([wrong, correct]) => {
       const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
       if (regex.test(corrected)) {
         corrected = corrected.replace(regex, correct);
-        if (!hasSpellCorrections) {
-          corrections.push("Fixed spelling errors");
-          hasSpellCorrections = true;
-        }
+        spellingErrors.push(`'${wrong}' → '${correct}'`);
       }
     });
     
+    if (spellingErrors.length > 0) {
+      corrections.push(`Fixed spelling: ${spellingErrors.slice(0, 3).join(', ')}${spellingErrors.length > 3 ? ` (+${spellingErrors.length - 3} more)` : ''}`);
+    }
+    
+    // Grammar corrections
+    const grammarIssues: string[] = [];
+    const originalGrammar = corrected;
+    
     // Fix double spaces and formatting
-    const originalCorrected = corrected;
-    corrected = corrected
-      .replace(/\s+/g, ' ') // Multiple spaces to single space
-      .replace(/\s*([.!?])/g, '$1') // Remove spaces before punctuation
-      .replace(/([.!?])\s*([a-z])/g, '$1 $2') // Add space after punctuation
-      .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between camelCase
-      .trim();
-      
-    if (corrected !== originalCorrected) {
-      corrections.push("Fixed text formatting");
+    corrected = corrected.replace(/\s+/g, ' ').trim();
+    
+    // Capitalization: Start of sentence
+    corrected = corrected.replace(/^([a-z])/, (match) => match.toUpperCase());
+    corrected = corrected.replace(/([.!?]\s+)([a-z])/g, (match, p1, p2) => p1 + p2.toUpperCase());
+    
+    // Punctuation fixes
+    corrected = corrected.replace(/\s*([.!?,;:])/g, '$1'); // Remove space before punctuation
+    corrected = corrected.replace(/([.!?])([A-Z])/g, '$1 $2'); // Add space after sentence-ending punctuation
+    corrected = corrected.replace(/([,;:])(\S)/g, '$1 $2'); // Add space after commas, semicolons, colons
+    corrected = corrected.replace(/\.{2,}/g, '.'); // Remove multiple periods (except ellipsis)
+    corrected = corrected.replace(/([!?]){2,}/g, '$1'); // Remove repeated punctuation
+    
+    // Common grammar mistakes
+    const grammarFixes = [
+      { from: /\bi is\b/gi, to: 'I am', issue: 'subject-verb agreement' },
+      { from: /\byour welcome\b/gi, to: "you're welcome", issue: "your/you're confusion" },
+      { from: /\bits it's\b/gi, to: "it's its", issue: "its/it's confusion" },
+      { from: /\bshould of\b/gi, to: 'should have', issue: 'should of → should have' },
+      { from: /\bcould of\b/gi, to: 'could have', issue: 'could of → could have' },
+      { from: /\bwould of\b/gi, to: 'would have', issue: 'would of → would have' },
+      { from: /\bI is\b/g, to: 'I am', issue: 'I is → I am' },
+      { from: /\bhe don't\b/gi, to: "he doesn't", issue: "subject-verb agreement" },
+      { from: /\bshe don't\b/gi, to: "she doesn't", issue: "subject-verb agreement" },
+      { from: /\bit don't\b/gi, to: "it doesn't", issue: "subject-verb agreement" },
+      { from: /\bthere is (\w+) and (\w+)\b/gi, to: 'there are $1 and $2', issue: 'there is/are with plurals' },
+      { from: /\ba apple\b/gi, to: 'an apple', issue: 'a/an article' },
+      { from: /\ba orange\b/gi, to: 'an orange', issue: 'a/an article' },
+      { from: /\ba hour\b/gi, to: 'an hour', issue: 'a/an article' },
+      { from: /\ba unique\b/gi, to: 'a unique', issue: 'a/an article' },
+    ];
+    
+    grammarFixes.forEach(({ from, to, issue }) => {
+      if (from.test(corrected)) {
+        corrected = corrected.replace(from, to);
+        grammarIssues.push(issue);
+      }
+    });
+    
+    // Check for missing punctuation at end
+    if (corrected.length > 10 && !/[.!?]$/.test(corrected)) {
+      corrected = corrected + '.';
+      grammarIssues.push('added end punctuation');
+    }
+    
+    if (grammarIssues.length > 0) {
+      corrections.push(`Grammar fixes: ${grammarIssues.slice(0, 2).join(', ')}${grammarIssues.length > 2 ? ` (+${grammarIssues.length - 2} more)` : ''}`);
+    }
+    
+    // Add space between camelCase for readability
+    corrected = corrected.replace(/([a-z])([A-Z])/g, '$1 $2');
+    
+    if (originalGrammar !== corrected && grammarIssues.length === 0 && spellingErrors.length === 0) {
+      corrections.push("Improved text formatting");
     }
     
     return { corrected, spellCorrections: corrections };
