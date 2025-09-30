@@ -1,0 +1,4 @@
+project_id = "iafyhegpgtuzshzynfry"
+
+[functions.proofread-prompt]
+verify_jwt = false

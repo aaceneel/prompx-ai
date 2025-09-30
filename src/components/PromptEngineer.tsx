@@ -584,6 +584,34 @@ export const PromptEngineer = () => {
 
     if (!enhanced) return { enhanced, improvements };
 
+    // AI-powered proofread - call backend for accurate corrections
+    try {
+      const proofreadResponse = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proofread-prompt`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ text: enhanced }),
+        }
+      );
+
+      if (proofreadResponse.ok) {
+        const { corrected, changed } = await proofreadResponse.json();
+        if (changed && corrected) {
+          enhanced = corrected;
+          improvements.push("AI-powered spelling and grammar corrections applied");
+        }
+      } else {
+        console.warn("Proofread API failed, continuing with fallback");
+      }
+    } catch (error) {
+      console.error("Proofread error:", error);
+      // Continue with fallback enhancement if AI fails
+    }
+
     // Detect language first
     const language = await detectLanguage(enhanced);
     if (language !== 'English' && language !== 'Unknown') {
@@ -607,11 +635,13 @@ export const PromptEngineer = () => {
       improvements.push("Added proper punctuation");
     }
 
-    // Advanced spell check and grammar corrections
-    const { corrected, spellCorrections } = performAdvancedSpellCheck(enhanced);
-    if (spellCorrections.length > 0) {
-      enhanced = corrected;
-      improvements.push(...spellCorrections);
+    // Fallback spell check (only if AI didn't run)
+    if (!improvements.some(imp => imp.includes("AI-powered"))) {
+      const { corrected, spellCorrections } = performAdvancedSpellCheck(enhanced);
+      if (spellCorrections.length > 0) {
+        enhanced = corrected;
+        improvements.push(...spellCorrections);
+      }
     }
 
     // Content quality analysis
