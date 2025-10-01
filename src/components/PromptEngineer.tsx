@@ -20,6 +20,8 @@ import { PromptMarketplace } from "./PromptMarketplace";
 import { TeamPromptCollaboration } from "./TeamPromptCollaboration";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 import ABTestingPanel from "./ABTestingPanel";
+import ComplianceDashboard from "./ComplianceDashboard";
+import LegalPromptPacks from "./LegalPromptPacks";
 
 // Language detection and translation
 const detectLanguage = async (text: string): Promise<string> => {
@@ -1549,7 +1551,7 @@ export const PromptEngineer = () => {
         <section className="py-12 sm:py-16 md:py-20 bg-background">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 mb-6">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 mb-6">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
                 <TabsTrigger value="templates">Templates</TabsTrigger>
                 <TabsTrigger value="history">History</TabsTrigger>
@@ -1558,6 +1560,8 @@ export const PromptEngineer = () => {
                 <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
                 <TabsTrigger value="analytics">Analytics</TabsTrigger>
                 <TabsTrigger value="abtesting">A/B Testing</TabsTrigger>
+                <TabsTrigger value="compliance">Compliance</TabsTrigger>
+                <TabsTrigger value="legal">Legal Packs</TabsTrigger>
               </TabsList>
 
               <TabsContent value="profile">
@@ -1614,6 +1618,14 @@ export const PromptEngineer = () => {
 
               <TabsContent value="abtesting">
                 <ABTestingPanel user={user} />
+              </TabsContent>
+
+              <TabsContent value="compliance">
+                <ComplianceDashboard user={user} />
+              </TabsContent>
+
+              <TabsContent value="legal">
+                <LegalPromptPacks />
               </TabsContent>
             </Tabs>
           </div>

@@ -121,6 +121,78 @@ export type Database = {
         }
         Relationships: []
       }
+      bias_filters: {
+        Row: {
+          bias_type: string
+          created_at: string
+          filter_name: string
+          id: string
+          is_active: boolean | null
+          keywords: string[]
+          severity: string
+        }
+        Insert: {
+          bias_type: string
+          created_at?: string
+          filter_name: string
+          id?: string
+          is_active?: boolean | null
+          keywords: string[]
+          severity?: string
+        }
+        Update: {
+          bias_type?: string
+          created_at?: string
+          filter_name?: string
+          id?: string
+          is_active?: boolean | null
+          keywords?: string[]
+          severity?: string
+        }
+        Relationships: []
+      }
+      compliance_rules: {
+        Row: {
+          created_at: string
+          description: string | null
+          detection_pattern: string
+          id: string
+          industry: string | null
+          is_active: boolean | null
+          remediation_guidance: string | null
+          rule_name: string
+          rule_type: string
+          severity: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          detection_pattern: string
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          remediation_guidance?: string | null
+          rule_name: string
+          rule_type: string
+          severity?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          detection_pattern?: string
+          id?: string
+          industry?: string | null
+          is_active?: boolean | null
+          remediation_guidance?: string | null
+          rule_name?: string
+          rule_type?: string
+          severity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       industry_templates: {
         Row: {
           created_at: string
@@ -148,6 +220,54 @@ export type Database = {
           platform?: string
           template_name?: string
           template_prompt?: string
+        }
+        Relationships: []
+      }
+      legal_prompt_packs: {
+        Row: {
+          compliance_notes: string | null
+          compliance_standards: string[] | null
+          created_at: string
+          id: string
+          industry: string
+          is_verified: boolean | null
+          pack_name: string
+          prompt_content: string
+          prompt_title: string
+          updated_at: string
+          use_case: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          compliance_notes?: string | null
+          compliance_standards?: string[] | null
+          created_at?: string
+          id?: string
+          industry: string
+          is_verified?: boolean | null
+          pack_name: string
+          prompt_content: string
+          prompt_title: string
+          updated_at?: string
+          use_case: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          compliance_notes?: string | null
+          compliance_standards?: string[] | null
+          created_at?: string
+          id?: string
+          industry?: string
+          is_verified?: boolean | null
+          pack_name?: string
+          prompt_content?: string
+          prompt_title?: string
+          updated_at?: string
+          use_case?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: []
       }
@@ -235,6 +355,33 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      prompt_compliance_checks: {
+        Row: {
+          check_results: Json
+          checked_at: string
+          compliance_score: number | null
+          id: string
+          prompt_text: string
+          user_id: string
+        }
+        Insert: {
+          check_results: Json
+          checked_at?: string
+          compliance_score?: number | null
+          id?: string
+          prompt_text: string
+          user_id: string
+        }
+        Update: {
+          check_results?: Json
+          checked_at?: string
+          compliance_score?: number | null
+          id?: string
+          prompt_text?: string
+          user_id?: string
         }
         Relationships: []
       }
