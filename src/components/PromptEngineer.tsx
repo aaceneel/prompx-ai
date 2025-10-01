@@ -14,6 +14,7 @@ import { IndustryTemplates } from "./IndustryTemplates";
 import { PromptHistory } from "./PromptHistory";
 import { WorkflowBuilder, WorkflowStep } from "./WorkflowBuilder";
 import { WorkflowResults, WorkflowResult } from "./WorkflowResults";
+import { WorkflowProgress, StepProgress } from "./WorkflowProgress";
 
 // Language detection and translation
 const detectLanguage = async (text: string): Promise<string> => {
@@ -112,6 +113,7 @@ export const PromptEngineer = () => {
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [isExecutingWorkflow, setIsExecutingWorkflow] = useState(false);
   const [workflowResults, setWorkflowResults] = useState<WorkflowResult[]>([]);
+  const [workflowProgress, setWorkflowProgress] = useState<StepProgress[]>([]);
   
   // Voice and language features
   const [isRecording, setIsRecording] = useState(false);
@@ -1293,6 +1295,15 @@ export const PromptEngineer = () => {
 
     setIsExecutingWorkflow(true);
     setWorkflowResults([]);
+    
+    // Initialize progress tracking
+    const initialProgress: StepProgress[] = steps.map((step, index) => ({
+      stepIndex: index,
+      stepName: step.name,
+      status: 'pending' as const
+    }));
+    setWorkflowProgress(initialProgress);
+
     const results: WorkflowResult[] = [];
     let previousOutput = userInput;
 
@@ -1301,6 +1312,11 @@ export const PromptEngineer = () => {
         const step = steps[i];
         const startTime = Date.now();
         
+        // Update progress - mark current step as running
+        setWorkflowProgress(prev => prev.map((p, idx) => 
+          idx === i ? { ...p, status: 'running', startTime } : p
+        ));
+
         // Replace variables in the prompt
         let processedPrompt = step.prompt
           .replace(/\{\{input\}\}/g, userInput)
@@ -1311,27 +1327,48 @@ export const PromptEngineer = () => {
           description: `Step ${i + 1} of ${steps.length}`
         });
 
-        const { data, error } = await supabase.functions.invoke('execute-prompt', {
-          body: {
-            prompt: processedPrompt,
-            model: step.model || 'google/gemini-2.5-flash'
-          }
-        });
+        try {
+          const { data, error } = await supabase.functions.invoke('execute-prompt', {
+            body: {
+              prompt: processedPrompt,
+              model: step.model || 'google/gemini-2.5-flash',
+              systemPrompt: step.systemPrompt,
+              temperature: step.temperature || 0.7,
+              maxTokens: step.maxTokens || 2000
+            }
+          });
 
-        if (error) throw error;
-        if (!data.result) throw new Error('No result from execution');
+          if (error) throw error;
+          if (!data.result) throw new Error('No result from execution');
 
-        const executionTime = Date.now() - startTime;
-        previousOutput = data.result;
+          const executionTime = Date.now() - startTime;
+          previousOutput = data.result;
 
-        results.push({
-          stepName: step.name,
-          stepIndex: i,
-          output: data.result,
-          executionTime
-        });
+          // Update progress - mark step as completed
+          setWorkflowProgress(prev => prev.map((p, idx) => 
+            idx === i ? { ...p, status: 'completed', endTime: Date.now() } : p
+          ));
 
-        setWorkflowResults([...results]);
+          results.push({
+            stepName: step.name,
+            stepIndex: i,
+            output: data.result,
+            executionTime
+          });
+
+          setWorkflowResults([...results]);
+        } catch (stepError) {
+          // Update progress - mark step as error
+          setWorkflowProgress(prev => prev.map((p, idx) => 
+            idx === i ? { 
+              ...p, 
+              status: 'error', 
+              endTime: Date.now(), 
+              error: stepError instanceof Error ? stepError.message : 'Unknown error' 
+            } : p
+          ));
+          throw stepError;
+        }
       }
 
       toast({
@@ -1550,6 +1587,7 @@ export const PromptEngineer = () => {
                 <WorkflowBuilder 
                   onExecute={executeWorkflow} 
                   isExecuting={isExecutingWorkflow}
+                  user={user}
                 />
               </TabsContent>
             </Tabs>
@@ -1912,6 +1950,19 @@ export const PromptEngineer = () => {
           </Card>
         </div>
       </section>
+
+      {/* Workflow Progress */}
+      {isExecutingWorkflow && workflowProgress.length > 0 && (
+        <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-background">
+          <div className="max-w-4xl mx-auto">
+            <WorkflowProgress 
+              steps={workflowProgress}
+              currentStep={workflowProgress.filter(s => s.status === 'completed').length + (workflowProgress.some(s => s.status === 'running') ? 1 : 0)}
+              totalSteps={workflowProgress.length}
+            />
+          </div>
+        </section>
+      )}
 
       {/* Workflow Results */}
       {workflowResults.length > 0 && (
