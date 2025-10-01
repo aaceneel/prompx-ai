@@ -258,7 +258,19 @@ export const PromptMarketplace = ({ user }: PromptMarketplaceProps) => {
   };
 
   const incrementViews = async (listingId: string) => {
-    await supabase.rpc('increment_listing_views', { listing_id: listingId });
+    // Get current views
+    const { data } = await supabase
+      .from('marketplace_listings')
+      .select('views')
+      .eq('id', listingId)
+      .single();
+
+    if (data) {
+      await supabase
+        .from('marketplace_listings')
+        .update({ views: (data.views || 0) + 1 })
+        .eq('id', listingId);
+    }
   };
 
   return (

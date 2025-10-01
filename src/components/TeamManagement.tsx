@@ -87,13 +87,7 @@ export const TeamManagement = ({ user }: TeamManagementProps) => {
   const loadTeamMembers = async (teamId: string) => {
     const { data, error } = await supabase
       .from('team_members')
-      .select(`
-        *,
-        profiles:user_id (
-          username,
-          email
-        )
-      `)
+      .select('*')
       .eq('team_id', teamId);
 
     if (error) {
@@ -101,7 +95,23 @@ export const TeamManagement = ({ user }: TeamManagementProps) => {
       return;
     }
 
-    setTeamMembers(data || []);
+    // Fetch profiles separately
+    const enrichedMembers = await Promise.all(
+      (data || []).map(async (member) => {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username, email')
+          .eq('id', member.user_id)
+          .single();
+
+        return {
+          ...member,
+          profiles: profile
+        };
+      })
+    );
+
+    setTeamMembers(enrichedMembers);
   };
 
   const createTeam = async () => {

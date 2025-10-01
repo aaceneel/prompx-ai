@@ -85,13 +85,7 @@ export const TeamPromptCollaboration = ({ user, teamId }: TeamPromptCollaboratio
   const loadPrompts = async () => {
     const { data, error } = await supabase
       .from('team_prompts')
-      .select(`
-        *,
-        creator_profile:created_by (
-          username,
-          email
-        )
-      `)
+      .select('*')
       .eq('team_id', teamId)
       .order('created_at', { ascending: false });
 
@@ -100,9 +94,17 @@ export const TeamPromptCollaboration = ({ user, teamId }: TeamPromptCollaboratio
       return;
     }
 
-    // Load ratings for each prompt
+    // Load creator profiles and ratings for each prompt
     const enrichedPrompts = await Promise.all(
       (data || []).map(async (prompt) => {
+        // Get creator profile
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username, email')
+          .eq('id', prompt.created_by)
+          .single();
+
+        // Get ratings
         const { data: ratings } = await supabase
           .from('prompt_ratings')
           .select('*')
@@ -110,6 +112,7 @@ export const TeamPromptCollaboration = ({ user, teamId }: TeamPromptCollaboratio
 
         return {
           ...prompt,
+          creator_profile: profile,
           ratings: ratings || []
         };
       })
