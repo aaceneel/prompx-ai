@@ -1554,7 +1554,7 @@ export const PromptEngineer = () => {
         <section className="py-12 sm:py-16 md:py-20 bg-background w-full overflow-x-hidden">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 lg:grid-cols-13 mb-6">
+              <TabsList className="w-full mb-6">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
                 <TabsTrigger value="templates">Templates</TabsTrigger>
                 <TabsTrigger value="history">History</TabsTrigger>

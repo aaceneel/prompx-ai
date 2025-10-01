@@ -10,7 +10,7 @@ interface LayoutProps {
 
 export const Layout = ({ children, user }: LayoutProps) => {
   return (
-    <div className="min-h-screen w-full bg-black flex flex-col overflow-x-hidden">
+    <div className="min-h-screen w-full bg-background flex flex-col overflow-x-hidden">
       <Header user={user} />
       
       {/* Main Content Container with proper spacing for fixed header */}
