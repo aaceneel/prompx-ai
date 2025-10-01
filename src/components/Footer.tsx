@@ -26,50 +26,35 @@ export const Footer = () => {
             <h4 className="text-xs sm:text-sm font-medium text-white tracking-wider">PRODUCT</h4>
             <ul className="space-y-2 sm:space-y-3">
               <li>
-                <button onClick={() => scrollToSection('features')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  Features
+                <button onClick={() => window.location.href = '/dashboard'} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                  Dashboard
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection('pricing')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  Pricing
+                <button onClick={() => window.location.href = '/marketplace'} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                  Marketplace
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection('api')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  API
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection('documentation')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  Documentation
+                <button onClick={() => window.location.href = '/analytics'} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                  Analytics
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Resources Links */}
           <div className="space-y-3 sm:space-y-4">
-            <h4 className="text-xs sm:text-sm font-medium text-white tracking-wider">COMPANY</h4>
+            <h4 className="text-xs sm:text-sm font-medium text-white tracking-wider">RESOURCES</h4>
             <ul className="space-y-2 sm:space-y-3">
               <li>
-                <button onClick={() => scrollToSection('about')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  About
+                <button onClick={() => window.location.href = '/team'} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                  Team
                 </button>
               </li>
               <li>
-                <button onClick={() => scrollToSection('blog')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  Blog
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection('careers')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  Careers
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection('contact')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
-                  Contact
+                <button onClick={() => window.location.href = '/compliance'} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                  Compliance
                 </button>
               </li>
             </ul>

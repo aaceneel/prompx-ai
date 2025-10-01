@@ -39,10 +39,12 @@ export const Header = ({ user }: HeaderProps) => {
   };
 
   const navLinks = [
-    { label: 'HOME', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-    { label: 'FEATURES', action: () => scrollToSection('features') },
-    { label: 'PRICING', action: () => scrollToSection('pricing') },
-    { label: 'API', action: () => scrollToSection('api') },
+    { name: 'HOME', path: '/' },
+    { name: 'DASHBOARD', path: '/dashboard' },
+    { name: 'ANALYTICS', path: '/analytics' },
+    { name: 'TEAM', path: '/team' },
+    { name: 'MARKETPLACE', path: '/marketplace' },
+    { name: 'SETTINGS', path: '/settings' },
   ];
 
   return (
@@ -63,11 +65,11 @@ export const Header = ({ user }: HeaderProps) => {
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <button 
-                key={link.label}
-                onClick={link.action}
+                key={link.name}
+                onClick={() => navigate(link.path)}
                 className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light tracking-wide"
               >
-                {link.label}
+                {link.name}
               </button>
             ))}
           </nav>
@@ -116,11 +118,14 @@ export const Header = ({ user }: HeaderProps) => {
                 <nav className="flex flex-col gap-4">
                   {navLinks.map((link) => (
                     <button
-                      key={link.label}
-                      onClick={link.action}
+                      key={link.name}
+                      onClick={() => {
+                        navigate(link.path);
+                        setMobileMenuOpen(false);
+                      }}
                       className="text-base text-zinc-300 hover:text-white transition-colors duration-300 font-light tracking-wide py-2 text-left"
                     >
-                      {link.label}
+                      {link.name}
                     </button>
                   ))}
                 </nav>
