@@ -41,19 +41,19 @@ const FeatureCard = memo(({ feature, user, navigate }: any) => {
       >
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
-        <CardHeader className="pb-3 sm:pb-4 p-4 sm:p-6">
+        <CardHeader className="pb-3 sm:pb-4 p-5 sm:p-6">
           <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg sm:rounded-xl w-fit mb-3 sm:mb-4 group-hover:bg-white/10 transition-colors duration-300">
-            <feature.icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+            <feature.icon className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
           </div>
-          <CardTitle className="text-white text-lg sm:text-xl font-bold">{feature.title}</CardTitle>
-          <CardDescription className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+          <CardTitle className="text-white text-[1.05rem] sm:text-xl font-bold leading-snug">{feature.title}</CardTitle>
+          <CardDescription className="text-zinc-400 text-[0.875rem] sm:text-base leading-[1.4rem] sm:leading-relaxed">
             {feature.description}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6 pt-0">
+        <CardContent className="p-5 sm:p-6 pt-0">
           <Button 
             variant="ghost" 
-            className="gap-2 p-0 text-zinc-300 hover:text-white hover:bg-transparent transition-colors duration-300 text-sm sm:text-base"
+            className="gap-2 p-0 text-zinc-300 hover:text-white hover:bg-transparent transition-colors duration-300 text-[0.875rem] sm:text-base"
           >
             Learn more <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Button>
@@ -159,12 +159,12 @@ const Home = () => {
         className={`relative py-16 sm:py-24 md:py-28 lg:py-32 xl:py-40 overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black min-h-[calc(100vh-4rem)] flex items-center transition-opacity duration-1000 ${sectionsVisible.hero ? 'opacity-100' : 'opacity-0'}`}
         style={{ contentVisibility: 'auto' }}
       >
-        {/* Animated PrompX background text - Optimized */}
+        {/* Animated PrompX background text - Mobile Optimized */}
         <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none select-none will-change-transform">
           <div 
-            className="text-[clamp(4rem,20vw,28vw)] md:text-[clamp(8rem,20vw,24vw)] lg:text-[clamp(10rem,22vw,26vw)] font-extrabold whitespace-nowrap tracking-tighter opacity-60 md:opacity-80"
+            className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[26rem] font-extrabold whitespace-nowrap tracking-tighter opacity-40 sm:opacity-60 md:opacity-80"
             style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.08) 100%)',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -176,11 +176,11 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Optimized gradient orbs - Reduced complexity */}
+        {/* Optimized gradient orbs - Mobile friendly */}
         {sectionsVisible.hero && (
           <>
-            <div className="absolute top-0 -left-24 sm:-left-48 w-64 h-64 sm:w-96 sm:h-96 bg-gradient-to-br from-blue-500/8 to-purple-500/8 rounded-full blur-[80px] animate-pulse-subtle pointer-events-none will-change-transform" />
-            <div className="absolute bottom-0 -right-24 sm:-right-48 w-64 h-64 sm:w-96 sm:h-96 bg-gradient-to-tl from-purple-500/8 to-pink-500/8 rounded-full blur-[80px] animate-pulse-subtle pointer-events-none will-change-transform" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-0 -left-12 sm:-left-24 md:-left-48 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-500/6 sm:from-blue-500/8 to-purple-500/6 sm:to-purple-500/8 rounded-full blur-[60px] sm:blur-[80px] animate-pulse-subtle pointer-events-none will-change-transform" />
+            <div className="absolute bottom-0 -right-12 sm:-right-24 md:-right-48 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-gradient-to-tl from-purple-500/6 sm:from-purple-500/8 to-pink-500/6 sm:to-pink-500/8 rounded-full blur-[60px] sm:blur-[80px] animate-pulse-subtle pointer-events-none will-change-transform" style={{ animationDelay: '1s' }} />
           </>
         )}
         
@@ -195,18 +195,18 @@ const Home = () => {
 
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10 w-full">
           <div className={`text-center max-w-5xl mx-auto transition-all duration-1000 delay-300 ${sectionsVisible.hero ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent leading-tight px-2">
+            <h1 className="text-[2rem] leading-[2.25rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-5 sm:mb-6 lg:mb-8 bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent sm:leading-tight px-3">
               Professional Prompt Engineering Platform
             </h1>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-zinc-400 mb-8 sm:mb-10 lg:mb-12 font-light leading-relaxed px-4 max-w-3xl mx-auto">
+            <p className="text-[0.95rem] leading-[1.5rem] sm:text-lg md:text-xl lg:text-2xl text-zinc-400 mb-7 sm:mb-10 lg:mb-12 font-light sm:leading-relaxed px-5 max-w-3xl mx-auto">
               Create, optimize, and manage AI prompts with enterprise-grade tools
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-5 sm:px-0">
               {user ? (
                 <Button 
                   size="lg" 
                   onClick={() => navigate("/dashboard")} 
-                  className="gap-2 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 lg:px-10 text-sm sm:text-base lg:text-lg rounded-xl hover:scale-105 active:scale-95 w-full sm:w-auto touch-manipulation"
+                  className="gap-2 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 h-[3.25rem] sm:h-14 lg:h-16 px-7 sm:px-8 lg:px-10 text-[0.95rem] sm:text-base lg:text-lg rounded-xl hover:scale-105 active:scale-95 w-full sm:w-auto touch-manipulation min-h-[3.25rem]"
                 >
                   Go to Dashboard <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
@@ -215,7 +215,7 @@ const Home = () => {
                   <Button 
                     size="lg" 
                     onClick={() => navigate("/auth")} 
-                    className="gap-2 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 lg:px-10 text-sm sm:text-base lg:text-lg rounded-xl hover:scale-105 active:scale-95 w-full sm:w-auto touch-manipulation"
+                    className="gap-2 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 h-[3.25rem] sm:h-14 lg:h-16 px-7 sm:px-8 lg:px-10 text-[0.95rem] sm:text-base lg:text-lg rounded-xl hover:scale-105 active:scale-95 w-full sm:w-auto touch-manipulation min-h-[3.25rem]"
                   >
                     Get Started <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
@@ -223,7 +223,7 @@ const Home = () => {
                     size="lg" 
                     variant="outline" 
                     onClick={() => navigate("/auth")}
-                    className="h-12 sm:h-14 lg:h-16 px-6 sm:px-8 lg:px-10 text-sm sm:text-base lg:text-lg bg-zinc-900/50 border-white/10 text-white hover:bg-zinc-900/80 hover:border-white/30 backdrop-blur-xl rounded-xl hover:scale-105 active:scale-95 transition-all duration-300 w-full sm:w-auto touch-manipulation"
+                    className="h-[3.25rem] sm:h-14 lg:h-16 px-7 sm:px-8 lg:px-10 text-[0.95rem] sm:text-base lg:text-lg bg-zinc-900/50 border-white/10 text-white hover:bg-zinc-900/80 hover:border-white/30 backdrop-blur-xl rounded-xl hover:scale-105 active:scale-95 transition-all duration-300 w-full sm:w-auto touch-manipulation min-h-[3.25rem]"
                   >
                     Sign In
                   </Button>
@@ -250,11 +250,11 @@ const Home = () => {
         )}
         
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
-          <div className={`text-center mb-10 sm:mb-12 md:mb-16 transition-all duration-700 ${sectionsVisible.features ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent px-2">
+          <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-700 ${sectionsVisible.features ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+            <h2 className="text-[1.75rem] leading-[2rem] sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent px-3">
               Powerful Features
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-zinc-400 font-light px-4">
+            <p className="text-[0.9rem] leading-[1.4rem] sm:text-lg md:text-xl text-zinc-400 font-light px-5">
               Everything you need for professional prompt engineering
             </p>
           </div>
@@ -290,18 +290,18 @@ const Home = () => {
         />
 
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12 text-center relative z-10">
-          <div className={`max-w-4xl mx-auto space-y-6 sm:space-y-8 transition-all duration-700 delay-200 ${sectionsVisible.cta ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent leading-tight px-2">
+          <div className={`max-w-4xl mx-auto space-y-5 sm:space-y-8 transition-all duration-700 delay-200 ${sectionsVisible.cta ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+            <h2 className="text-[1.85rem] leading-[2.15rem] sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent sm:leading-tight px-3">
               Ready to Get Started?
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-zinc-400 font-light leading-relaxed max-w-2xl mx-auto px-4">
+            <p className="text-[0.95rem] leading-[1.5rem] sm:text-lg md:text-xl text-zinc-400 font-light sm:leading-relaxed max-w-2xl mx-auto px-5">
               Join thousands of professionals using our platform to create better AI prompts
             </p>
-            <div className="pt-2 sm:pt-4 px-4 sm:px-0">
+            <div className="pt-2 sm:pt-4 px-5 sm:px-0">
               <Button 
                 size="lg" 
                 onClick={() => navigate(user ? "/dashboard" : "/auth")} 
-                className="gap-2 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 h-12 sm:h-14 md:h-16 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg rounded-xl hover:scale-105 active:scale-95 w-full sm:w-auto touch-manipulation"
+                className="gap-2 bg-gradient-to-r from-white to-zinc-100 text-zinc-900 hover:from-zinc-50 hover:to-white font-bold transition-all duration-300 hover:shadow-2xl hover:shadow-white/30 h-[3.25rem] sm:h-14 md:h-16 px-7 sm:px-8 md:px-10 text-[0.95rem] sm:text-base md:text-lg rounded-xl hover:scale-105 active:scale-95 w-full sm:w-auto touch-manipulation min-h-[3.25rem]"
               >
                 {user ? "Go to Dashboard" : "Start Free Trial"} <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
