@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      industry_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          industry: string
+          platform: string
+          template_name: string
+          template_prompt: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry: string
+          platform: string
+          template_name: string
+          template_prompt: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: string
+          platform?: string
+          template_name?: string
+          template_prompt?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -40,6 +70,85 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      prompt_history: {
+        Row: {
+          created_at: string
+          id: string
+          optimized_prompt: string
+          original_prompt: string
+          platform: string
+          rating: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          optimized_prompt: string
+          original_prompt: string
+          platform: string
+          rating?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          optimized_prompt?: string
+          original_prompt?: string
+          platform?: string
+          rating?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          niche: string | null
+          preferred_length: string | null
+          preferred_tone: string | null
+          style: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          niche?: string | null
+          preferred_length?: string | null
+          preferred_tone?: string | null
+          style?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          niche?: string | null
+          preferred_length?: string | null
+          preferred_tone?: string | null
+          style?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

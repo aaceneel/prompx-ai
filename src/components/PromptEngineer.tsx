@@ -3,10 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen, ArrowRight, Stars, Palette, Brain, Mic, MicOff, Volume2, Globe, Languages, Loader2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Copy, CheckCircle, Wand2, Sparkles, Code, Image, Music, Video, MessageSquare, Zap, Target, BookOpen, ArrowRight, Stars, Palette, Brain, Mic, MicOff, Volume2, Globe, Languages, Loader2, User, History, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PromptGenerator, type PromptTemplate } from "@/lib/promptGenerator";
 import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+import { UserProfile } from "./UserProfile";
+import { IndustryTemplates } from "./IndustryTemplates";
+import { PromptHistory } from "./PromptHistory";
 
 // Language detection and translation
 const detectLanguage = async (text: string): Promise<string> => {
@@ -61,6 +66,7 @@ const WORKFLOW_STEPS = [
 ];
 
 export const PromptEngineer = () => {
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [selectedTool, setSelectedTool] = useState<string>('');
   const [userInput, setUserInput] = useState('');
   const [optimizedPrompts, setOptimizedPrompts] = useState<PromptTemplate[]>([]);
@@ -70,6 +76,7 @@ export const PromptEngineer = () => {
   const [enhancedInput, setEnhancedInput] = useState('');
   const [inputEnhancements, setInputEnhancements] = useState<string[]>([]);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [userPreferences, setUserPreferences] = useState<any>(null);
   
   // Voice and language features
   const [isRecording, setIsRecording] = useState(false);
@@ -86,6 +93,13 @@ export const PromptEngineer = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const { toast } = useToast();
+
+  // Get current user
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+  }, []);
 
   // Initialize voice recognition and audio visualization
   useEffect(() => {
@@ -1312,6 +1326,39 @@ export const PromptEngineer = () => {
           </div>
         </div>
       </section>
+
+      {/* Personalization Features */}
+      {user && (
+        <section className="py-12 sm:py-16 md:py-20 bg-background">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <UserProfile 
+                userId={user.id} 
+                onPreferencesUpdate={setUserPreferences}
+              />
+              <IndustryTemplates 
+                onTemplateSelect={(template) => {
+                  setUserInput(template);
+                  toast({
+                    title: "Template Applied",
+                    description: "Customize the template with your specific details",
+                  });
+                }}
+              />
+              <PromptHistory 
+                userId={user.id}
+                onPromptSelect={(prompt) => {
+                  setUserInput(prompt);
+                  toast({
+                    title: "Prompt Loaded",
+                    description: "Edit and regenerate as needed",
+                  });
+                }}
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Main Tool */}
       <section id="tool-selector" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/30">
