@@ -18,6 +18,8 @@ import { WorkflowProgress, StepProgress } from "./WorkflowProgress";
 import { TeamManagement } from "./TeamManagement";
 import { PromptMarketplace } from "./PromptMarketplace";
 import { TeamPromptCollaboration } from "./TeamPromptCollaboration";
+import AnalyticsDashboard from "./AnalyticsDashboard";
+import ABTestingPanel from "./ABTestingPanel";
 
 // Language detection and translation
 const detectLanguage = async (text: string): Promise<string> => {
@@ -1547,13 +1549,15 @@ export const PromptEngineer = () => {
         <section className="py-12 sm:py-16 md:py-20 bg-background">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-6 mb-6">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 mb-6">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
                 <TabsTrigger value="templates">Templates</TabsTrigger>
                 <TabsTrigger value="history">History</TabsTrigger>
                 <TabsTrigger value="workflow">Workflow</TabsTrigger>
                 <TabsTrigger value="teams">Teams</TabsTrigger>
                 <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                <TabsTrigger value="abtesting">A/B Testing</TabsTrigger>
               </TabsList>
 
               <TabsContent value="profile">
@@ -1602,6 +1606,14 @@ export const PromptEngineer = () => {
 
               <TabsContent value="marketplace">
                 <PromptMarketplace user={user} />
+              </TabsContent>
+
+              <TabsContent value="analytics">
+                <AnalyticsDashboard user={user} />
+              </TabsContent>
+
+              <TabsContent value="abtesting">
+                <ABTestingPanel user={user} />
               </TabsContent>
             </Tabs>
           </div>
