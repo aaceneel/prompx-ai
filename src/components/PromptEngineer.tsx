@@ -1411,7 +1411,7 @@ export const PromptEngineer = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-bg">
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 text-center bg-gradient-hero overflow-hidden">
+      <section id="features" className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 text-center bg-gradient-hero overflow-hidden">
         {/* Animated Background Layers */}
         <div className="absolute inset-0">
           {/* Dynamic gradient overlay with movement */}
@@ -1565,8 +1565,8 @@ export const PromptEngineer = () => {
                 <TabsTrigger value="abtesting">A/B Testing</TabsTrigger>
                 <TabsTrigger value="compliance">Compliance</TabsTrigger>
                 <TabsTrigger value="legal">Legal Packs</TabsTrigger>
-                <TabsTrigger value="pricing">Pricing</TabsTrigger>
-                <TabsTrigger value="apikeys">API Keys</TabsTrigger>
+                <TabsTrigger value="pricing" id="pricing">Pricing</TabsTrigger>
+                <TabsTrigger value="apikeys" id="api">API Keys</TabsTrigger>
                 <TabsTrigger value="usage">Usage</TabsTrigger>
               </TabsList>
 

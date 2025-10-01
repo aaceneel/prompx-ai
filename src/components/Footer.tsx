@@ -2,6 +2,13 @@ import React from 'react';
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
 
 export const Footer = () => {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <footer className="relative border-t border-white/10 bg-black/90 backdrop-blur-xl mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
@@ -19,24 +26,24 @@ export const Footer = () => {
             <h4 className="text-xs sm:text-sm font-medium text-white tracking-wider">PRODUCT</h4>
             <ul className="space-y-2 sm:space-y-3">
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('features')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Features
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('pricing')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Pricing
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('api')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   API
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('documentation')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Documentation
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -46,24 +53,24 @@ export const Footer = () => {
             <h4 className="text-xs sm:text-sm font-medium text-white tracking-wider">COMPANY</h4>
             <ul className="space-y-2 sm:space-y-3">
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('about')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   About
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('blog')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Blog
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('careers')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Careers
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('contact')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Contact
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -73,19 +80,19 @@ export const Footer = () => {
             <h4 className="text-xs sm:text-sm font-medium text-white tracking-wider">LEGAL</h4>
             <ul className="space-y-2 sm:space-y-3">
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('privacy')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Privacy Policy
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('terms')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Terms of Service
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
+                <button onClick={() => scrollToSection('cookies')} className="text-sm text-zinc-400 hover:text-white transition-colors duration-200 font-light block py-1">
                   Cookie Policy
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -101,28 +108,34 @@ export const Footer = () => {
             {/* Social Links */}
             <div className="flex items-center gap-5 sm:gap-6">
               <a 
-                href="#" 
+                href="https://twitter.com/prompx" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-white transition-colors duration-200"
                 aria-label="Twitter"
               >
                 <Twitter className="w-5 h-5" />
               </a>
               <a 
-                href="#" 
+                href="https://github.com/prompx" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-white transition-colors duration-200"
                 aria-label="GitHub"
               >
                 <Github className="w-5 h-5" />
               </a>
               <a 
-                href="#" 
+                href="https://linkedin.com/company/prompx" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-white transition-colors duration-200"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-5 h-5" />
               </a>
               <a 
-                href="#" 
+                href="mailto:contact@prompx.com" 
                 className="text-zinc-400 hover:text-white transition-colors duration-200"
                 aria-label="Email"
               >

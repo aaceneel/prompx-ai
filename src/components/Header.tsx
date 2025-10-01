@@ -30,10 +30,19 @@ export const Header = ({ user }: HeaderProps) => {
     setMobileMenuOpen(false);
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    setMobileMenuOpen(false);
+  };
+
   const navLinks = [
-    { label: 'HOME', href: '#' },
-    { label: 'FEATURES', href: '#' },
-    { label: 'DOCS', href: '#' },
+    { label: 'HOME', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    { label: 'FEATURES', action: () => scrollToSection('features') },
+    { label: 'PRICING', action: () => scrollToSection('pricing') },
+    { label: 'API', action: () => scrollToSection('api') },
   ];
 
   return (
@@ -53,13 +62,13 @@ export const Header = ({ user }: HeaderProps) => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a 
+              <button 
                 key={link.label}
-                href={link.href} 
+                onClick={link.action}
                 className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light tracking-wide"
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </nav>
 
@@ -106,14 +115,13 @@ export const Header = ({ user }: HeaderProps) => {
                 {/* Mobile Navigation Links */}
                 <nav className="flex flex-col gap-4">
                   {navLinks.map((link) => (
-                    <a
+                    <button
                       key={link.label}
-                      href={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="text-base text-zinc-300 hover:text-white transition-colors duration-300 font-light tracking-wide py-2"
+                      onClick={link.action}
+                      className="text-base text-zinc-300 hover:text-white transition-colors duration-300 font-light tracking-wide py-2 text-left"
                     >
                       {link.label}
-                    </a>
+                    </button>
                   ))}
                 </nav>
 
