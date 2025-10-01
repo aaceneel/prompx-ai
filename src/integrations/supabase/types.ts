@@ -44,6 +44,66 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_listings: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          downloads: number | null
+          id: string
+          is_active: boolean | null
+          is_workflow: boolean | null
+          preview_available: boolean | null
+          preview_content: string | null
+          price: number
+          prompt_content: string
+          seller_id: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          views: number | null
+          workflow_steps: Json | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          downloads?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_workflow?: boolean | null
+          preview_available?: boolean | null
+          preview_content?: string | null
+          price: number
+          prompt_content: string
+          seller_id: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          views?: number | null
+          workflow_steps?: Json | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          downloads?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_workflow?: boolean | null
+          preview_available?: boolean | null
+          preview_content?: string | null
+          price?: number
+          prompt_content?: string
+          seller_id?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          views?: number | null
+          workflow_steps?: Json | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -109,6 +169,65 @@ export type Database = {
           },
         ]
       }
+      prompt_purchases: {
+        Row: {
+          buyer_id: string
+          id: string
+          listing_id: string
+          price: number
+          purchased_at: string
+        }
+        Insert: {
+          buyer_id: string
+          id?: string
+          listing_id: string
+          price: number
+          purchased_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          id?: string
+          listing_id?: string
+          price?: number
+          purchased_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_purchases_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          prompt_id: string
+          rating: number
+          review: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prompt_id: string
+          rating: number
+          review?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prompt_id?: string
+          rating?: number
+          review?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_workflows: {
         Row: {
           created_at: string
@@ -142,6 +261,118 @@ export type Database = {
           tags?: string[] | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_prompts: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string
+          id: string
+          is_workflow: boolean | null
+          optimized_prompt: string | null
+          original_prompt: string
+          platform: string | null
+          team_id: string
+          title: string
+          updated_at: string
+          workflow_steps: Json | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          is_workflow?: boolean | null
+          optimized_prompt?: string | null
+          original_prompt: string
+          platform?: string | null
+          team_id: string
+          title: string
+          updated_at?: string
+          workflow_steps?: Json | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_workflow?: boolean | null
+          optimized_prompt?: string | null
+          original_prompt?: string
+          platform?: string | null
+          team_id?: string
+          title?: string
+          updated_at?: string
+          workflow_steps?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_prompts_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
