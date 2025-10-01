@@ -227,8 +227,19 @@ All colors MUST be HSL.
     }
     50% {
       opacity: 0.5;
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
+  }
+
+  /* Performance optimization utilities */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .smooth-rendering {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .animate-float {
