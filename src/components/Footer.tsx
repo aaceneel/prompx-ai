@@ -10,8 +10,8 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="relative border-t border-white/10 bg-black/90 backdrop-blur-xl mt-auto">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
+    <footer className="relative border-t border-white/10 bg-black/90 backdrop-blur-xl mt-auto w-full">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 max-w-7xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 mb-8">
           {/* Brand Section */}
           <div className="space-y-3 sm:space-y-4 sm:col-span-2 lg:col-span-1">

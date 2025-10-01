@@ -1409,11 +1409,11 @@ export const PromptEngineer = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-bg">
+    <div className="min-h-screen w-full bg-gradient-bg overflow-x-hidden">
       {/* Hero Section */}
-      <section id="features" className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 text-center bg-gradient-hero overflow-hidden">
+      <section id="features" className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 text-center bg-gradient-hero overflow-hidden w-full">
         {/* Animated Background Layers */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 w-full h-full">
           {/* Dynamic gradient overlay with movement */}
           <div className="absolute inset-0 bg-gradient-to-br from-black via-zinc-900 to-black animate-pulse" style={{ animationDuration: '3s' }} />
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-zinc-800/50 to-transparent animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
@@ -1512,7 +1512,7 @@ export const PromptEngineer = () => {
       </section>
 
       {/* Workflow Steps */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background w-full overflow-x-hidden">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4 animate-fade-in">
@@ -1551,7 +1551,7 @@ export const PromptEngineer = () => {
 
       {/* Personalization Features */}
       {user && (
-        <section className="py-12 sm:py-16 md:py-20 bg-background">
+        <section className="py-12 sm:py-16 md:py-20 bg-background w-full overflow-x-hidden">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Tabs defaultValue="profile" className="w-full">
               <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 lg:grid-cols-13 mb-6">
@@ -1651,11 +1651,11 @@ export const PromptEngineer = () => {
       )}
 
       {/* Main Tool */}
-      <section id="tool-selector" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/30">
+      <section id="tool-selector" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-muted/30 w-full overflow-x-hidden">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Card className="bg-gradient-card shadow-xl border border-border/30 animate-scale-in overflow-hidden max-w-5xl mx-auto">
-            <div className="p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12">
-              <div className="text-center mb-6 sm:mb-8 md:mb-10">
+          <Card className="bg-gradient-card shadow-xl border border-border/30 animate-scale-in overflow-hidden max-w-5xl mx-auto w-full">
+            <div className="p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 w-full">
+              <div className="text-center mb-6 sm:mb-8 md:mb-10 w-full">
                 <h3 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
                   Select Your AI Platform
                 </h3>
@@ -2008,8 +2008,8 @@ export const PromptEngineer = () => {
 
       {/* Workflow Progress */}
       {isExecutingWorkflow && workflowProgress.length > 0 && (
-        <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-background">
-          <div className="max-w-4xl mx-auto">
+        <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-background w-full overflow-x-hidden">
+          <div className="max-w-4xl mx-auto w-full">
             <WorkflowProgress 
               steps={workflowProgress}
               currentStep={workflowProgress.filter(s => s.status === 'completed').length + (workflowProgress.some(s => s.status === 'running') ? 1 : 0)}
@@ -2021,8 +2021,8 @@ export const PromptEngineer = () => {
 
       {/* Workflow Results */}
       {workflowResults.length > 0 && (
-        <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-background">
-          <div className="max-w-4xl mx-auto">
+        <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-background w-full overflow-x-hidden">
+          <div className="max-w-4xl mx-auto w-full">
             <WorkflowResults results={workflowResults} />
           </div>
         </section>
@@ -2030,20 +2030,20 @@ export const PromptEngineer = () => {
 
       {/* Results */}
       {optimizedPrompts.length > 0 && (
-        <section id="results" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-muted/20">
-          <div className="max-w-4xl mx-auto">
-            <div className={`text-center mb-8 sm:mb-10 md:mb-12 transition-all duration-700 ${
+        <section id="results" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-muted/20 w-full overflow-x-hidden">
+          <div className="max-w-4xl mx-auto w-full">
+            <div className={`text-center mb-8 sm:mb-10 md:mb-12 transition-all duration-700 w-full ${
               showResults ? 'animate-fade-in' : 'opacity-0'
             }`}>
-              <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4 px-2 sm:px-0">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4 px-2 sm:px-0 break-words">
                 Your Premium Prompts
               </h2>
-              <p className="text-sm xs:text-base sm:text-lg text-muted-foreground px-2 sm:px-0 max-w-2xl mx-auto">
+              <p className="text-sm xs:text-base sm:text-lg text-muted-foreground px-2 sm:px-0 max-w-2xl mx-auto break-words">
                 Copy and paste these optimized prompts into your AI tool
               </p>
             </div>
             
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-4 sm:space-y-6 w-full">
               {optimizedPrompts.map((promptTemplate, index) => {
                 const getIcon = (title: string) => {
                   if (title.includes('Quick') || title.includes('Simple')) return Zap;
@@ -2057,18 +2057,18 @@ export const PromptEngineer = () => {
                 return (
                   <Card 
                     key={index} 
-                    className={`bg-gradient-card shadow-elegant hover:shadow-glow border-0 transition-all duration-700 hover:-translate-y-1 group overflow-hidden ${
+                    className={`bg-gradient-card shadow-elegant hover:shadow-glow border-0 transition-all duration-700 hover:-translate-y-1 group overflow-hidden w-full ${
                       showResults ? 'animate-slide-up' : 'opacity-0 translate-y-4'
                     }`}
                     style={{ animationDelay: `${index * 150}ms` }}
                   >
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-border/20 bg-gradient-to-r from-primary/5 to-transparent">
-                      <div className="flex items-center gap-4">
-                        <div className="p-2 rounded-xl bg-primary/10 group-hover:animate-pulse">
+                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 pb-4 border-b border-border/20 bg-gradient-to-r from-primary/5 to-transparent w-full">
+                      <div className="flex items-center gap-4 w-full sm:w-auto flex-1 min-w-0">
+                        <div className="p-2 rounded-xl bg-primary/10 group-hover:animate-pulse flex-shrink-0">
                           <Icon className="w-5 h-5 text-primary" />
                         </div>
-                        <div>
-                          <CardTitle className="text-lg sm:text-xl font-bold text-foreground">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg sm:text-xl font-bold text-foreground break-words">
                             {promptTemplate.title}
                           </CardTitle>
                           <div className="flex gap-2 mt-1 flex-wrap">
@@ -2094,7 +2094,7 @@ export const PromptEngineer = () => {
                         variant="secondary"
                         size="sm"
                         onClick={() => handleCopy(promptTemplate.prompt, index)}
-                        className="hover:bg-primary hover:text-primary-foreground transition-all duration-300 group/copy"
+                        className="hover:bg-primary hover:text-primary-foreground transition-all duration-300 group/copy flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
                       >
                         {copiedIndex === index ? (
                           <div className="flex items-center gap-2">
@@ -2109,9 +2109,9 @@ export const PromptEngineer = () => {
                         )}
                       </Button>
                     </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="bg-background/70 backdrop-blur rounded-xl p-4 sm:p-6 border border-border/30 shadow-inner">
-                        <pre className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed text-foreground break-words font-mono">
+                    <CardContent className="p-6 w-full">
+                      <div className="bg-background/70 backdrop-blur rounded-xl p-4 sm:p-6 border border-border/30 shadow-inner w-full overflow-hidden">
+                        <pre className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed text-foreground break-words font-mono overflow-x-auto max-w-full">
                           {promptTemplate.prompt}
                         </pre>
                       </div>

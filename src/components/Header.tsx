@@ -46,9 +46,9 @@ export const Header = ({ user }: HeaderProps) => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-xl">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-xl w-full">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="flex items-center justify-between h-16 lg:h-20 gap-4">
           {/* Logo */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-md flex items-center justify-center">

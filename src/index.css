@@ -139,17 +139,28 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
   html {
     @apply scroll-smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
-    overflow-x: hidden; /* Prevent horizontal scroll issues */
+    overflow-x: hidden;
     position: relative;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  /* Prevent text overflow globally */
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   /* Enhanced touch targets for mobile */
@@ -160,6 +171,11 @@ All colors MUST be HSL.
   /* Better focus states for accessibility */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  /* Prevent layout shift from scrollbar */
+  html {
+    scrollbar-gutter: stable;
   }
 }
 
@@ -267,24 +283,24 @@ All colors MUST be HSL.
     position: static !important;
   }
 
-  /* Prevent unwanted absolute positioning */
-  [style*="left:"],
-  [style*="top:"] {
-    position: relative !important;
-    left: auto !important;
-    top: auto !important;
-  }
-
   /* Better z-index management */
   .z-base { z-index: 0; }
   .z-dropdown { z-index: 1000; }
   .z-modal { z-index: 2000; }
   .z-toast { z-index: 3000; }
 
-  /* Dropdown specific fixes */
+  /* Dropdown specific fixes with solid background */
   [data-radix-popper-content-wrapper] {
     z-index: 1000 !important;
     position: absolute !important;
+  }
+
+  [role="menu"],
+  [role="listbox"],
+  [data-radix-select-content],
+  [data-radix-dropdown-menu-content] {
+    background-color: hsl(var(--popover)) !important;
+    z-index: 1000 !important;
   }
 
   /* Animation improvements */
