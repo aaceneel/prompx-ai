@@ -159,37 +159,36 @@ const Home = () => {
         className={`relative py-16 sm:py-24 md:py-28 lg:py-32 xl:py-40 overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-black min-h-[calc(100vh-4rem)] flex items-center transition-opacity duration-1000 ${sectionsVisible.hero ? 'opacity-100' : 'opacity-0'}`}
         style={{ contentVisibility: 'auto' }}
       >
-        {/* Animated PrompX background text - Mobile Optimized */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none select-none will-change-transform">
+        {/* Animated PrompX background text - Enhanced like Auth page */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
           <div 
-            className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[26rem] font-extrabold whitespace-nowrap tracking-tighter opacity-40 sm:opacity-60 md:opacity-80"
+            className="text-[clamp(6rem,22vw,28vw)] sm:text-[clamp(10rem,22vw,26vw)] md:text-[clamp(14rem,24vw,28vw)] lg:text-[clamp(16rem,26vw,32vw)] font-extrabold whitespace-nowrap tracking-tighter animate-pulse-subtle"
             style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 100%)',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.12) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              letterSpacing: '-0.05em',
-              willChange: 'transform'
+              letterSpacing: '-0.05em'
             }}
           >
             PrompX
           </div>
         </div>
 
-        {/* Optimized gradient orbs - Mobile friendly */}
-        {sectionsVisible.hero && (
-          <>
-            <div className="absolute top-0 -left-12 sm:-left-24 md:-left-48 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-500/6 sm:from-blue-500/8 to-purple-500/6 sm:to-purple-500/8 rounded-full blur-[60px] sm:blur-[80px] animate-pulse-subtle pointer-events-none will-change-transform" />
-            <div className="absolute bottom-0 -right-12 sm:-right-24 md:-right-48 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-gradient-to-tl from-purple-500/6 sm:from-purple-500/8 to-pink-500/6 sm:to-pink-500/8 rounded-full blur-[60px] sm:blur-[80px] animate-pulse-subtle pointer-events-none will-change-transform" style={{ animationDelay: '1s' }} />
-          </>
-        )}
+        {/* Enhanced animated gradient orbs with glow - Like Auth page */}
+        <div className="absolute top-0 -left-24 sm:-left-48 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse-subtle pointer-events-none -z-10" />
+        <div className="absolute bottom-0 -right-24 sm:-right-48 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-gradient-to-tl from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse-subtle pointer-events-none -z-10" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 sm:w-72 sm:h-72 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse-subtle pointer-events-none -z-10" style={{ animationDelay: '0.5s' }} />
         
-        {/* Lightweight grid pattern */}
+        {/* Enhanced grid pattern with shimmer effect - Like Auth page */}
         <div 
-          className="absolute inset-0 opacity-[0.015] pointer-events-none"
+          className="absolute inset-0 opacity-[0.03] pointer-events-none -z-20"
           style={{
-            backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
+            backgroundImage: `
+              linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px'
           }}
         />
 
