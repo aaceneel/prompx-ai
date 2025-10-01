@@ -24,11 +24,11 @@ export const WorkflowProgress = ({ steps, currentStep, totalSteps }: WorkflowPro
   const getStatusIcon = (status: StepProgress['status']) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+        return <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />;
       case 'running':
-        return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+        return <Loader2 className="h-5 w-5 text-primary animate-spin" />;
       case 'error':
-        return <AlertCircle className="h-5 w-5 text-red-500" />;
+        return <AlertCircle className="h-5 w-5 text-destructive" />;
       default:
         return <Clock className="h-5 w-5 text-muted-foreground" />;
     }
@@ -66,10 +66,10 @@ export const WorkflowProgress = ({ steps, currentStep, totalSteps }: WorkflowPro
         {steps.map((step, index) => (
           <div
             key={index}
-            className={`flex items-center gap-3 p-3 rounded-lg border ${
-              step.status === 'running' ? 'border-blue-500 bg-blue-50/10' : 
-              step.status === 'completed' ? 'border-green-500/20 bg-green-50/10' :
-              step.status === 'error' ? 'border-red-500 bg-red-50/10' :
+            className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+              step.status === 'running' ? 'border-primary bg-primary/5' : 
+              step.status === 'completed' ? 'border-green-500/30 bg-green-500/5 dark:border-green-400/30 dark:bg-green-400/5' :
+              step.status === 'error' ? 'border-destructive bg-destructive/5' :
               'border-border'
             }`}
           >
@@ -84,7 +84,7 @@ export const WorkflowProgress = ({ steps, currentStep, totalSteps }: WorkflowPro
                 {getStatusBadge(step.status)}
               </div>
               {step.error && (
-                <p className="text-xs text-red-500 mt-1">{step.error}</p>
+                <p className="text-xs text-destructive mt-1">{step.error}</p>
               )}
             </div>
             {step.status === 'completed' && (
