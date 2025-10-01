@@ -47,7 +47,7 @@ export const Header = ({ user }: HeaderProps) => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl w-full border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl w-full">
       <div className="w-full">
         {/* Top Section - User Info & Quick Actions */}
         <div className="border-b border-white/5">
