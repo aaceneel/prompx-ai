@@ -40,21 +40,49 @@ const detectLanguage = async (text: string): Promise<string> => {
   }
 };
 
-const AI_TOOLS = [
-  { id: 'chatgpt', name: 'ChatGPT', icon: MessageSquare, description: 'OpenAI conversational AI' },
-  { id: 'claude', name: 'Claude', icon: Brain, description: 'Anthropic advanced reasoning' },
-  { id: 'gemini', name: 'Gemini', icon: Sparkles, description: 'Google multimodal AI' },
-  { id: 'grok', name: 'Grok', icon: Zap, description: 'xAI real-time assistant' },
-  { id: 'midjourney', name: 'MidJourney', icon: Palette, description: 'AI art generation' },
-  { id: 'dalle', name: 'DALL-E', icon: Image, description: 'OpenAI image creation' },
-  { id: 'stable-diffusion', name: 'Stable Diffusion', icon: Wand2, description: 'Open-source image AI' },
-  { id: 'copilot', name: 'GitHub Copilot', icon: Code, description: 'AI pair programmer' },
-  { id: 'cursor', name: 'Cursor', icon: Target, description: 'AI code editor' },
-  { id: 'elevenlabs', name: 'ElevenLabs', icon: Mic, description: 'Voice synthesis AI' },
-  { id: 'musicgen', name: 'MusicGen', icon: Music, description: 'AI music generation' },
-  { id: 'runway', name: 'Runway', icon: Video, description: 'AI video editing' },
-  { id: 'pika', name: 'Pika', icon: Sparkles, description: 'Text-to-video AI' },
-  { id: 'sora', name: 'Sora', icon: Stars, description: 'OpenAI video generation' },
+const AI_MODELS = [
+  // Text Models - OpenAI
+  { id: 'gpt-5', name: 'GPT-5', icon: MessageSquare, description: 'Most capable OpenAI model', category: 'text', provider: 'OpenAI' },
+  { id: 'gpt-4.1', name: 'GPT-4.1', icon: MessageSquare, description: 'Advanced reasoning', category: 'text', provider: 'OpenAI' },
+  { id: 'gpt-4o', name: 'GPT-4o', icon: MessageSquare, description: 'Multimodal flagship', category: 'text', provider: 'OpenAI' },
+  { id: 'o4-mini', name: 'O4-Mini', icon: Brain, description: 'Fast reasoning model', category: 'text', provider: 'OpenAI' },
+  
+  // Text Models - Anthropic
+  { id: 'claude-opus-4', name: 'Claude Opus 4', icon: Brain, description: 'Highest intelligence', category: 'text', provider: 'Anthropic' },
+  { id: 'claude-sonnet-4', name: 'Claude Sonnet 4', icon: Brain, description: 'Balanced performance', category: 'text', provider: 'Anthropic' },
+  { id: 'claude-haiku-3.5', name: 'Claude Haiku 3.5', icon: Zap, description: 'Fastest responses', category: 'text', provider: 'Anthropic' },
+  
+  // Text Models - Google
+  { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro', icon: Sparkles, description: 'Google flagship model', category: 'text', provider: 'Google' },
+  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', icon: Sparkles, description: 'Fast & efficient', category: 'text', provider: 'Google' },
+  { id: 'gemini-ultra', name: 'Gemini Ultra', icon: Stars, description: 'Most capable Google AI', category: 'text', provider: 'Google' },
+  
+  // Text Models - Meta
+  { id: 'llama-3.3', name: 'LLaMA 3.3', icon: Code, description: 'Meta open-source', category: 'text', provider: 'Meta' },
+  { id: 'llama-3.1-405b', name: 'LLaMA 3.1 405B', icon: Code, description: 'Largest open model', category: 'text', provider: 'Meta' },
+  
+  // Text Models - Mistral
+  { id: 'mistral-large-2', name: 'Mistral Large 2', icon: Target, description: 'European frontier model', category: 'text', provider: 'Mistral' },
+  { id: 'mistral-medium', name: 'Mistral Medium', icon: Target, description: 'Balanced European AI', category: 'text', provider: 'Mistral' },
+  
+  // Text Models - xAI
+  { id: 'grok-2', name: 'Grok 2', icon: Zap, description: 'Real-time insights', category: 'text', provider: 'xAI' },
+  
+  // Image Models
+  { id: 'midjourney-v6', name: 'MidJourney v6', icon: Palette, description: 'Photorealistic art', category: 'image', provider: 'MidJourney' },
+  { id: 'dalle-3', name: 'DALL-E 3', icon: Image, description: 'OpenAI image creation', category: 'image', provider: 'OpenAI' },
+  { id: 'stable-diffusion-xl', name: 'Stable Diffusion XL', icon: Wand2, description: 'Open-source images', category: 'image', provider: 'Stability' },
+  { id: 'flux-pro', name: 'Flux Pro', icon: Sparkles, description: 'High-quality generation', category: 'image', provider: 'Black Forest Labs' },
+  
+  // Code Models
+  { id: 'github-copilot', name: 'GitHub Copilot', icon: Code, description: 'AI pair programmer', category: 'code', provider: 'GitHub' },
+  { id: 'cursor-ai', name: 'Cursor AI', icon: Target, description: 'AI code editor', category: 'code', provider: 'Cursor' },
+  { id: 'codestral', name: 'Codestral', icon: Code, description: 'Mistral code model', category: 'code', provider: 'Mistral' },
+  
+  // Audio/Video Models
+  { id: 'elevenlabs', name: 'ElevenLabs', icon: Mic, description: 'Voice synthesis', category: 'audio', provider: 'ElevenLabs' },
+  { id: 'sora', name: 'Sora', icon: Stars, description: 'OpenAI video', category: 'video', provider: 'OpenAI' },
+  { id: 'runway-gen3', name: 'Runway Gen-3', icon: Video, description: 'Video generation', category: 'video', provider: 'Runway' },
 ];
 
 const WORKFLOW_STEPS = [
@@ -68,6 +96,7 @@ const WORKFLOW_STEPS = [
 export const PromptEngineer = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [selectedTool, setSelectedTool] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [userInput, setUserInput] = useState('');
   const [optimizedPrompts, setOptimizedPrompts] = useState<PromptTemplate[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -77,6 +106,8 @@ export const PromptEngineer = () => {
   const [inputEnhancements, setInputEnhancements] = useState<string[]>([]);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [userPreferences, setUserPreferences] = useState<any>(null);
+  const [compareMode, setCompareMode] = useState(false);
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
   
   // Voice and language features
   const [isRecording, setIsRecording] = useState(false);
@@ -1128,10 +1159,14 @@ export const PromptEngineer = () => {
   };
 
   const generatePrompts = async () => {
-    if (!selectedTool || !userInput.trim()) {
+    const modelsToOptimize = compareMode ? selectedModels : (selectedTool ? [selectedTool] : []);
+    
+    if (!userInput.trim() || modelsToOptimize.length === 0) {
       toast({
-        title: "Missing information", 
-        description: "Please select an AI tool and enter your request",
+        title: "Missing Information",
+        description: compareMode 
+          ? "Please enter your prompt and select at least one model to compare"
+          : "Please enter your prompt and select an AI model",
         variant: "destructive",
       });
       return;
@@ -1145,34 +1180,90 @@ export const PromptEngineer = () => {
     try {
       // Phase 1: Enhance the user input
       await new Promise(resolve => setTimeout(resolve, 800));
-      const { enhanced, improvements } = await enhanceUserInput(userInput);
+      let enhancedText = userInput;
+      
+      // Enhance with user preferences if available
+      if (userPreferences) {
+        enhancedText = `[Profile: ${userPreferences.niche} | ${userPreferences.style} tone | ${userPreferences.preferred_tone}]\n\n${userInput}`;
+      }
+      
+      const { enhanced, improvements } = await enhanceUserInput(enhancedText);
       setEnhancedInput(enhanced);
-      setInputEnhancements(improvements);
+      
+      // Add model orchestration info
+      const orchestrationInfo = [
+        ...improvements,
+        `🎯 Optimizing for ${modelsToOptimize.length} model${modelsToOptimize.length > 1 ? 's' : ''}`,
+        ...modelsToOptimize.map(m => {
+          const model = AI_MODELS.find(mod => mod.id === m);
+          return model ? `• ${model.name} (${model.provider})` : '';
+        }).filter(Boolean)
+      ];
+      setInputEnhancements(orchestrationInfo);
       setIsEnhancing(false);
 
       if (improvements.length > 0) {
         toast({
-          title: "Input Enhanced!",
-          description: `Applied ${improvements.length} improvement${improvements.length > 1 ? 's' : ''} to your prompt`,
+          title: "Multi-Model Orchestration",
+          description: `Optimizing for ${modelsToOptimize.length} AI model${modelsToOptimize.length > 1 ? 's' : ''}`,
         });
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
       
-      // Phase 2: Generate optimized prompts using Lovable AI
-      const { data, error } = await supabase.functions.invoke('optimize-prompt', {
-        body: { text: enhanced, platform: selectedTool }
-      });
+      // Phase 2: Generate model-specific optimized prompts
+      const allPrompts: any[] = [];
+      
+      for (const modelId of modelsToOptimize) {
+        const model = AI_MODELS.find(m => m.id === modelId);
+        if (!model) continue;
 
-      if (error) throw error;
+        const { data, error } = await supabase.functions.invoke('optimize-prompt', {
+          body: {
+            text: enhanced,
+            platform: modelId,
+            modelName: model.name,
+            provider: model.provider,
+            category: model.category
+          }
+        });
 
-      const generatedPrompts = data.prompts || [];
-      setOptimizedPrompts(generatedPrompts);
+        if (error) {
+          console.error(`Error optimizing for ${model.name}:`, error);
+          continue;
+        }
+
+        const generatedPrompts = data?.prompts || [];
+        
+        // Add model metadata to each prompt
+        const modelPrompts = generatedPrompts.map((p: any) => ({
+          ...p,
+          title: compareMode ? `${model.name} - ${p.title}` : p.title,
+          modelId: modelId,
+          modelName: model.name,
+          provider: model.provider,
+          category: model.category
+        }));
+        
+        allPrompts.push(...modelPrompts);
+      }
+
+      setOptimizedPrompts(allPrompts);
       setIsGenerating(false);
       setShowResults(true);
+      
+      // Save to history (first prompt only)
+      if (user && allPrompts.length > 0) {
+        await supabase.from('prompt_history').insert({
+          user_id: user.id,
+          original_prompt: userInput,
+          optimized_prompt: allPrompts[0]?.prompt || '',
+          platform: modelsToOptimize[0]
+        });
+      }
 
       toast({
-        title: "✨ AI-Optimized Prompts Generated!",
-        description: `Created ${generatedPrompts.length} platform-specific variations for ${selectedTool}`,
+        title: "✨ Multi-Model Prompts Generated!",
+        description: `Created ${allPrompts.length} optimized variations across ${modelsToOptimize.length} AI model${modelsToOptimize.length > 1 ? 's' : ''}`,
       });
     } catch (error) {
       console.error("Generation error:", error);
@@ -1374,50 +1465,113 @@ export const PromptEngineer = () => {
                 </p>
               </div>
 
-              {/* Tool Selection */}
+              {/* Model Category Filter */}
+              <div className="mb-4 flex flex-wrap gap-2 justify-center">
+                {['all', 'text', 'image', 'code', 'audio', 'video'].map((cat) => (
+                  <Button
+                    key={cat}
+                    variant={selectedCategory === cat ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(cat)}
+                  >
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)} Models
+                  </Button>
+                ))}
+              </div>
+
+              {/* Compare Mode Toggle */}
+              <div className="mb-6 flex justify-center">
+                <Button
+                  variant={compareMode ? "default" : "outline"}
+                  onClick={() => {
+                    setCompareMode(!compareMode);
+                    if (!compareMode) setSelectedModels([]);
+                    else setSelectedTool('');
+                  }}
+                  className="gap-2"
+                >
+                  <Brain className="w-4 h-4" />
+                  {compareMode ? 'Single Model Mode' : 'Compare Multiple Models'}
+                </Button>
+              </div>
+
+              {/* Model Selection Grid */}
               <div className="mb-6 sm:mb-8 md:mb-10">
-                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto">
-                  {AI_TOOLS.map((tool) => {
-                    const Icon = tool.icon;
-                    return (
-                      <button
-                        key={tool.id}
-                        className={`group relative flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 hover:shadow-lg min-h-[100px] sm:min-h-[120px] touch-manipulation ${
-                          selectedTool === tool.id 
-                            ? 'bg-gradient-primary text-white border-primary shadow-glow scale-[1.02] sm:scale-105' 
-                            : 'bg-background border-border/50 hover:border-primary/40 hover:shadow-md hover:bg-primary/5'
-                        }`}
-                        onClick={() => setSelectedTool(tool.id)}
-                      >
-                        <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all duration-300 ${
-                          selectedTool === tool.id 
-                            ? 'bg-white/20 group-hover:animate-bounce-gentle' 
-                            : 'bg-primary/10 group-hover:bg-primary/20'
-                        }`}>
-                          <Icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
-                            selectedTool === tool.id ? 'text-white' : 'text-primary'
-                          }`} />
-                        </div>
-                        <div className="text-center flex-1">
-                          <span className={`text-xs sm:text-sm font-bold block leading-tight ${
-                            selectedTool === tool.id ? 'text-white' : 'text-foreground'
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 max-w-6xl mx-auto">
+                  {AI_MODELS
+                    .filter(model => selectedCategory === 'all' || model.category === selectedCategory)
+                    .map((model) => {
+                      const Icon = model.icon;
+                      const isSelected = compareMode 
+                        ? selectedModels.includes(model.id)
+                        : selectedTool === model.id;
+                      
+                      return (
+                        <button
+                          key={model.id}
+                          className={`group relative flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg min-h-[120px] touch-manipulation ${
+                            isSelected
+                              ? 'bg-gradient-primary text-white border-primary shadow-glow scale-[1.02]' 
+                              : 'bg-background border-border/50 hover:border-primary/40 hover:shadow-md hover:bg-primary/5'
+                          }`}
+                          onClick={() => {
+                            if (compareMode) {
+                              if (selectedModels.includes(model.id)) {
+                                setSelectedModels(selectedModels.filter(m => m !== model.id));
+                              } else if (selectedModels.length < 4) {
+                                setSelectedModels([...selectedModels, model.id]);
+                              } else {
+                                toast({
+                                  title: "Maximum 4 Models",
+                                  description: "You can compare up to 4 models at once",
+                                  variant: "destructive",
+                                });
+                              }
+                            } else {
+                              setSelectedTool(model.id);
+                            }
+                          }}
+                        >
+                          <div className={`p-2 rounded-lg transition-all duration-300 ${
+                            isSelected
+                              ? 'bg-white/20 group-hover:animate-bounce-gentle' 
+                              : 'bg-primary/10 group-hover:bg-primary/20'
                           }`}>
-                            {tool.name}
-                          </span>
-                          <span className={`text-xs mt-1 hidden sm:block leading-tight ${
-                            selectedTool === tool.id ? 'text-white/80' : 'text-muted-foreground'
-                          }`}>
-                            {tool.description}
-                          </span>
-                        </div>
-                        {selectedTool === tool.id && (
-                          <div className="absolute -top-1 -right-1">
-                            <div className="w-3 h-3 bg-white rounded-full animate-pulse shadow-md" />
+                            <Icon className={`w-5 h-5 transition-colors ${
+                              isSelected ? 'text-white' : 'text-primary'
+                            }`} />
                           </div>
-                        )}
-                      </button>
-                    );
-                  })}
+                          <div className="text-center flex-1">
+                            <span className={`text-xs font-bold block leading-tight ${
+                              isSelected ? 'text-white' : 'text-foreground'
+                            }`}>
+                              {model.name}
+                            </span>
+                            <Badge 
+                              variant="secondary" 
+                              className={`text-xs mt-1 ${isSelected ? 'bg-white/20 text-white' : ''}`}
+                            >
+                              {model.provider}
+                            </Badge>
+                            <span className={`text-xs mt-1 block leading-tight ${
+                              isSelected ? 'text-white/80' : 'text-muted-foreground'
+                            }`}>
+                              {model.description}
+                            </span>
+                          </div>
+                          {isSelected && (
+                            <div className="absolute -top-1 -right-1">
+                              <div className="w-3 h-3 bg-white rounded-full animate-pulse shadow-md" />
+                            </div>
+                          )}
+                          {compareMode && selectedModels.includes(model.id) && (
+                            <div className="absolute -top-2 -left-2 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                              {selectedModels.indexOf(model.id) + 1}
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
                 </div>
               </div>
 
@@ -1626,19 +1780,23 @@ export const PromptEngineer = () => {
                 size="lg" 
                 className="w-full h-12 sm:h-14 md:h-16 text-sm sm:text-base md:text-lg font-bold touch-manipulation" 
                 onClick={generatePrompts}
-                disabled={isGenerating || !selectedTool || !userInput.trim()}
+                disabled={isGenerating || !userInput.trim() || (compareMode ? selectedModels.length === 0 : !selectedTool)}
               >
                 {isGenerating ? (
                   <div className="flex items-center gap-2 sm:gap-3">
                     <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 border-b-2 border-current" />
                     <span className="text-sm sm:text-base">
-                      {isEnhancing ? 'Enhancing your input...' : 'Engineering your prompts...'}
+                      {isEnhancing ? 'Enhancing input...' : 'Orchestrating models...'}
                     </span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 sm:gap-3">
                     <Brain className="w-5 h-5 sm:w-6 sm:h-6 group-hover:animate-pulse flex-shrink-0" />
-                    <span className="truncate">Generate Perfect AI Prompts</span>
+                    <span className="truncate">
+                      {compareMode 
+                        ? `Compare ${selectedModels.length || 0} Model${selectedModels.length !== 1 ? 's' : ''}`
+                        : 'Generate Model-Optimized Prompts'}
+                    </span>
                     <span className="text-xs opacity-75 hidden sm:inline">(Any Language)</span>
                     <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:translate-x-1 flex-shrink-0" />
                   </div>
@@ -1692,11 +1850,23 @@ export const PromptEngineer = () => {
                           <CardTitle className="text-lg sm:text-xl font-bold text-foreground">
                             {promptTemplate.title}
                           </CardTitle>
-                          {index === 0 && (
-                            <Badge className="mt-1 bg-gradient-primary text-white shadow-md">
-                              ⭐ Recommended
-                            </Badge>
-                          )}
+                          <div className="flex gap-2 mt-1 flex-wrap">
+                            {index === 0 && (
+                              <Badge className="bg-gradient-primary text-white shadow-md">
+                                ⭐ Recommended
+                              </Badge>
+                            )}
+                            {(promptTemplate as any).provider && (
+                              <Badge variant="secondary">
+                                {(promptTemplate as any).provider}
+                              </Badge>
+                            )}
+                            {(promptTemplate as any).category && (
+                              <Badge variant="outline">
+                                {(promptTemplate as any).category}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <Button

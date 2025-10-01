@@ -16,9 +16,8 @@ serve(async (req) => {
 
   try {
     console.log("Processing prompt optimization request...");
-    const { text, platform } = await req.json();
-    console.log("Input text:", text);
-    console.log("Target platform:", platform);
+    const { text, platform, modelName, provider, category } = await req.json();
+    console.log("Input:", { text, platform, modelName, provider, category });
 
     if (!text || typeof text !== 'string') {
       return new Response(
@@ -39,108 +38,194 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Platform-specific system prompts
-    const platformPrompts: Record<string, string> = {
-      chatgpt: `You are an expert at creating prompts for ChatGPT. Generate 3 optimized prompt variations that:
-- Use clear, specific instructions
-- Include role definitions when beneficial
-- Structure complex tasks with numbered steps
-- Specify desired output format
-- Include examples when helpful`,
+    // Model-specific optimization strategies
+    const modelStrategies: Record<string, string> = {
+      // GPT Models
+      "gpt-5": `Expert at GPT-5 optimization. Focus on:
+- Structured reasoning with chain-of-thought
+- Explicit role definitions and task framing
+- Step-by-step instructions for complex tasks
+- Output format specifications (JSON, markdown, etc.)
+- Examples and few-shot learning when beneficial`,
 
-      claude: `You are an expert at creating prompts for Claude (Anthropic). Generate 3 optimized prompt variations that:
-- Leverage Claude's strong analytical and reasoning capabilities
-- Use XML tags for structure when dealing with complex data
-- Include clear thinking instructions for complex reasoning
-- Specify output format preferences
-- Take advantage of Claude's long context window for detailed tasks`,
+      "gpt-4.1": `Expert at GPT-4.1 optimization. Focus on:
+- Advanced analytical and reasoning prompts
+- Multi-step problem solving
+- Code generation with best practices
+- Technical documentation creation`,
 
-      gemini: `You are an expert at creating prompts for Google Gemini. Generate 3 optimized prompt variations that:
-- Leverage multimodal capabilities (text, image, code)
-- Use clear, structured instructions
-- Include context and examples
-- Specify output format
-- Take advantage of Google's knowledge integration`,
+      "gpt-4o": `Expert at GPT-4o (multimodal) optimization. Focus on:
+- Combined text, image, and code tasks
+- Visual reasoning prompts
+- Comprehensive contextual understanding
+- Real-time information integration`,
 
-      grok: `You are an expert at creating prompts for Grok (xAI). Generate 3 optimized prompt variations that:
-- Leverage real-time information and current events
-- Use conversational yet precise language
-- Include context about timing and currency of information
-- Specify factual accuracy requirements
-- Structure for quick, actionable responses`,
+      // Claude Models
+      "claude-opus-4": `Expert at Claude Opus 4 optimization. Focus on:
+- Deep analytical reasoning and research
+- XML tags for structured data (<thinking>, <answer>)
+- Extended context for comprehensive analysis
+- Nuanced ethical and philosophical discussions
+- Step-by-step reasoning for complex problems`,
 
-      midjourney: `You are an expert at creating prompts for MidJourney. Generate 3 optimized prompt variations that:
-- Include detailed visual descriptions (subject, style, lighting, composition)
-- Use specific artistic terms and styles
-- Add technical parameters (--ar, --v, --stylize, --chaos)
-- Reference specific artists or art movements when relevant
-- Specify mood, atmosphere, and color palette`,
+      "claude-sonnet-4": `Expert at Claude Sonnet 4 optimization. Focus on:
+- Balanced speed and intelligence
+- Clear, structured responses
+- Multi-turn conversations
+- Technical writing and code review`,
 
-      dalle: `You are an expert at creating prompts for DALL-E. Generate 3 optimized prompt variations that:
-- Use clear, descriptive language for subjects and scenes
-- Specify artistic style and medium
-- Include lighting, perspective, and composition details
-- Add color scheme and mood descriptors
-- Keep prompts concise but detailed (under 400 characters)`,
+      "claude-haiku-3.5": `Expert at Claude Haiku optimization. Focus on:
+- Concise, fast responses
+- Quick summaries and classifications
+- Real-time assistance
+- Straightforward Q&A`,
 
-      "stable-diffusion": `You are an expert at creating prompts for Stable Diffusion. Generate 3 optimized prompt variations that:
-- Use weighted keywords and emphasis with (keyword:weight) syntax
-- Include negative prompts to avoid unwanted elements
-- Specify quality tags (8k, highly detailed, masterpiece)
-- Reference specific models or LoRAs when beneficial
-- Structure with main subject, style, technical specs, quality tags`,
+      // Gemini Models
+      "gemini-2.5-pro": `Expert at Gemini 2.5 Pro optimization. Focus on:
+- Multimodal reasoning (text, images, code)
+- Large context window utilization
+- Google knowledge integration
+- Complex reasoning tasks
+- Research and analysis`,
 
-      copilot: `You are an expert at creating prompts for GitHub Copilot. Generate 3 optimized code comment variations that:
-- Use clear, specific function/method descriptions
-- Include parameter types and return values
-- Specify edge cases and error handling
-- Reference coding patterns and best practices
-- Add context about purpose and usage`,
+      "gemini-2.5-flash": `Expert at Gemini 2.5 Flash optimization. Focus on:
+- Fast, efficient responses
+- Balanced multimodal capabilities
+- Cost-effective prompting
+- Quick iterations and prototyping`,
 
-      cursor: `You are an expert at creating prompts for Cursor AI. Generate 3 optimized prompt variations that:
-- Use specific, actionable instructions
-- Include file context and project structure when relevant
+      "gemini-ultra": `Expert at Gemini Ultra optimization. Focus on:
+- Highest capability tasks
+- Complex multimodal reasoning
+- Advanced code generation
+- Research-level analysis`,
+
+      // LLaMA Models
+      "llama-3.3": `Expert at LLaMA 3.3 optimization. Focus on:
+- Open-source flexibility
+- Conversational AI
+- Task-specific fine-tuning considerations
+- System prompts for role definition`,
+
+      "llama-3.1-405b": `Expert at LLaMA 3.1 405B optimization. Focus on:
+- Maximum open-source capability
+- Complex reasoning tasks
+- Long-form content generation
+- Technical and scientific tasks`,
+
+      // Mistral Models
+      "mistral-large-2": `Expert at Mistral Large 2 optimization. Focus on:
+- European AI excellence
+- Multilingual capabilities
+- Function calling and tool use
+- Structured output generation`,
+
+      "mistral-medium": `Expert at Mistral Medium optimization. Focus on:
+- Efficient European AI
+- Balanced performance
+- Cost-effective solutions
+- Quick responses`,
+
+      // xAI
+      "grok-2": `Expert at Grok 2 optimization. Focus on:
+- Real-time information and current events
+- Conversational and engaging tone
+- Up-to-date knowledge integration
+- Fact-checking and verification`,
+
+      // Image Models
+      "midjourney-v6": `Expert at MidJourney v6 optimization. Generate prompts with:
+- Detailed subject descriptions
+- Artistic style and medium (oil painting, photography, etc.)
+- Lighting (golden hour, studio lighting, dramatic shadows)
+- Camera details (35mm, wide-angle, bokeh, depth of field)
+- Composition (rule of thirds, symmetry, perspective)
+- Color palette and mood
+- Technical parameters: --ar 16:9 --v 6 --stylize 100`,
+
+      "dalle-3": `Expert at DALL-E 3 optimization. Generate prompts with:
+- Clear subject and action descriptions
+- Specific art style (photorealistic, cartoon, watercolor)
+- Setting and environment details
+- Lighting and atmosphere
+- Color scheme
+- Emotional tone
+- Keep under 400 characters for optimal results`,
+
+      "stable-diffusion-xl": `Expert at Stable Diffusion XL optimization. Generate prompts with:
+- Weighted keywords: (keyword:1.5) for emphasis
+- Quality tags: 8k, highly detailed, masterpiece, best quality
+- Negative prompts: ugly, blurry, low quality, distorted
+- Specific style references
+- Technical specifications
+- Artist or movement references`,
+
+      "flux-pro": `Expert at Flux Pro optimization. Generate prompts with:
+- High-quality visual descriptions
+- Professional photography terms
+- Detailed composition
+- Lighting and color grading
+- Mood and atmosphere
+- Technical camera details`,
+
+      // Code Models
+      "github-copilot": `Expert at GitHub Copilot optimization. Generate code comments that:
+- Clearly describe function purpose
+- Specify parameter types and return values
+- Include usage examples
+- Mention edge cases and error handling
+- Reference patterns and best practices
+- Use clear, natural language`,
+
+      "cursor-ai": `Expert at Cursor AI optimization. Generate prompts that:
+- Provide specific, actionable instructions
+- Reference existing code structure
 - Specify coding standards and patterns
-- Reference existing code when making changes
-- Include testing and documentation requirements`,
+- Include file and project context
+- Request tests and documentation
+- Define success criteria`,
 
-      elevenlabs: `You are an expert at creating prompts for ElevenLabs voice synthesis. Generate 3 optimized script variations that:
-- Use natural, conversational language
-- Include punctuation for proper pacing and intonation
-- Add emotional context when needed
-- Specify voice characteristics (tone, pace, emotion)
-- Structure for clear, engaging delivery`,
+      "codestral": `Expert at Codestral optimization. Generate prompts for:
+- Code generation with best practices
+- Code explanation and documentation
+- Refactoring suggestions
+- Bug fixing and optimization
+- Test generation`,
 
-      musicgen: `You are an expert at creating prompts for MusicGen. Generate 3 optimized prompt variations that:
-- Specify genre, mood, and tempo
-- Include instrumentation details
-- Reference specific musical styles or artists
-- Add atmosphere and emotional descriptors
-- Specify structure (intro, verse, chorus, etc.)`,
+      // Audio/Video Models
+      "elevenlabs": `Expert at ElevenLabs optimization. Generate scripts with:
+- Natural, conversational language
+- Proper punctuation for pacing
+- Emotional context markers
+- Voice characteristic notes (warm, professional, energetic)
+- Pauses and emphasis cues
+- Clear delivery structure`,
 
-      runway: `You are an expert at creating prompts for Runway video editing. Generate 3 optimized prompt variations that:
-- Describe the desired video transformation clearly
-- Specify visual style and aesthetic
-- Include motion and transition details
-- Add atmosphere and mood descriptors
-- Reference specific video effects or techniques`,
+      "sora": `Expert at Sora optimization. Generate prompts with:
+- Cinematic descriptions
+- Camera movements (pan, zoom, tracking shot)
+- Time of day and lighting
+- Character descriptions and actions
+- Environment and setting details
+- Mood and atmosphere
+- Style references (cinematic, documentary, etc.)`,
 
-      pika: `You are an expert at creating prompts for Pika text-to-video. Generate 3 optimized prompt variations that:
-- Describe the scene with clear visual details
-- Specify motion and camera movement
-- Include lighting and atmosphere
-- Add style and aesthetic descriptors
-- Keep prompts concise but descriptive`,
-
-      sora: `You are an expert at creating prompts for Sora (OpenAI video generation). Generate 3 optimized prompt variations that:
-- Use cinematic, descriptive language
-- Specify camera angles and movements
-- Include detailed visual descriptions of subjects and environments
-- Add temporal elements (time of day, season, weather)
-- Describe mood, atmosphere, and visual style`
+      "runway-gen3": `Expert at Runway Gen-3 optimization. Generate prompts with:
+- Video transformation descriptions
+- Style and aesthetic details
+- Motion and transition specifications
+- Atmosphere and mood
+- Technical effects references
+- Duration and pacing notes`
     };
 
-    const systemPrompt = platformPrompts[platform] || platformPrompts.chatgpt;
+    const strategy = modelStrategies[platform] || modelStrategies["gpt-5"];
+    const modelInfo = modelName && provider ? `${modelName} (${provider})` : platform;
+
+    const systemPrompt = `${strategy}
+
+You are optimizing prompts specifically for ${modelInfo}.
+Generate 3 distinct, model-optimized prompt variations tailored to this AI's unique strengths and capabilities.`;
 
     // Call AI to generate optimized prompts
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -160,10 +245,15 @@ serve(async (req) => {
             role: "user",
             content: `Original user request: "${text}"
 
-Generate 3 distinct optimized prompt variations:
-1. "Quick & Direct" - Concise, straightforward version
-2. "Detailed & Professional" - Comprehensive, well-structured version
-3. "Creative & Enhanced" - Imaginative version with rich details
+Generate 3 distinct optimized prompt variations specifically tuned for ${modelInfo}:
+1. "Quick & Direct" - Concise, efficient version optimized for this model
+2. "Detailed & Professional" - Comprehensive version leveraging model strengths
+3. "Creative & Enhanced" - Advanced version showcasing model capabilities
+
+Consider this model's specific characteristics:
+- Provider: ${provider || 'Unknown'}
+- Category: ${category || 'text'}
+- Model: ${modelName || platform}
 
 Return ONLY a JSON array with this exact structure:
 [
@@ -211,7 +301,6 @@ Return ONLY a JSON array with this exact structure:
     // Extract JSON from response
     let prompts;
     try {
-      // Try to find JSON array in the response
       const jsonMatch = content.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         prompts = JSON.parse(jsonMatch[0]);
@@ -220,7 +309,6 @@ Return ONLY a JSON array with this exact structure:
       }
     } catch (parseError) {
       console.error("Failed to parse AI response:", parseError);
-      // Fallback: create basic prompts
       prompts = [
         { title: "Quick & Direct", prompt: content },
         { title: "Detailed & Professional", prompt: content },
@@ -228,7 +316,7 @@ Return ONLY a JSON array with this exact structure:
       ];
     }
 
-    console.log(`Generated ${prompts.length} optimized prompts for ${platform}`);
+    console.log(`Generated ${prompts.length} optimized prompts for ${modelInfo}`);
 
     return new Response(
       JSON.stringify({ prompts }),
