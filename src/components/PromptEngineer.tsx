@@ -12,6 +12,8 @@ import { User as SupabaseUser } from "@supabase/supabase-js";
 import { UserProfile } from "./UserProfile";
 import { IndustryTemplates } from "./IndustryTemplates";
 import { PromptHistory } from "./PromptHistory";
+import { WorkflowBuilder, WorkflowStep } from "./WorkflowBuilder";
+import { WorkflowResults, WorkflowResult } from "./WorkflowResults";
 
 // Language detection and translation
 const detectLanguage = async (text: string): Promise<string> => {
@@ -108,6 +110,8 @@ export const PromptEngineer = () => {
   const [userPreferences, setUserPreferences] = useState<any>(null);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [isExecutingWorkflow, setIsExecutingWorkflow] = useState(false);
+  const [workflowResults, setWorkflowResults] = useState<WorkflowResult[]>([]);
   
   // Voice and language features
   const [isRecording, setIsRecording] = useState(false);
@@ -1277,6 +1281,86 @@ export const PromptEngineer = () => {
     }
   };
 
+  const executeWorkflow = async (steps: WorkflowStep[]) => {
+    if (!userInput.trim()) {
+      toast({
+        title: "Input required",
+        description: "Please provide input for the workflow",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsExecutingWorkflow(true);
+    setWorkflowResults([]);
+    const results: WorkflowResult[] = [];
+    let previousOutput = userInput;
+
+    try {
+      for (let i = 0; i < steps.length; i++) {
+        const step = steps[i];
+        const startTime = Date.now();
+        
+        // Replace variables in the prompt
+        let processedPrompt = step.prompt
+          .replace(/\{\{input\}\}/g, userInput)
+          .replace(/\{\{previous\}\}/g, previousOutput);
+
+        toast({
+          title: `Executing ${step.name}`,
+          description: `Step ${i + 1} of ${steps.length}`
+        });
+
+        const { data, error } = await supabase.functions.invoke('execute-prompt', {
+          body: {
+            prompt: processedPrompt,
+            model: step.model || 'google/gemini-2.5-flash'
+          }
+        });
+
+        if (error) throw error;
+        if (!data.result) throw new Error('No result from execution');
+
+        const executionTime = Date.now() - startTime;
+        previousOutput = data.result;
+
+        results.push({
+          stepName: step.name,
+          stepIndex: i,
+          output: data.result,
+          executionTime
+        });
+
+        setWorkflowResults([...results]);
+      }
+
+      toast({
+        title: "Workflow completed",
+        description: `Successfully executed ${steps.length} steps`,
+      });
+
+      // Save the final result to history if user is logged in
+      if (user) {
+        await supabase.from('prompt_history').insert({
+          user_id: user.id,
+          original_prompt: userInput,
+          optimized_prompt: results[results.length - 1].output,
+          platform: 'workflow'
+        });
+      }
+
+    } catch (error) {
+      console.error('Workflow execution error:', error);
+      toast({
+        title: "Workflow failed",
+        description: error instanceof Error ? error.message : "An error occurred during workflow execution",
+        variant: "destructive"
+      });
+    } finally {
+      setIsExecutingWorkflow(false);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-gradient-bg">
       {/* Hero Section */}
@@ -1422,31 +1506,53 @@ export const PromptEngineer = () => {
       {user && (
         <section className="py-12 sm:py-16 md:py-20 bg-background">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <UserProfile 
-                userId={user.id} 
-                onPreferencesUpdate={setUserPreferences}
-              />
-              <IndustryTemplates 
-                onTemplateSelect={(template) => {
-                  setUserInput(template);
-                  toast({
-                    title: "Template Applied",
-                    description: "Customize the template with your specific details",
-                  });
-                }}
-              />
-              <PromptHistory 
-                userId={user.id}
-                onPromptSelect={(prompt) => {
-                  setUserInput(prompt);
-                  toast({
-                    title: "Prompt Loaded",
-                    description: "Edit and regenerate as needed",
-                  });
-                }}
-              />
-            </div>
+            <Tabs defaultValue="profile" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 mb-6">
+                <TabsTrigger value="profile">Profile</TabsTrigger>
+                <TabsTrigger value="templates">Templates</TabsTrigger>
+                <TabsTrigger value="history">History</TabsTrigger>
+                <TabsTrigger value="workflow">Workflow</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="profile">
+                <UserProfile 
+                  userId={user.id} 
+                  onPreferencesUpdate={setUserPreferences}
+                />
+              </TabsContent>
+
+              <TabsContent value="templates">
+                <IndustryTemplates 
+                  onTemplateSelect={(template) => {
+                    setUserInput(template);
+                    toast({
+                      title: "Template Applied",
+                      description: "Customize the template with your specific details",
+                    });
+                  }}
+                />
+              </TabsContent>
+
+              <TabsContent value="history">
+                <PromptHistory 
+                  userId={user.id}
+                  onPromptSelect={(prompt) => {
+                    setUserInput(prompt);
+                    toast({
+                      title: "Prompt Loaded",
+                      description: "Edit and regenerate as needed",
+                    });
+                  }}
+                />
+              </TabsContent>
+
+              <TabsContent value="workflow">
+                <WorkflowBuilder 
+                  onExecute={executeWorkflow} 
+                  isExecuting={isExecutingWorkflow}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </section>
       )}
@@ -1806,6 +1912,15 @@ export const PromptEngineer = () => {
           </Card>
         </div>
       </section>
+
+      {/* Workflow Results */}
+      {workflowResults.length > 0 && (
+        <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-background">
+          <div className="max-w-4xl mx-auto">
+            <WorkflowResults results={workflowResults} />
+          </div>
+        </section>
+      )}
 
       {/* Results */}
       {optimizedPrompts.length > 0 && (
