@@ -879,10 +879,6 @@ export type Database = {
         Args: { listing_id: string }
         Returns: undefined
       }
-      is_team_owner: {
-        Args: { _team_id: string; _user_id: string }
-        Returns: boolean
-      }
     }
     Enums: {
       [_ in never]: never

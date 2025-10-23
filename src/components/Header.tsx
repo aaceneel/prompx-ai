@@ -30,218 +30,137 @@ export const Header = ({ user }: HeaderProps) => {
     setMobileMenuOpen(false);
   };
 
-  const primaryNav = [
-    { name: 'Home', path: '/' },
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Analytics', path: '/analytics' },
-  ];
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    setMobileMenuOpen(false);
+  };
 
-  const workspaceNav = [
-    { name: 'Team', path: '/team' },
-    { name: 'Marketplace', path: '/marketplace' },
-    { name: 'Compliance', path: '/compliance' },
-  ];
-
-  const accountNav = [
-    { name: 'Settings', path: '/settings' },
+  const navLinks = [
+    { name: 'HOME', path: '/' },
+    { name: 'DASHBOARD', path: '/dashboard' },
+    { name: 'ANALYTICS', path: '/analytics' },
+    { name: 'TEAM', path: '/team' },
+    { name: 'MARKETPLACE', path: '/marketplace' },
+    { name: 'SETTINGS', path: '/settings' },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-xl w-full">
-      <div className="w-full">
-        {/* Top Section - User Info & Quick Actions */}
-        <div className="border-b border-white/5">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div className="flex items-center justify-between h-10">
-              <div className="flex items-center gap-6 text-xs text-zinc-400">
-                <span>Professional Prompt Engineering Platform</span>
-              </div>
-              <div className="flex items-center gap-4">
-                {user ? (
-                  <>
-                    <span className="text-xs text-zinc-400 hidden md:block">
-                      {user.email}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleLogout}
-                      className="text-xs text-zinc-400 hover:text-white h-8 px-3"
-                    >
-                      <LogOut className="w-3 h-3 mr-1.5" />
-                      Sign Out
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate("/auth")}
-                    className="text-xs text-zinc-400 hover:text-white h-8 px-3"
-                  >
-                    Sign In
-                  </Button>
-                )}
-              </div>
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-xl w-full">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="flex items-center justify-between h-16 lg:h-20 gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-md flex items-center justify-center">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
             </div>
+            <span className="text-lg sm:text-xl font-light text-white tracking-tight">
+              PrompX
+            </span>
           </div>
-        </div>
 
-        {/* Middle Section - Logo & Primary Navigation */}
-        <div className="border-b border-white/5">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div className="flex items-center justify-between h-16">
-              {/* Logo */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-black" />
-                </div>
-                <span className="text-xl font-light text-white tracking-tight">
-                  PrompX
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <button 
+                key={link.name}
+                onClick={() => navigate(link.path)}
+                className="text-sm text-zinc-400 hover:text-white transition-colors duration-300 font-light tracking-wide"
+              >
+                {link.name}
+              </button>
+            ))}
+          </nav>
+
+          {/* Desktop User Actions */}
+          <div className="hidden md:flex items-center gap-3 lg:gap-4">
+            {user ? (
+              <>
+                <span className="hidden lg:block text-sm text-zinc-400 font-light truncate max-w-[180px]">
+                  {user.email}
                 </span>
-              </div>
-
-              {/* Primary Navigation */}
-              <nav className="hidden lg:flex items-center gap-1">
-                {primaryNav.map((link) => (
-                  <button
-                    key={link.name}
-                    onClick={() => navigate(link.path)}
-                    className="px-4 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 rounded-md transition-all duration-200"
-                  >
-                    {link.name}
-                  </button>
-                ))}
-              </nav>
-
-              {/* Mobile Menu Toggle */}
-              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="lg:hidden text-white hover:bg-white/10"
-                  >
-                    <Menu className="w-5 h-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-black/95 border-white/10 backdrop-blur-xl">
-                  <div className="flex flex-col gap-6 mt-8">
-                    <div>
-                      <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Main</h3>
-                      <nav className="flex flex-col gap-1">
-                        {primaryNav.map((link) => (
-                          <button
-                            key={link.name}
-                            onClick={() => {
-                              navigate(link.path);
-                              setMobileMenuOpen(false);
-                            }}
-                            className="text-left px-3 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 rounded-md transition-all"
-                          >
-                            {link.name}
-                          </button>
-                        ))}
-                      </nav>
-                    </div>
-
-                    <div>
-                      <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Workspace</h3>
-                      <nav className="flex flex-col gap-1">
-                        {workspaceNav.map((link) => (
-                          <button
-                            key={link.name}
-                            onClick={() => {
-                              navigate(link.path);
-                              setMobileMenuOpen(false);
-                            }}
-                            className="text-left px-3 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 rounded-md transition-all"
-                          >
-                            {link.name}
-                          </button>
-                        ))}
-                      </nav>
-                    </div>
-
-                    <div>
-                      <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Account</h3>
-                      <nav className="flex flex-col gap-1">
-                        {accountNav.map((link) => (
-                          <button
-                            key={link.name}
-                            onClick={() => {
-                              navigate(link.path);
-                              setMobileMenuOpen(false);
-                            }}
-                            className="text-left px-3 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/5 rounded-md transition-all"
-                          >
-                            {link.name}
-                          </button>
-                        ))}
-                      </nav>
-                    </div>
-
-                    {user && (
-                      <div className="pt-4 border-t border-white/10">
-                        <Button
-                          variant="outline"
-                          onClick={handleLogout}
-                          className="w-full bg-transparent border-white/20 text-white hover:bg-white/10"
-                        >
-                          <LogOut className="w-4 h-4 mr-2" />
-                          Sign Out
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="bg-transparent border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 h-9 px-3 lg:px-4"
+                >
+                  <LogOut className="w-4 h-4 lg:mr-2" />
+                  <span className="hidden lg:inline">Sign Out</span>
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={() => navigate("/auth")}
+                className="bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 h-9 px-4 lg:px-6 text-sm"
+              >
+                GET STARTED
+              </Button>
+            )}
           </div>
-        </div>
 
-        {/* Bottom Section - Secondary Navigation */}
-        <div>
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div className="hidden lg:flex items-center justify-between h-12">
-              {/* Workspace Section */}
-              <div className="flex items-center gap-1">
-                <span className="text-xs text-zinc-500 mr-2">Workspace:</span>
-                {workspaceNav.map((link) => (
-                  <button
-                    key={link.name}
-                    onClick={() => navigate(link.path)}
-                    className="px-3 py-1.5 text-xs text-zinc-400 hover:text-white hover:bg-white/5 rounded transition-all"
-                  >
-                    {link.name}
-                  </button>
-                ))}
-              </div>
+          {/* Mobile Menu Button */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden text-white hover:bg-white/10 h-9 w-9 p-0"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px] bg-black/95 border-white/10 backdrop-blur-xl">
+              <div className="flex flex-col gap-6 mt-8">
+                {/* Mobile Navigation Links */}
+                <nav className="flex flex-col gap-4">
+                  {navLinks.map((link) => (
+                    <button
+                      key={link.name}
+                      onClick={() => {
+                        navigate(link.path);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-base text-zinc-300 hover:text-white transition-colors duration-300 font-light tracking-wide py-2 text-left"
+                    >
+                      {link.name}
+                    </button>
+                  ))}
+                </nav>
 
-              {/* Account Section */}
-              <div className="flex items-center gap-1">
-                <span className="text-xs text-zinc-500 mr-2">Account:</span>
-                {accountNav.map((link) => (
-                  <button
-                    key={link.name}
-                    onClick={() => navigate(link.path)}
-                    className="px-3 py-1.5 text-xs text-zinc-400 hover:text-white hover:bg-white/5 rounded transition-all"
-                  >
-                    {link.name}
-                  </button>
-                ))}
-                {!user && (
-                  <Button
-                    onClick={() => navigate("/auth")}
-                    size="sm"
-                    className="ml-2 bg-white text-black hover:bg-zinc-200 h-7 px-4 text-xs"
-                  >
-                    GET STARTED
-                  </Button>
-                )}
+                {/* Mobile User Section */}
+                <div className="pt-6 border-t border-white/10">
+                  {user ? (
+                    <div className="flex flex-col gap-4">
+                      <span className="text-sm text-zinc-400 font-light truncate">
+                        {user.email}
+                      </span>
+                      <Button
+                        variant="outline"
+                        onClick={handleLogout}
+                        className="w-full bg-transparent border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 h-10"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        navigate("/auth");
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full bg-white text-black hover:bg-zinc-200 font-medium transition-all duration-300 h-10"
+                    >
+                      GET STARTED
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
